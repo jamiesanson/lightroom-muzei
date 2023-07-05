@@ -11,19 +11,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MuzeiLightroom"
-        android:name=".android.MuzeiLightroomApplication"
+        android:name=".MuzeiLightroomApplication"
         tools:targetApi="31">
-        <activity
-            android:name=".android.MainActivity"
+
+        <activity-alias
+            android:name=".LightroomLauncherActivity"
+            android:enabled="@bool/enable_launcher"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.MuzeiLightroom">
+            android:targetActivity=".LightroomRedirectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
+
+        <activity
+            android:name=".LightroomRedirectActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+
+        <provider
+            android:name="dev.sanson.lightroom.LightroomAlbumProvider"
+            android:authorities="${lightroomAuthority}"
+            android:label="@string/name"
+            android:description="@string/description"
+            android:exported="true"
+            android:permission="com.google.android.apps.muzei.api.ACCESS_PROVIDER">
+            <intent-filter>
+                <action android:name="com.google.android.apps.muzei.api.MuzeiArtProvider"/>
+            </intent-filter>
+        </provider>
     </application>
 
 </manifest>

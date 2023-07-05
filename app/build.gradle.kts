@@ -12,6 +12,14 @@ android {
         applicationId = "dev.sanson.lightroom"
         versionCode = libs.versions.versioncode.get().toInt()
         versionName = libs.versions.app.get()
+
+        val authority = "dev.sanson.lightroom.authority"
+        manifestPlaceholders += "lightroomAuthority" to authority
+        buildConfigField("String", "LIGHTROOM_AUTHORITY", "\"$authority\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -35,4 +43,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui.tooling.preview)
+
+    implementation(libs.muzei.api)
 }

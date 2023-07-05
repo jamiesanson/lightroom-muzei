@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.android
+package dev.sanson.lightroom
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

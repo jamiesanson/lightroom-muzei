@@ -10,7 +10,7 @@ targetsdk = "33"
 
 android-gradle-plugin = "8.0.2"
 
-compose-bom = "2023.06.00"
+compose-bom = "2023.06.01"
 compose-compiler = "1.4.7"
 
 kotlin = "1.8.21"
@@ -26,12 +26,14 @@ androidx-datastore = "1.0.0"
 androidx-hilt = "1.0.0"
 androidx-hilt-navigation-compose = "1.0.0"
 androidx-lifecycle = "2.6.1"
-androidx-navigation = "2.7.0-beta01"
+androidx-navigation = "2.7.0-beta02"
 androidx-splashscreen = "1.0.1"
 androidx-startup = "1.2.0-alpha02"
-androidx-window = "1.2.0-alpha02"
+androidx-window = "1.2.0-alpha03"
 
 accompanist = "0.29.2-rc"
+
+muzei-api = "3.4.1"
 
 dagger = "2.46.1"
 hilt = "2.46.1"
@@ -91,6 +93,8 @@ android-desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", vers
 junit = { module = "junit:junit", version.ref = "junit" }
 kotest = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
+muzei-api = { module = "com.google.android.apps.muzei:muzei-api", version.ref = "muzei-api" }
 
 # Linting
 ktlint-compose-rules = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "ktlint-compose-rules" }
