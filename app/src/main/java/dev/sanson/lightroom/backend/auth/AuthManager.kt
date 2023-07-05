@@ -5,8 +5,9 @@ import android.util.Base64
 import androidx.core.net.toUri
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dev.sanson.lightroom.backend.auth.api.LightroomAuthService
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import dev.sanson.lightroom.di.ApplicationScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -24,6 +25,8 @@ private const val ADOBE_LOGIN_HOST = "https://ims-na1.adobelogin.com"
 
 @Singleton
 class AuthManager @Inject constructor(
+    @ApplicationScope
+    private val applicationScope: CoroutineScope,
     private val credentialStore: CredentialStore,
 ) {
     private var previousChallenge: String? = null
@@ -42,6 +45,8 @@ class AuthManager @Inject constructor(
             .build()
             .create<LightroomAuthService>()
     }
+
+    val isSignedIn = credentialStore.credential.map { it != null }
 
     val authUri: Uri
         get() {
@@ -73,12 +78,8 @@ class AuthManager @Inject constructor(
                 .build()
         }
 
-    /**
-     * TODO: Fix this coroutines usage, provide application scope
-     */
-    @OptIn(DelicateCoroutinesApi::class)
     fun onAuthorized(code: String) {
-        GlobalScope.launch {
+        applicationScope.launch {
             val authorization = "code=$code&grant_type=authorization_code&code_verifier=$previousChallenge".toRequestBody()
 
             val response = lightroomAuthService.fetchToken(

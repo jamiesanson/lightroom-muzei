@@ -39,11 +39,11 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.browser)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.datastore)
 
     implementation(libs.muzei.api)
 
@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
 
     implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.material3)
 }
