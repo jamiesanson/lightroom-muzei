@@ -24,7 +24,7 @@ class Lightroom @Inject constructor(
     fun signIn(context: Context) {
         val intent = CustomTabsIntent.Builder().build()
 
-        intent.launchUrl(context, authManager.authUri)
+        intent.launchUrl(context, authManager.buildAuthUri())
     }
 
     fun handleSignInResponse(intent: Intent) {

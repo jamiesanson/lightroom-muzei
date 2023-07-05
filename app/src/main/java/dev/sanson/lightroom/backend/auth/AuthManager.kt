@@ -29,8 +29,10 @@ class AuthManager @Inject constructor(
     private val applicationScope: CoroutineScope,
     private val credentialStore: CredentialStore,
 ) {
+    // TODO: This should be using saved state
     private var previousChallenge: String? = null
 
+    // TODO: Maybe move the following to a Dagger module
     private val json = Json {
         ignoreUnknownKeys = true
     }
@@ -48,35 +50,35 @@ class AuthManager @Inject constructor(
 
     val isSignedIn = credentialStore.credential.map { it != null }
 
-    val authUri: Uri
-        get() {
-            val challengeBytes = ByteArray(64)
+    fun buildAuthUri(): Uri {
+        val challengeBytes = ByteArray(64)
 
-            SecureRandom().nextBytes(challengeBytes)
+        SecureRandom().nextBytes(challengeBytes)
 
-            val challenge = Base64.encodeToString(
-                challengeBytes,
-                Base64.NO_WRAP or Base64.NO_PADDING or Base64.URL_SAFE
-            )
-            previousChallenge = challenge
+        val challenge = Base64.encodeToString(
+            challengeBytes,
+            Base64.NO_WRAP or Base64.NO_PADDING or Base64.URL_SAFE
+        )
 
-            val authUrl = "$ADOBE_LOGIN_HOST/ims/authorize/v2"
+        previousChallenge = challenge
 
-            val params = mapOf(
-                "scope" to "openid,lr_partner_apis,lr_partner_rendition_apis,offline_access",
-                "client_id" to LIGHTROOM_CLIENT_ID,
-                "response_type" to "code",
-                "redirect_uri" to "dev.sanson.lightroom://callback",
-                "code_challenge" to challenge,
-            )
+        val authUrl = "$ADOBE_LOGIN_HOST/ims/authorize/v2"
 
-            return params
-                .entries
-                .fold(authUrl.toUri().buildUpon()) { builder, (key, value) ->
-                    builder.appendQueryParameter(key, value)
-                }
-                .build()
-        }
+        val params = mapOf(
+            "scope" to "openid,lr_partner_apis,lr_partner_rendition_apis,offline_access",
+            "client_id" to LIGHTROOM_CLIENT_ID,
+            "response_type" to "code",
+            "redirect_uri" to "dev.sanson.lightroom://callback",
+            "code_challenge" to challenge,
+        )
+
+        return params
+            .entries
+            .fold(authUrl.toUri().buildUpon()) { builder, (key, value) ->
+                builder.appendQueryParameter(key, value)
+            }
+            .build()
+    }
 
     fun onAuthorized(code: String) {
         applicationScope.launch {
