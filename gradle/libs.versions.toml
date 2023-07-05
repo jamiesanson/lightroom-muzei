@@ -21,6 +21,7 @@ ktlint-compose-rules = "0.1.2"
 
 androidx-appcompat = "1.6.1"
 androidx-activity-compose = "1.7.2"
+androidx-browser = "1.5.0"
 androidx-core = "1.10.1"
 androidx-datastore = "1.0.0"
 androidx-hilt = "1.0.0"
@@ -95,6 +96,8 @@ kotest = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 muzei-api = { module = "com.google.android.apps.muzei:muzei-api", version.ref = "muzei-api" }
+
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
 
 # Linting
 ktlint-compose-rules = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "ktlint-compose-rules" }

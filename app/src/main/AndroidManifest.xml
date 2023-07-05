@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name="dev.sanson.lightroom.MuzeiLightroomApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -11,14 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MuzeiLightroom"
-        android:name=".MuzeiLightroomApplication"
         tools:targetApi="31">
 
         <activity-alias
-            android:name=".LightroomLauncherActivity"
+            android:name="dev.sanson.lightroom.LightroomLauncherActivity"
             android:enabled="@bool/enable_launcher"
             android:exported="true"
-            android:targetActivity=".LightroomRedirectActivity">
+            android:targetActivity="dev.sanson.lightroom.LightroomRedirectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,20 +26,55 @@
         </activity-alias>
 
         <activity
-            android:name=".LightroomRedirectActivity"
+            android:name="dev.sanson.lightroom.LightroomRedirectActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <activity-alias
+            android:name="dev.sanson.lightroom.LightroomSetupActivity"
+            android:exported="true"
+            android:targetActivity="dev.sanson.lightroom.LightroomSettingsActivity"/>
+
+        <activity
+            android:name="dev.sanson.lightroom.LightroomSettingsActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:label="Muzei Lightroom"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!--
+                Note for future Lightroom API users: You get this from the "Download JSON" button
+                when viewing your credential, and can't set your own redirect URI
+                -->
+                <data
+                    android:scheme="adobe+dfbb483d0db2e5cc94ba25622e05bbb4c91d6fa1"
+                    android:host="adobeid"/>
+            </intent-filter>
+        </activity>
 
         <provider
             android:name="dev.sanson.lightroom.LightroomAlbumProvider"
             android:authorities="${lightroomAuthority}"
-            android:label="@string/name"
             android:description="@string/description"
             android:exported="true"
+            android:label="@string/name"
             android:permission="com.google.android.apps.muzei.api.ACCESS_PROVIDER">
             <intent-filter>
-                <action android:name="com.google.android.apps.muzei.api.MuzeiArtProvider"/>
+                <action android:name="com.google.android.apps.muzei.api.MuzeiArtProvider" />
             </intent-filter>
+
+            <meta-data
+                android:name="setupActivity"
+                android:value="dev.sanson.lightroom.LightroomSetupActivity" />
+
+            <meta-data
+                android:name="settingsActivity"
+                android:value="dev.sanson.lightroom.LightroomSettingsActivity" />
         </provider>
     </application>
 
