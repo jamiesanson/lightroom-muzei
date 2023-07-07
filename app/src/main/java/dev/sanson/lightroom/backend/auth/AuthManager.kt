@@ -4,49 +4,31 @@ import android.net.Uri
 import android.util.Base64
 import androidx.core.net.toUri
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dev.sanson.lightroom.backend.LightroomClientId
 import dev.sanson.lightroom.backend.auth.api.LightroomAuthService
 import dev.sanson.lightroom.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.create
 import java.security.SecureRandom
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val LIGHTROOM_CLIENT_ID = "4a1404eeb6b442278a96dab428ecbc43"
-private const val ADOBE_LOGIN_HOST = "https://ims-na1.adobelogin.com"
 
 @Singleton
 class AuthManager @Inject constructor(
     @ApplicationScope
     private val applicationScope: CoroutineScope,
     private val credentialStore: CredentialStore,
+    private val lightroomAuthService: LightroomAuthService,
+    @LoginHost
+    private val loginHost: String,
+    @LightroomClientId
+    private val clientId: String,
 ) {
     // TODO: This should be using saved state
     private var previousChallenge: String? = null
-
-    // TODO: Maybe move the following to a Dagger module
-    private val json = Json {
-        ignoreUnknownKeys = true
-    }
-
-    private val lightroomAuthService by lazy {
-        Retrofit.Builder()
-            .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }).build())
-            .baseUrl(ADOBE_LOGIN_HOST)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
-            .create<LightroomAuthService>()
-    }
 
     val isSignedIn = credentialStore.credential.map { it != null }
 
@@ -62,11 +44,11 @@ class AuthManager @Inject constructor(
 
         previousChallenge = challenge
 
-        val authUrl = "$ADOBE_LOGIN_HOST/ims/authorize/v2"
+        val authUrl = "$loginHost/ims/authorize/v2"
 
         val params = mapOf(
             "scope" to "openid,lr_partner_apis,lr_partner_rendition_apis,offline_access",
-            "client_id" to LIGHTROOM_CLIENT_ID,
+            "client_id" to clientId,
             "response_type" to "code",
             "redirect_uri" to "dev.sanson.lightroom://callback",
             "code_challenge" to challenge,
@@ -86,7 +68,7 @@ class AuthManager @Inject constructor(
 
             val response = lightroomAuthService.fetchToken(
                 body = authorization,
-                clientId = LIGHTROOM_CLIENT_ID,
+                clientId = clientId,
             )
 
             credentialStore.updateTokens(
