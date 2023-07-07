@@ -5,12 +5,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.backend.interceptor.RemoveBodyPrefixInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.create
 import javax.inject.Qualifier
 
 @Qualifier
@@ -27,11 +29,15 @@ class LightroomModule {
     ): OkHttpClient {
         val builder =  OkHttpClient.Builder()
 
+        // Ensure we remove the "abuse mitigation" prefix before sending the response to further interceptors
+        builder.addNetworkInterceptor(RemoveBodyPrefixInterceptor())
+
         interceptors.forEach {
             builder.addInterceptor(it)
         }
 
         builder.authenticator(authenticator)
+
 
         return builder.build()
     }
@@ -48,4 +54,7 @@ class LightroomModule {
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
+
+    @Provides
+    fun provideAccountService(@LightroomRetrofit retrofit: Retrofit): AccountService = retrofit.create()
 }

@@ -21,6 +21,7 @@ import retrofit2.Retrofit
 import retrofit2.create
 import java.io.File
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Qualifier
 annotation class LoginHost
@@ -32,20 +33,19 @@ private const val ADOBE_LOGIN_HOST = "https://ims-na1.adobelogin.com"
 class AuthModule {
 
     @Provides
+    @Singleton
     fun provideCredentialStore(dataStore: DataStore<Credential?>): CredentialStore {
         return DefaultCredentialStore(dataStore)
     }
 
     @Provides
+    @Singleton
     fun provideCredentialDataStore(
-        @ApplicationScope scope: CoroutineScope,
-        @ApplicationContext context: Context
+        @ApplicationScope scope: CoroutineScope, @ApplicationContext context: Context
     ): DataStore<Credential?> {
-        return DataStoreFactory.create(
-            serializer = Credential.Serializer,
+        return DataStoreFactory.create(serializer = Credential.Serializer,
             scope = scope,
-            produceFile = { File(context.filesDir, "data/credentials") }
-        )
+            produceFile = { File(context.filesDir, "data/credentials") })
     }
 
     @Provides
@@ -54,27 +54,19 @@ class AuthModule {
 
     @Provides
     fun provideAuthService(
-        @LoginHost
-        loginHost: String,
+        @LoginHost loginHost: String,
         json: Json,
     ): LightroomAuthService {
-        return Retrofit.Builder()
-            .client(
-                OkHttpClient
-                    .Builder()
-                    .addInterceptor(
-                        HttpLoggingInterceptor().apply {
-                            level = if (BuildConfig.DEBUG) {
-                                HttpLoggingInterceptor.Level.BODY
-                            } else {
-                                HttpLoggingInterceptor.Level.NONE
-                            }
-                        })
-                    .build()
-            )
-            .baseUrl(loginHost)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
+        return Retrofit.Builder().client(
+                OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
+                        level = if (BuildConfig.DEBUG) {
+                            HttpLoggingInterceptor.Level.BODY
+                        } else {
+                            HttpLoggingInterceptor.Level.NONE
+                        }
+                    }).build()
+            ).baseUrl(loginHost)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType())).build()
             .create<LightroomAuthService>()
     }
 }

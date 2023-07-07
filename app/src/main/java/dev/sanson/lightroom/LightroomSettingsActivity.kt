@@ -15,13 +15,18 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sanson.lightroom.backend.Lightroom
+import dev.sanson.lightroom.backend.lightroom.AccountService
 import javax.inject.Inject
 
 
@@ -30,6 +35,9 @@ class LightroomSettingsActivity : ComponentActivity() {
 
     @Inject
     lateinit var lightroom: Lightroom
+
+    @Inject
+    lateinit var accountService: AccountService
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +73,7 @@ class LightroomSettingsActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun SignedIn() {
         Box(
@@ -72,7 +81,31 @@ class LightroomSettingsActivity : ComponentActivity() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primary)
         ) {
-            // TODO: Content
+            var name: String? by remember { mutableStateOf(null) }
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                AnimatedContent(
+                    targetState = name,
+                    label = "Content",
+                    modifier = Modifier.align(Alignment.Center),
+                ) {
+                    if (it == null) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        Text(
+                            text = "Hello, $it",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            style = MaterialTheme.typography.headlineMedium
+                        )
+                    }
+                }
+            }
+
+            LaunchedEffect(true) {
+                name = accountService.getAccount().firstName
+            }
         }
     }
 
