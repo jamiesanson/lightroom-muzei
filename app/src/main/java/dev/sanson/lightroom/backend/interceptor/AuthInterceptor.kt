@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.backend.lightroom.interceptor
+package dev.sanson.lightroom.backend.interceptor
 
 import dev.sanson.lightroom.backend.auth.CredentialStore
 import kotlinx.coroutines.flow.firstOrNull
