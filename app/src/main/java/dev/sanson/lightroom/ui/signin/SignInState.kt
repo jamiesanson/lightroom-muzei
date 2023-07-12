@@ -5,8 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import dev.sanson.lightroom.android.LocalNewIntent
@@ -51,7 +52,19 @@ fun rememberSignInState(lightroom: Lightroom): SignInState {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    return remember(lightroom, newIntent, context, scope) {
+    return rememberSaveable(
+        lightroom, newIntent, context, scope,
+        saver = Saver(
+            save = { it.isSignedIn },
+            restore = { signedIn ->
+                SignInState(
+                    newIntent = newIntent,
+                    context = context,
+                    coroutineScope = scope,
+                    lightroom = lightroom
+                ).also { it.isSignedIn = signedIn }
+            }
+        )) {
         SignInState(
             newIntent = newIntent,
             context = context,
