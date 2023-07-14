@@ -9,6 +9,7 @@ import dagger.multibindings.IntoSet
 import dev.sanson.lightroom.BuildConfig
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
 import dev.sanson.lightroom.sdk.backend.auth.CredentialStore
+import dev.sanson.lightroom.sdk.backend.interceptor.AcceptEncodingInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.AuthInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.ClientIdInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.LightroomAuthenticator
@@ -72,6 +73,10 @@ class LightroomModule {
     ): Interceptor {
         return AuthInterceptor(credentialStore)
     }
+
+    @Provides
+    @IntoSet
+    fun provideAcceptEncodingInterceptor(): Interceptor = AcceptEncodingInterceptor()
 
     @Provides
     fun provideOkHttp(

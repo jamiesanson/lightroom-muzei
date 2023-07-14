@@ -64,6 +64,6 @@ class Lightroom @Inject constructor(
         val token = authManager.latestAccessToken.first()
             ?: return apiKey
 
-        return apiKey + ("Authorization" to token)
+        return apiKey + ("Authorization" to "Bearer $token")
     }
 }

@@ -4,34 +4,35 @@ package dev.sanson.lightroom.ui.settings
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import dev.sanson.lightroom.arch.Success
+import dev.sanson.lightroom.ui.albums.ChooseAlbum
 import dev.sanson.lightroom.ui.signin.SignIn
 
 @Composable
-fun Settings(viewModel: SettingsViewModel = hiltViewModel()) {
+fun Settings(
+    viewModel: SettingsViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner),
+    onAlbumChanged: () -> Unit,
+) {
     val state by viewModel.store.state.collectAsState()
 
-    Settings(state = state)
+    Settings(state = state, onAlbumChanged = onAlbumChanged)
 }
 
 @Composable
 fun Settings(
     state: SettingsState,
+    onAlbumChanged: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AnimatedContent(
@@ -41,45 +42,14 @@ fun Settings(
     ) { signedIn ->
         when (signedIn) {
             is Success -> when (signedIn.value) {
-                true -> SignedIn()
+                true -> ChooseAlbum(
+                    onAlbumSelected = onAlbumChanged,
+                )
+
                 false -> SignIn()
             }
 
             else -> Loading()
-        }
-    }
-}
-
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun SignedIn(
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary),
-    ) {
-        var name: String? by remember { mutableStateOf(null) }
-
-        Box(modifier = Modifier.fillMaxSize()) {
-            AnimatedContent(
-                targetState = name,
-                label = "Content",
-                modifier = Modifier.align(Alignment.Center),
-            ) {
-                if (it == null) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                } else {
-                    Text(
-                        text = "Hello, $it",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.headlineMedium,
-                    )
-                }
-            }
         }
     }
 }

@@ -22,7 +22,7 @@ class GetAlbumsUseCase @Inject constructor(
             Album(
                 id = AlbumId(id = it.id),
                 name = it.payload.name,
-                cover = AssetId(id = it.payload.cover.id),
+                cover = it.payload.cover?.id?.let(::AssetId),
             )
         }
     }

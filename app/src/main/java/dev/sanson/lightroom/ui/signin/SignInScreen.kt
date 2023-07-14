@@ -8,22 +8,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import dev.sanson.lightroom.android.LocalNewIntent
 
 @Composable
 fun SignIn(viewModel: SignInViewModel = hiltViewModel()) {
     val context = LocalContext.current
-    val nextIntent = LocalNewIntent.current
-
-    LaunchedEffect(true) {
-        nextIntent.next.collect { viewModel.onCompleteSignIn(it) }
-    }
 
     SignInScreen(
         onSignIn = { viewModel.signIn(context) },

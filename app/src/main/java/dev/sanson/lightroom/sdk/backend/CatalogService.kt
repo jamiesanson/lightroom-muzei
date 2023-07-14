@@ -7,5 +7,5 @@ import retrofit2.http.GET
 interface CatalogService {
 
     @GET("/v2/catalog")
-    fun getCatalog(): Resource<Catalog>
+    suspend fun getCatalog(): Resource<Catalog>
 }

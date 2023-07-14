@@ -1,21 +1,31 @@
 package dev.sanson.lightroom
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
-import dev.sanson.lightroom.android.WithNewIntent
+import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.ui.settings.Settings
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LightroomSettingsActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var lightroom: Lightroom
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            WithNewIntent(activity = this) {
-                Settings()
-            }
+            Settings(
+                onAlbumChanged = { finish() },
+            )
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let(lightroom::handleSignInResponse)
     }
 }
