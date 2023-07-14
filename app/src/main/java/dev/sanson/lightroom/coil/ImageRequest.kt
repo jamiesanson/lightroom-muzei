@@ -36,6 +36,7 @@ internal class ImageRequestViewModel @Inject constructor(
         return ImageRequest.Builder(context)
             .data(imageUrl)
             .headers(headers)
+            .listener()
             .build()
     }
 }

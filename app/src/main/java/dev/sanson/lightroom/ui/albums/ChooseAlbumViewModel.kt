@@ -1,9 +1,11 @@
 package dev.sanson.lightroom.ui.albums
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanson.lightroom.arch.Async
+import dev.sanson.lightroom.arch.Failure
 import dev.sanson.lightroom.arch.Store
 import dev.sanson.lightroom.arch.Success
 import dev.sanson.lightroom.arch.Uninitialized
@@ -36,6 +38,9 @@ class ChooseAlbumViewModel @Inject constructor(
     fun loadAlbums() {
         viewModelScope.launch {
             lightroom::getAlbums.collectInto(store) {
+                if (it is Failure) {
+                    Log.e("GetAlbums", "Failed", it.error)
+                }
                 copy(albums = it)
             }
         }

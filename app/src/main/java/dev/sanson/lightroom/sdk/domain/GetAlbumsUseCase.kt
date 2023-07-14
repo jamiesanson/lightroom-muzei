@@ -18,11 +18,35 @@ class GetAlbumsUseCase @Inject constructor(
         val catalog = catalogService.getCatalog()
         val albums = albumService.getAlbums(catalogId = catalog.id)
 
-        return@withContext albums.resources.map {
-            Album(
-                id = AlbumId(id = it.id),
-                name = it.payload.name,
-                cover = it.payload.cover?.id?.let(::AssetId),
+        val folders = albums.resources
+            .filter { it.subtype == "collection_set" }
+
+        val domainAlbums = albums.resources
+            // Clear out these oddballs
+            .filter { it.payload != null }
+            // Get rid of folder/collection set albums
+            .filterNot { folders.any { (id, _) -> it.id == id } }
+            .map { album ->
+                requireNotNull(album.payload)
+
+                Album(
+                    id = AlbumId(id = album.id),
+                    folder = folders.firstOrNull { (id, _) -> album.payload.parent?.id == id }?.payload?.name,
+                    name = album.payload.name,
+                    cover = album.payload.cover?.id?.let(::AssetId),
+                    assets = emptyList(),
+                )
+            }
+
+        return@withContext domainAlbums.map { album ->
+            val assets = albumService
+                .getAlbumAssets(catalogId = catalog.id, albumId = album.id.id)
+                .resources
+                .map { AssetId(it.id) }
+
+            album.copy(
+                assets = assets,
+                cover = album.cover ?: assets.lastOrNull(),
             )
         }
     }

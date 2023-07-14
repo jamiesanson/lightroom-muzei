@@ -14,6 +14,7 @@ import dev.sanson.lightroom.sdk.backend.interceptor.AuthInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.ClientIdInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.LightroomAuthenticator
 import dev.sanson.lightroom.sdk.backend.interceptor.RemoveBodyPrefixInterceptor
+import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
 import okhttp3.Interceptor
@@ -22,6 +23,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Qualifier
 annotation class LightroomClientId
@@ -108,5 +110,11 @@ class LightroomModule {
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCatalogRepository(catalogService: CatalogService): CatalogRepository {
+        return CatalogRepository(catalogService)
     }
 }

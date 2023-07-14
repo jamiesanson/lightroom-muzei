@@ -29,9 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import coil.compose.AsyncImage
 import dev.sanson.lightroom.arch.Success
 import dev.sanson.lightroom.coil.rememberImageRequest
@@ -42,7 +44,7 @@ import dev.sanson.lightroom.ui.settings.Loading
 
 @Composable
 fun ChooseAlbum(
-    viewModel: ChooseAlbumViewModel = hiltViewModel(),
+    viewModel: ChooseAlbumViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner),
     onAlbumSelected: () -> Unit,
 ) {
     val state by viewModel.store.state.collectAsState()
@@ -141,11 +143,12 @@ fun AssetThumbnail(
     AsyncImage(
         model = rememberImageRequest(
             assetId = id,
-            rendition = Rendition.Thumbnail,
+            rendition = Rendition.Full,
         ),
         contentDescription = "Album cover photo",
         modifier = modifier
             .clip(shape = RoundedCornerShape(6.dp)),
+
     )
 }
 

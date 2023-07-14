@@ -5,9 +5,8 @@ import dev.sanson.lightroom.sdk.model.Catalog
 import dev.sanson.lightroom.sdk.model.CatalogId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class CatalogRepository @Inject constructor(
+class CatalogRepository(
     private val catalogService: CatalogService,
 ) {
     private var cachedCatalog: Catalog? = null
@@ -19,7 +18,7 @@ class CatalogRepository @Inject constructor(
 
         return@withContext Catalog(
             id = CatalogId(catalog.id),
-            name = catalog.payload.name,
+            name = catalog.payload?.name ?: "Lightroom",
         ).also { cachedCatalog = it }
     }
 }
