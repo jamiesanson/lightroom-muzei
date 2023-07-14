@@ -1,4 +1,4 @@
-package dev.sanson.lightroom
+package dev.sanson.lightroom.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +17,7 @@ data class SettingsState(
 )
 
 @HiltViewModel
-class LightroomSettingsViewModel @Inject constructor(
+class SettingsViewModel @Inject constructor(
     val lightroom: Lightroom,
 ) : ViewModel() {
 

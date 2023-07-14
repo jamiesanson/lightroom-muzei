@@ -19,13 +19,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import dev.sanson.lightroom.LightroomSettingsViewModel
-import dev.sanson.lightroom.SettingsState
 import dev.sanson.lightroom.arch.Success
 import dev.sanson.lightroom.ui.signin.SignIn
 
 @Composable
-fun Settings(viewModel: LightroomSettingsViewModel = hiltViewModel()) {
+fun Settings(viewModel: SettingsViewModel = hiltViewModel()) {
     val state by viewModel.store.state.collectAsState()
 
     Settings(state = state)
