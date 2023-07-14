@@ -44,15 +44,26 @@ internal class ImageRequestViewModel @Inject constructor(
 fun rememberImageRequest(
     assetId: AssetId,
     rendition: Rendition = Rendition.SixForty,
-    viewModel: ImageRequestViewModel = hiltViewModel(context as ViewModelStoreOwner),
 ): ImageRequest? {
     if (LocalView.current.isInEditMode) {
         // Avoid ViewModel fetching in previews
         return null
     }
 
-    val context = LocalContext.current
+    return rememberImageRequest(
+        assetId = assetId,
+        rendition = rendition,
+        context = LocalContext.current,
+    )
+}
 
+@Composable
+private fun rememberImageRequest(
+    assetId: AssetId,
+    context: Context,
+    rendition: Rendition = Rendition.SixForty,
+    viewModel: ImageRequestViewModel = hiltViewModel(context as ViewModelStoreOwner),
+): ImageRequest? {
     var request by remember { mutableStateOf<ImageRequest?>(null) }
 
     LaunchedEffect(assetId, rendition) {

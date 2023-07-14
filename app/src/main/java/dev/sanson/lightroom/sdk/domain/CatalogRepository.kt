@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-internal class CatalogRepository @Inject constructor(
+class CatalogRepository @Inject constructor(
     private val catalogService: CatalogService,
 ) {
     private var cachedCatalog: Catalog? = null
