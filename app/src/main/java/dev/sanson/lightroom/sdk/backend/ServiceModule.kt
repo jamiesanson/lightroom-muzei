@@ -16,11 +16,17 @@ annotation class LightroomRetrofit
 class ServiceModule {
 
     @Provides
-    fun provideAccountService(@LightroomRetrofit retrofit: Retrofit): AccountService = retrofit.create()
+    fun provideAccountService(@LightroomRetrofit retrofit: Retrofit): AccountService =
+        retrofit.create()
 
     @Provides
     fun provideAlbumService(@LightroomRetrofit retrofit: Retrofit): AlbumService = retrofit.create()
 
     @Provides
-    fun provideCatalogService(@LightroomRetrofit retrofit: Retrofit): CatalogService = retrofit.create()
+    fun provideAssetsService(@LightroomRetrofit retrofit: Retrofit): AssetsService =
+        retrofit.create()
+
+    @Provides
+    fun provideCatalogService(@LightroomRetrofit retrofit: Retrofit): CatalogService =
+        retrofit.create()
 }

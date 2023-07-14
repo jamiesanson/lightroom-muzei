@@ -1,16 +1,21 @@
 package dev.sanson.lightroom.sdk.domain
 
 import dev.sanson.lightroom.sdk.backend.AlbumService
+import dev.sanson.lightroom.sdk.backend.AssetsService
 import dev.sanson.lightroom.sdk.backend.CatalogService
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetAlbumsUseCase @Inject constructor(
     private val albumService: AlbumService,
+    private val assetsService: AssetsService,
     private val catalogService: CatalogService,
 ) {
 
@@ -36,18 +41,28 @@ class GetAlbumsUseCase @Inject constructor(
                     cover = album.payload.cover?.id?.let(::AssetId),
                     assets = emptyList(),
                 )
+            }.map { album ->
+                async {
+                    val assets = albumService
+                        .getAlbumAssets(catalogId = catalog.id, albumId = album.id.id)
+                        .resources
+                        .map { AssetId(it.id) }
+
+                    album.copy(
+                        assets = assets,
+                        cover = album.cover ?: assets.lastOrNull()?.also {
+                            runCatching {
+                                assetsService.generateRendition(
+                                    catalogId = catalog.id,
+                                    assetId = it.id,
+                                    renditions = Rendition.Full.code,
+                                )
+                            }
+                        },
+                    )
+                }
             }
 
-        return@withContext domainAlbums.map { album ->
-            val assets = albumService
-                .getAlbumAssets(catalogId = catalog.id, albumId = album.id.id)
-                .resources
-                .map { AssetId(it.id) }
-
-            album.copy(
-                assets = assets,
-                cover = album.cover ?: assets.lastOrNull(),
-            )
-        }
+        return@withContext domainAlbums.awaitAll()
     }
 }
