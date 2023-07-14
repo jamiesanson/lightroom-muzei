@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanson.lightroom.arch.Async
 import dev.sanson.lightroom.arch.Store
+import dev.sanson.lightroom.arch.Success
 import dev.sanson.lightroom.arch.Uninitialized
 import dev.sanson.lightroom.arch.collectInto
 import dev.sanson.lightroom.sdk.Lightroom
@@ -16,7 +17,10 @@ import javax.inject.Inject
 data class ChooseAlbumState(
     val albums: Async<List<Album>> = Uninitialized,
     val selectedAlbum: AlbumId? = null,
-)
+    val savedAlbum: Async<Unit> = Uninitialized,
+) {
+    val albumChoiceSaved = savedAlbum is Success
+}
 
 @HiltViewModel
 class ChooseAlbumViewModel @Inject constructor(
@@ -35,5 +39,11 @@ class ChooseAlbumViewModel @Inject constructor(
                 copy(albums = it)
             }
         }
+    }
+
+    fun selectAlbum(id: AlbumId) = store.update { copy(selectedAlbum = id) }
+
+    fun saveAlbumChoice() {
+        // TODO: Save album ID to datastore
     }
 }
