@@ -12,12 +12,12 @@ import java.io.OutputStream
 @Serializable
 data class Credential(
     val accessToken: String,
-    val refreshToken: String
+    val refreshToken: String,
 ) {
 
     companion object {
 
-        val Serializer = object: Serializer<Credential?> {
+        val Serializer = object : Serializer<Credential?> {
             override val defaultValue: Credential? = null
 
             override suspend fun readFrom(input: InputStream): Credential? {
@@ -45,7 +45,7 @@ interface CredentialStore {
 }
 
 class DefaultCredentialStore(
-    private val dataStore: DataStore<Credential?>
+    private val dataStore: DataStore<Credential?>,
 ) : CredentialStore {
 
     override val credential: Flow<Credential?> = dataStore.data

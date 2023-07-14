@@ -10,8 +10,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.BuildConfig
-import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
 import dev.sanson.lightroom.di.ApplicationScope
+import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -41,11 +41,14 @@ class AuthModule {
     @Provides
     @Singleton
     fun provideCredentialDataStore(
-        @ApplicationScope scope: CoroutineScope, @ApplicationContext context: Context
+        @ApplicationScope scope: CoroutineScope,
+        @ApplicationContext context: Context,
     ): DataStore<Credential?> {
-        return DataStoreFactory.create(serializer = Credential.Serializer,
+        return DataStoreFactory.create(
+            serializer = Credential.Serializer,
             scope = scope,
-            produceFile = { File(context.filesDir, "data/credentials") })
+            produceFile = { File(context.filesDir, "data/credentials") },
+        )
     }
 
     @Provides
@@ -58,14 +61,16 @@ class AuthModule {
         json: Json,
     ): LightroomAuthService {
         return Retrofit.Builder().client(
-                OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
-                        level = if (BuildConfig.DEBUG) {
-                            HttpLoggingInterceptor.Level.BODY
-                        } else {
-                            HttpLoggingInterceptor.Level.NONE
-                        }
-                    }).build()
-            ).baseUrl(loginHost)
+            OkHttpClient.Builder().addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = if (BuildConfig.DEBUG) {
+                        HttpLoggingInterceptor.Level.BODY
+                    } else {
+                        HttpLoggingInterceptor.Level.NONE
+                    }
+                },
+            ).build(),
+        ).baseUrl(loginHost)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType())).build()
             .create<LightroomAuthService>()
     }

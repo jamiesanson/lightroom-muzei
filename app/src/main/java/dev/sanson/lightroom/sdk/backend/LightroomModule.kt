@@ -22,7 +22,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Qualifier
 
-
 @Qualifier
 annotation class LightroomClientId
 
@@ -79,7 +78,7 @@ class LightroomModule {
         interceptors: Set<@JvmSuppressWildcards Interceptor>,
         authenticator: Authenticator,
     ): OkHttpClient {
-        val builder =  OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder()
 
         // Ensure we remove the "abuse mitigation" prefix before sending the response to further interceptors
         builder.addNetworkInterceptor(RemoveBodyPrefixInterceptor())
@@ -97,7 +96,7 @@ class LightroomModule {
     @LightroomRetrofit
     fun provideLightroomRetrofit(
         okHttpClient: OkHttpClient,
-        json: Json
+        json: Json,
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://lr.adobe.io")

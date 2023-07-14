@@ -21,7 +21,7 @@ data class ChooseAlbumState(
 @HiltViewModel
 class ChooseAlbumViewModel @Inject constructor(
     private val lightroom: Lightroom,
-): ViewModel() {
+) : ViewModel() {
 
     val store = Store(ChooseAlbumState())
 

@@ -17,8 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.sanson.lightroom.android.LocalNewIntent
 
 @Composable
-fun SignIn() {
-    val viewModel: SignInViewModel = hiltViewModel()
+fun SignIn(viewModel: SignInViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val nextIntent = LocalNewIntent.current
 
@@ -27,7 +26,7 @@ fun SignIn() {
     }
 
     SignInScreen(
-        onSignIn = { viewModel.signIn(context) }
+        onSignIn = { viewModel.signIn(context) },
     )
 }
 
@@ -36,13 +35,13 @@ private fun SignInScreen(onSignIn: () -> Unit) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background),
     ) {
         Button(
             onClick = onSignIn,
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             Text("Sign in with Adobe")
         }

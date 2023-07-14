@@ -5,10 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.util.Consumer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,12 +16,13 @@ interface NewIntent {
     val next: Flow<Intent>
 }
 
-class DefaultNewIntent: NewIntent {
+class DefaultNewIntent : NewIntent {
     val nextIntent = MutableSharedFlow<Intent>(replay = 0)
 
     override val next: Flow<Intent> = nextIntent.asSharedFlow()
 }
 
+// suppre
 val LocalNewIntent = compositionLocalOf<NewIntent> { error("No new intent listener created") }
 
 @Composable

@@ -19,8 +19,8 @@ fun <T> Store(initialValue: T): Store<T> = DefaultStore(initialValue)
 val <T> Store<T>.value: T get() = state.value
 
 internal class DefaultStore<T>(
-    initialValue: T
-): Store<T> {
+    initialValue: T,
+) : Store<T> {
 
     private val _state = MutableStateFlow(initialValue)
 

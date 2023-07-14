@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Resource<T>(
     val id: String,
-    val payload: T
+    val payload: T,
 )

@@ -18,6 +18,6 @@ interface LightroomAuthService {
     suspend fun fetchToken(
         @Body body: RequestBody,
         @Query("client_id") clientId: String,
-        @Header("Content-Type") contentType: String = "application/x-www-form-urlencoded"
+        @Header("Content-Type") contentType: String = "application/x-www-form-urlencoded",
     ): TokenResponse
 }

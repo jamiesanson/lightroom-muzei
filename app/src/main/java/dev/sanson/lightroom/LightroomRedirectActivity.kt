@@ -55,8 +55,9 @@ class LightroomRedirectActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // First check whether Lightroom is already selected
         val launchIntent = packageManager.getLaunchIntentForPackage(MUZEI_PACKAGE_NAME)
-        if (MuzeiContract.Sources.isProviderSelected(this, BuildConfig.LIGHTROOM_AUTHORITY)
-            && launchIntent != null) {
+        if (MuzeiContract.Sources.isProviderSelected(this, BuildConfig.LIGHTROOM_AUTHORITY) &&
+            launchIntent != null
+        ) {
             // Already selected so just open Muzei
             requestLauncher.launch(launchIntent)
             return
@@ -65,11 +66,12 @@ class LightroomRedirectActivity : ComponentActivity() {
         // to users when we successfully launch one of the Intents
         val intents = listOf(
             MuzeiContract.Sources.createChooseProviderIntent(BuildConfig.LIGHTROOM_AUTHORITY)
-                    to R.string.toast_enable_lightroom,
+                to R.string.toast_enable_lightroom,
             launchIntent
-                    to R.string.toast_enable_lightroom_source,
+                to R.string.toast_enable_lightroom_source,
             Intent(Intent.ACTION_VIEW).setData(Uri.parse(PLAY_STORE_LINK))
-                    to R.string.toast_muzei_missing_error)
+                to R.string.toast_muzei_missing_error,
+        )
         // Go through each Intent/message pair, trying each in turn
         val success = intents.fold(false) { success, (intent, toastMessage) ->
             if (success) {

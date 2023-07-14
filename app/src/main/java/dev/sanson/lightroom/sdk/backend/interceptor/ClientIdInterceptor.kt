@@ -5,7 +5,7 @@ import okhttp3.Response
 
 class ClientIdInterceptor(
     private val clientId: String,
-): Interceptor {
+) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()

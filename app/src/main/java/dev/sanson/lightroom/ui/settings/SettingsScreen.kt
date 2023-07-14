@@ -24,7 +24,6 @@ import dev.sanson.lightroom.SettingsState
 import dev.sanson.lightroom.arch.Success
 import dev.sanson.lightroom.ui.signin.SignIn
 
-
 @Composable
 fun Settings(viewModel: LightroomSettingsViewModel = hiltViewModel()) {
     val state by viewModel.store.state.collectAsState()
@@ -35,13 +34,19 @@ fun Settings(viewModel: LightroomSettingsViewModel = hiltViewModel()) {
 @Composable
 fun Settings(
     state: SettingsState,
+    modifier: Modifier = Modifier,
 ) {
-    AnimatedContent(targetState = state.isSignedIn, label = "Settings") { signedIn ->
+    AnimatedContent(
+        targetState = state.isSignedIn,
+        label = "Settings",
+        modifier = modifier,
+    ) { signedIn ->
         when (signedIn) {
             is Success -> when (signedIn.value) {
                 true -> SignedIn()
                 false -> SignIn()
             }
+
             else -> Loading()
         }
     }
@@ -49,11 +54,13 @@ fun Settings(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun SignedIn() {
+fun SignedIn(
+    modifier: Modifier = Modifier,
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(MaterialTheme.colorScheme.primary),
     ) {
         var name: String? by remember { mutableStateOf(null) }
 
@@ -65,13 +72,13 @@ fun SignedIn() {
             ) {
                 if (it == null) {
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = MaterialTheme.colorScheme.onPrimary,
                     )
                 } else {
                     Text(
                         text = "Hello, $it",
                         color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.headlineMedium
+                        style = MaterialTheme.typography.headlineMedium,
                     )
                 }
             }
@@ -80,8 +87,10 @@ fun SignedIn() {
 }
 
 @Composable
-fun Loading() {
-    Box(Modifier.fillMaxSize()) {
+fun Loading(
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier.fillMaxSize()) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     }
 }

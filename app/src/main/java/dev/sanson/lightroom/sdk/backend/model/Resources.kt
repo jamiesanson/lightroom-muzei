@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Resources<T>(
-    val resources: List<Resource<T>>
+    val resources: List<Resource<T>>,
 )

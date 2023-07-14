@@ -8,7 +8,7 @@ import okhttp3.Response
 
 class AuthInterceptor(
     private val credentialStore: CredentialStore,
-): Interceptor {
+) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val credential = runBlocking { credentialStore.credential.firstOrNull() }

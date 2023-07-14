@@ -3,9 +3,9 @@ package dev.sanson.lightroom.sdk.backend.auth
 import android.net.Uri
 import android.util.Base64
 import androidx.core.net.toUri
+import dev.sanson.lightroom.di.ApplicationScope
 import dev.sanson.lightroom.sdk.backend.LightroomClientId
 import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
-import dev.sanson.lightroom.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -40,7 +40,7 @@ class AuthManager @Inject constructor(
 
         val challenge = Base64.encodeToString(
             challengeBytes,
-            Base64.NO_WRAP or Base64.NO_PADDING or Base64.URL_SAFE
+            Base64.NO_WRAP or Base64.NO_PADDING or Base64.URL_SAFE,
         )
 
         previousChallenge = challenge

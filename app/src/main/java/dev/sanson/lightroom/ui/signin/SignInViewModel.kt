@@ -10,7 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val lightroom: Lightroom,
-): ViewModel() {
+) : ViewModel() {
     fun signIn(context: Context) = lightroom.signIn(context)
 
     fun onCompleteSignIn(intent: Intent) = lightroom.handleSignInResponse(intent)
