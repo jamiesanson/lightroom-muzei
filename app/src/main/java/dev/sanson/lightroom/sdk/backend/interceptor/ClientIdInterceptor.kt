@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.backend.interceptor
+package dev.sanson.lightroom.sdk.backend.interceptor
 
 import okhttp3.Interceptor
 import okhttp3.Response

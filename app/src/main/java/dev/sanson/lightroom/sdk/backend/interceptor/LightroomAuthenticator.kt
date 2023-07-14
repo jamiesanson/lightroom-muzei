@@ -1,6 +1,6 @@
-package dev.sanson.lightroom.backend.interceptor
+package dev.sanson.lightroom.sdk.backend.interceptor
 
-import dev.sanson.lightroom.backend.auth.AuthManager
+import dev.sanson.lightroom.sdk.backend.auth.AuthManager
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request

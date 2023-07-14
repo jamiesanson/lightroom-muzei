@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.backend.lightroom.model
+package dev.sanson.lightroom.sdk.backend.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.backend.auth
+package dev.sanson.lightroom.sdk.backend.auth
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer

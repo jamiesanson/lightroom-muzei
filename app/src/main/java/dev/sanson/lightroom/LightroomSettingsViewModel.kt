@@ -10,8 +10,8 @@ import dev.sanson.lightroom.arch.Store
 import dev.sanson.lightroom.arch.Uninitialized
 import dev.sanson.lightroom.arch.asAsyncFlow
 import dev.sanson.lightroom.arch.collectInto
-import dev.sanson.lightroom.backend.Lightroom
-import dev.sanson.lightroom.backend.lightroom.AccountService
+import dev.sanson.lightroom.sdk.Lightroom
+import dev.sanson.lightroom.sdk.backend.AccountService
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

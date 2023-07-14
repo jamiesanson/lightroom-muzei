@@ -1,14 +1,17 @@
-package dev.sanson.lightroom.backend
+package dev.sanson.lightroom.sdk
 
 import android.content.Context
 import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
-import dev.sanson.lightroom.backend.auth.AuthManager
+import dev.sanson.lightroom.sdk.backend.auth.AuthManager
+import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
+import dev.sanson.lightroom.sdk.model.Album
 import javax.inject.Inject
 
 
 class Lightroom @Inject constructor(
-    private val authManager: AuthManager
+    private val authManager: AuthManager,
+    private val retrieveAlbums: GetAlbumsUseCase,
 ) {
 
     /**
@@ -31,4 +34,6 @@ class Lightroom @Inject constructor(
         val code = intent.data?.getQueryParameter("code") ?: error("\"code\" not found in redirect")
         authManager.onAuthorized(code)
     }
+
+    suspend fun getAlbums(): List<Album> = retrieveAlbums()
 }

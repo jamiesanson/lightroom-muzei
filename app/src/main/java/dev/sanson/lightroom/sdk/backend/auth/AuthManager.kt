@@ -1,11 +1,10 @@
-package dev.sanson.lightroom.backend.auth
+package dev.sanson.lightroom.sdk.backend.auth
 
 import android.net.Uri
 import android.util.Base64
 import androidx.core.net.toUri
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import dev.sanson.lightroom.backend.LightroomClientId
-import dev.sanson.lightroom.backend.auth.api.LightroomAuthService
+import dev.sanson.lightroom.sdk.backend.LightroomClientId
+import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
 import dev.sanson.lightroom.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +18,6 @@ import java.security.SecureRandom
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Singleton
 class AuthManager @Inject constructor(
     @ApplicationScope
@@ -31,7 +29,6 @@ class AuthManager @Inject constructor(
     @LightroomClientId
     private val clientId: String,
 ) {
-    // TODO: This should be using saved state
     private var previousChallenge: String? = null
 
     val isSignedIn = credentialStore.credential.map { it != null }

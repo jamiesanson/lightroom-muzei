@@ -1,6 +1,6 @@
-package dev.sanson.lightroom.backend.lightroom
+package dev.sanson.lightroom.sdk.backend
 
-import dev.sanson.lightroom.backend.lightroom.model.Account
+import dev.sanson.lightroom.sdk.backend.model.Account
 import retrofit2.http.GET
 
 interface AccountService {

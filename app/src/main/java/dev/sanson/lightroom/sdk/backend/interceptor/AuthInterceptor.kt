@@ -1,6 +1,6 @@
-package dev.sanson.lightroom.backend.interceptor
+package dev.sanson.lightroom.sdk.backend.interceptor
 
-import dev.sanson.lightroom.backend.auth.CredentialStore
+import dev.sanson.lightroom.sdk.backend.auth.CredentialStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor

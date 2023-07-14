@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.backend.auth.api
+package dev.sanson.lightroom.sdk.backend.auth.api
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

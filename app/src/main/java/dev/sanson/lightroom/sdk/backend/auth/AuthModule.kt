@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.backend.auth
+package dev.sanson.lightroom.sdk.backend.auth
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -10,7 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.BuildConfig
-import dev.sanson.lightroom.backend.auth.api.LightroomAuthService
+import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
 import dev.sanson.lightroom.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
