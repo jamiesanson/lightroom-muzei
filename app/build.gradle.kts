@@ -43,7 +43,9 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.datastore)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.muzei.api)
 

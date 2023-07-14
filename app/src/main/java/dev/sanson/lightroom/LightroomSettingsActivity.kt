@@ -3,7 +3,6 @@ package dev.sanson.lightroom
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -13,44 +12,67 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import dev.sanson.lightroom.android.LocalNewIntent
 import dev.sanson.lightroom.android.WithNewIntent
+import dev.sanson.lightroom.arch.Success
 import dev.sanson.lightroom.ui.signin.SignInScreen
-import dev.sanson.lightroom.ui.signin.rememberSignInState
 
 @OptIn(ExperimentalAnimationApi::class)
 @AndroidEntryPoint
 class LightroomSettingsActivity : ComponentActivity() {
 
-    // TODO("Add viewmodel compose dependency")
-    val viewModel: LightroomSettingsViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val viewModel: LightroomSettingsViewModel by hiltViewModel()
+
             WithNewIntent(activity = this) {
-                App(viewModel = viewModel)
+                SettingsRoute(viewModel = viewModel)
             }
         }
     }
 
     @Composable
-    fun App(viewModel: LightroomSettingsViewModel) {
-        val state = rememberSignInState(lightroom = viewModel.lightroom)
+    fun SettingsRoute(viewModel: LightroomSettingsViewModel) {
+        val state by viewModel.store.state.collectAsState()
+        val context = LocalContext.current
+        val nextIntent = LocalNewIntent.current
 
-        AnimatedContent(targetState = state.isSignedIn, label = "Main Content") { signedIn ->
+        LaunchedEffect(true) {
+            nextIntent.next.collect { viewModel.onCompleteSignIn(it) }
+        }
+
+        Settings(
+            state = state,
+            onSignIn = { viewModel.signIn(context) }
+        )
+    }
+
+    @Composable
+    fun Settings(
+        state: SettingsState,
+        onSignIn: () -> Unit,
+    ) {
+        AnimatedContent(targetState = state.isSignedIn, label = "Settings") { signedIn ->
             when (signedIn) {
-                true -> SignedIn()
-                false -> SignInScreen(
-                    onSignIn = state::signIn,
-                )
-                null -> Loading()
+                is Success -> when (signedIn.value) {
+                    true -> SignedIn()
+                    false -> SignInScreen(
+                        onSignIn = onSignIn,
+                    )
+                }
+                else -> Loading()
             }
         }
     }
