@@ -26,8 +26,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import dev.sanson.lightroom.coil.rememberImageRequest
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.Rendition
 
 @Composable
 fun ChooseAlbum(
@@ -98,18 +101,19 @@ fun AlbumRow(
     }
 }
 
-@Suppress("UNUSED_PARAMETER")
 @Composable
 fun AssetThumbnail(
     id: AssetId,
     modifier: Modifier = Modifier,
 ) {
-    Box(
+    AsyncImage(
+        model = rememberImageRequest(
+            assetId = id,
+            rendition = Rendition.Thumbnail,
+        ),
+        contentDescription = "Album cover photo",
         modifier = modifier
-            .background(
-                color = MaterialTheme.colorScheme.onSurface,
-                shape = RoundedCornerShape(6.dp),
-            ),
+            .clip(shape = RoundedCornerShape(6.dp)),
     )
 }
 

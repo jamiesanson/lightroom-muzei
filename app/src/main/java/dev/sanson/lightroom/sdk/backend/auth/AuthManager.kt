@@ -33,6 +33,8 @@ class AuthManager @Inject constructor(
 
     val isSignedIn = credentialStore.credential.map { it != null }
 
+    val latestAccessToken = credentialStore.credential.map { it?.accessToken }
+
     fun buildAuthUri(): Uri {
         val challengeBytes = ByteArray(64)
 
