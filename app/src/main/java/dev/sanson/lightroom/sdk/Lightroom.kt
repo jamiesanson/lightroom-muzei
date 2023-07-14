@@ -8,7 +8,6 @@ import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import dev.sanson.lightroom.sdk.model.Album
 import javax.inject.Inject
 
-
 class Lightroom @Inject constructor(
     private val authManager: AuthManager,
     private val retrieveAlbums: GetAlbumsUseCase,
@@ -35,5 +34,10 @@ class Lightroom @Inject constructor(
         authManager.onAuthorized(code)
     }
 
+    /**
+     * Load albums for logged in user
+     *
+     * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Albums/operation/getAlbums
+     */
     suspend fun getAlbums(): List<Album> = retrieveAlbums()
 }

@@ -11,7 +11,6 @@ import dev.sanson.lightroom.arch.Uninitialized
 import dev.sanson.lightroom.arch.asAsyncFlow
 import dev.sanson.lightroom.arch.collectInto
 import dev.sanson.lightroom.sdk.Lightroom
-import dev.sanson.lightroom.sdk.backend.AccountService
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +21,6 @@ data class SettingsState(
 @HiltViewModel
 class LightroomSettingsViewModel @Inject constructor(
     val lightroom: Lightroom,
-    val accountService: AccountService,
 ) : ViewModel() {
 
     val store = Store(SettingsState())
@@ -36,8 +34,4 @@ class LightroomSettingsViewModel @Inject constructor(
                 }
         }
     }
-
-    fun signIn(context: Context) = lightroom.signIn(context)
-
-    fun onCompleteSignIn(intent: Intent) = lightroom.handleSignInResponse(intent)
 }
