@@ -43,26 +43,35 @@ class GetAlbumsUseCase @Inject constructor(
                 )
             }.map { album ->
                 async {
-                    val assets = albumService
-                        .getAlbumAssets(catalogId = catalog.id, albumId = album.id.id)
-                        .resources
-                        .map { AssetId(it.id) }
+                    val assets = loadAlbumAssets(
+                        catalogId = catalog.id,
+                        albumId = album.id,
+                    )
 
                     album.copy(
                         assets = assets,
                         cover = album.cover ?: assets.lastOrNull()?.also {
-                            runCatching {
-                                assetsService.generateRendition(
-                                    catalogId = catalog.id,
-                                    assetId = it.id,
-                                    renditions = Rendition.Full.code,
-                                )
-                            }
+                            tryGenerateRendition(catalogId = catalog.id, assetId = it)
                         },
                     )
                 }
             }
 
         return@withContext domainAlbums.awaitAll()
+    }
+
+    private suspend fun loadAlbumAssets(catalogId: String, albumId: AlbumId): List<AssetId> {
+        return albumService
+            .getAlbumAssets(catalogId = catalogId, albumId = albumId.id)
+            .resources
+            .map { AssetId(it.id) }
+    }
+
+    private suspend fun tryGenerateRendition(catalogId: String, assetId: AssetId) = runCatching {
+        assetsService.generateRendition(
+            catalogId = catalogId,
+            assetId = assetId.id,
+            renditions = Rendition.Full.code,
+        )
     }
 }
