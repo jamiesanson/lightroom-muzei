@@ -83,7 +83,7 @@ private fun rememberImageRequest(
         while (result !is SuccessResult) {
             if (result != null) {
                 delay(2000)
-                Log.i(
+                Log.v(
                     "ImageRequest",
                     "Retrying request for asset ${assetId.id}",
                     (result as ErrorResult).throwable,
