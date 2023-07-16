@@ -131,7 +131,11 @@ fun AlbumRow(
 
             Spacer(Modifier.size(12.dp))
 
-            Text(text = name, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = name,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
         }
     }
 }
