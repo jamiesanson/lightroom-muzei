@@ -1,7 +1,7 @@
 package dev.sanson.lightroom.sdk.backend
 
 import dev.sanson.lightroom.sdk.backend.model.Album
-import dev.sanson.lightroom.sdk.backend.model.Asset
+import dev.sanson.lightroom.sdk.backend.model.AlbumAssetResponse
 import dev.sanson.lightroom.sdk.backend.model.Resources
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -21,5 +21,5 @@ interface AlbumService {
     suspend fun getAlbumAssets(
         @Path("catalog_id") catalogId: String,
         @Path("album_id") albumId: String,
-    ): Resources<Asset>
+    ): AlbumAssetResponse
 }

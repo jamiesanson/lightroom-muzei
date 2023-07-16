@@ -2,7 +2,6 @@
 
 package dev.sanson.lightroom.ui.albums
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -149,11 +148,7 @@ fun AssetThumbnail(
         contentDescription = "Album cover photo",
         modifier = modifier
             .clip(shape = RoundedCornerShape(6.dp)),
-        onError = {
-            Log.e("Asset", "Failed to load ${it.result.request.data}", it.result.throwable)
-
-            // TODO: Set up mechanism to retry on failure (when renditions are generating)
-        },
+        onError = {},
     )
 }
 

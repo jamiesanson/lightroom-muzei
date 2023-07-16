@@ -2,10 +2,10 @@ package dev.sanson.lightroom.sdk.domain
 
 import dev.sanson.lightroom.sdk.backend.AlbumService
 import dev.sanson.lightroom.sdk.backend.AssetsService
-import dev.sanson.lightroom.sdk.backend.CatalogService
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.CatalogId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -16,12 +16,12 @@ import javax.inject.Inject
 class GetAlbumsUseCase @Inject constructor(
     private val albumService: AlbumService,
     private val assetsService: AssetsService,
-    private val catalogService: CatalogService,
+    private val catalogRepository: CatalogRepository,
 ) {
 
     suspend operator fun invoke(): List<Album> = withContext(Dispatchers.IO) {
-        val catalog = catalogService.getCatalog()
-        val albums = albumService.getAlbums(catalogId = catalog.id)
+        val catalog = catalogRepository.getCatalog()
+        val albums = albumService.getAlbums(catalogId = catalog.id.id)
 
         val folders = albums.resources
             .filter { it.subtype == "collection_set" }
@@ -50,7 +50,7 @@ class GetAlbumsUseCase @Inject constructor(
 
                     album.copy(
                         assets = assets,
-                        cover = album.cover ?: assets.lastOrNull()?.also {
+                        cover = album.cover ?: assets.firstOrNull()?.also {
                             tryGenerateRendition(catalogId = catalog.id, assetId = it)
                         },
                     )
@@ -60,16 +60,16 @@ class GetAlbumsUseCase @Inject constructor(
         return@withContext domainAlbums.awaitAll()
     }
 
-    private suspend fun loadAlbumAssets(catalogId: String, albumId: AlbumId): List<AssetId> {
+    private suspend fun loadAlbumAssets(catalogId: CatalogId, albumId: AlbumId): List<AssetId> {
         return albumService
-            .getAlbumAssets(catalogId = catalogId, albumId = albumId.id)
+            .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id)
             .resources
-            .map { AssetId(it.id) }
+            .map { AssetId(it.asset.id) }
     }
 
-    private suspend fun tryGenerateRendition(catalogId: String, assetId: AssetId) = runCatching {
+    private suspend fun tryGenerateRendition(catalogId: CatalogId, assetId: AssetId) = runCatching {
         assetsService.generateRendition(
-            catalogId = catalogId,
+            catalogId = catalogId.id,
             assetId = assetId.id,
             renditions = Rendition.Full.code,
         )
