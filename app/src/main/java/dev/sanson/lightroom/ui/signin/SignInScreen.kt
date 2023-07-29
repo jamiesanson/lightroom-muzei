@@ -12,14 +12,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import dev.sanson.lightroom.sdk.rememberLightroom
 
 @Composable
-fun SignIn(viewModel: SignInViewModel = hiltViewModel()) {
+fun SignIn() {
     val context = LocalContext.current
+    val lightroom = rememberLightroom()
 
     SignInScreen(
-        onSignIn = { viewModel.signIn(context) },
+        onSignIn = { lightroom.signIn(context) },
     )
 }
 
