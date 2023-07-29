@@ -21,7 +21,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,54 +30,87 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelStoreOwner
 import coil.compose.AsyncImage
-import dev.sanson.lightroom.arch.Success
 import dev.sanson.lightroom.coil.rememberImageRequest
+import dev.sanson.lightroom.sdk.Lightroom
+import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
+import dev.sanson.lightroom.sdk.rememberLightroom
 import dev.sanson.lightroom.ui.settings.Loading
 
-@Composable
-fun ChooseAlbum(
-    viewModel: ChooseAlbumViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner),
-    onAlbumSelected: () -> Unit,
-) {
-    val state by viewModel.store.state.collectAsState()
+sealed class ChooseAlbumModel {
 
-    ChooseAlbumScreen(
-        state = state,
-        onAlbumSelect = viewModel::selectAlbum,
-        onConfirm = viewModel::saveAlbumChoice,
-    )
+    object Loading : ChooseAlbumModel()
 
-    LaunchedEffect(state.albumChoiceSaved) {
-        if (state.albumChoiceSaved) {
-            onAlbumSelected()
-        }
+    data class Loaded(
+        val albums: List<Album>,
+        val selectedAlbum: AlbumId? = null,
+    ) : ChooseAlbumModel()
+}
+
+@Stable
+class ChooseAlbumState {
+    var model by mutableStateOf<ChooseAlbumModel>(ChooseAlbumModel.Loading)
+
+    fun selectAlbum(id: AlbumId) {
+        val loaded = model as? ChooseAlbumModel.Loaded ?: return
+        model = loaded.copy(
+            selectedAlbum = id,
+        )
+    }
+
+    fun onAlbumsLoaded(albums: List<Album>) {
+        model = (model as? ChooseAlbumModel.Loaded)?.copy(albums = albums)
+            ?: ChooseAlbumModel.Loaded(albums = albums)
     }
 }
 
 @Composable
+fun rememberChooseAlbumState(
+    lightroom: Lightroom = rememberLightroom(),
+): ChooseAlbumState {
+    val state = remember(lightroom) { ChooseAlbumState() }
+
+    LaunchedEffect(lightroom) {
+        val albums = lightroom.getAlbums()
+        state.onAlbumsLoaded(albums)
+    }
+
+    return ChooseAlbumState()
+}
+
+@Composable
+fun ChooseAlbum(
+    onAlbumSelected: () -> Unit,
+) {
+    val state = rememberChooseAlbumState()
+
+    ChooseAlbumScreen(
+        model = state.model,
+        onAlbumSelect = state::selectAlbum,
+        onConfirm = { TODO() },
+    )
+}
+
+@Composable
 private fun ChooseAlbumScreen(
-    state: ChooseAlbumState,
+    model: ChooseAlbumModel,
     onAlbumSelect: (AlbumId) -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AnimatedContent(targetState = state.albums, label = "Choose album") {
+    AnimatedContent(targetState = model, label = "Choose album") {
         // TODO: Wee bit of skeleton loading here would be nice
         when (it) {
-            is Success ->
+            is ChooseAlbumModel.Loaded ->
                 LazyColumn(modifier) {
-                    items(it.value) { album ->
+                    items(it.albums) { album ->
                         AlbumRow(
-                            isSelected = state.selectedAlbum == album.id,
+                            isSelected = it.selectedAlbum == album.id,
                             onClick = { onAlbumSelect(album.id) },
                             name = album.name,
                             coverAsset = album.cover,
