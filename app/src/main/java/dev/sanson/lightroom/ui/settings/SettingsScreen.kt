@@ -14,44 +14,59 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelStoreOwner
-import dev.sanson.lightroom.arch.Success
+import dev.sanson.lightroom.sdk.Lightroom
+import dev.sanson.lightroom.sdk.rememberLightroom
 import dev.sanson.lightroom.ui.albums.ChooseAlbum
 import dev.sanson.lightroom.ui.signin.SignIn
+import kotlinx.coroutines.flow.Flow
 
+sealed class SettingsModel {
+    object Loading : SettingsModel()
+
+    object SignedOut : SettingsModel()
+
+    class SignedIn : SettingsModel()
+}
+
+/**
+ * TODO: Test this presenter with Molecule
+ */
 @Composable
-fun Settings(
-    viewModel: SettingsViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner),
-    onAlbumChanged: () -> Unit,
-) {
-    val state by viewModel.store.state.collectAsState()
+internal fun rememberSettingsModel(
+    lightroom: Lightroom = rememberLightroom(),
+    isSignedIn: Flow<Boolean> = lightroom.isSignedIn,
+): SettingsModel {
+    val signedIn by isSignedIn.collectAsState(initial = null)
 
-    Settings(state = state, onAlbumChanged = onAlbumChanged)
+    return when (signedIn) {
+        true -> SettingsModel.SignedIn()
+        false -> SettingsModel.SignedOut
+        else -> SettingsModel.Loading
+    }
 }
 
 @Composable
 fun Settings(
-    state: SettingsState,
     onAlbumChanged: () -> Unit,
     modifier: Modifier = Modifier,
+    model: SettingsModel = rememberSettingsModel(),
 ) {
     AnimatedContent(
-        targetState = state.isSignedIn,
+        targetState = model,
         label = "Settings",
         modifier = modifier,
-    ) { signedIn ->
-        when (signedIn) {
-            is Success -> when (signedIn.value) {
-                true -> ChooseAlbum(
+    ) {
+        when (it) {
+            SettingsModel.Loading ->
+                Loading()
+
+            is SettingsModel.SignedIn ->
+                ChooseAlbum(
                     onAlbumSelected = onAlbumChanged,
                 )
 
-                false -> SignIn()
-            }
-
-            else -> Loading()
+            SettingsModel.SignedOut ->
+                SignIn()
         }
     }
 }

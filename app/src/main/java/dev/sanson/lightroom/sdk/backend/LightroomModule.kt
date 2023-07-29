@@ -7,6 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.IntoSet
 import dev.sanson.lightroom.BuildConfig
+import dev.sanson.lightroom.sdk.DefaultLightroom
+import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
 import dev.sanson.lightroom.sdk.backend.auth.CredentialStore
 import dev.sanson.lightroom.sdk.backend.interceptor.AcceptEncodingInterceptor
@@ -15,6 +17,7 @@ import dev.sanson.lightroom.sdk.backend.interceptor.ClientIdInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.LightroomAuthenticator
 import dev.sanson.lightroom.sdk.backend.interceptor.RemoveBodyPrefixInterceptor
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
+import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
 import okhttp3.Interceptor
@@ -116,5 +119,22 @@ class LightroomModule {
     @Singleton
     fun provideCatalogRepository(catalogService: CatalogService): CatalogRepository {
         return CatalogRepository(catalogService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLightroom(
+        authManager: AuthManager,
+        @LightroomClientId
+        clientId: String,
+        retrieveAlbums: GetAlbumsUseCase,
+        catalogRepository: CatalogRepository,
+    ): Lightroom {
+        return DefaultLightroom(
+            authManager = authManager,
+            clientId = clientId,
+            retrieveAlbums = retrieveAlbums,
+            catalogRepository = catalogRepository,
+        )
     }
 }

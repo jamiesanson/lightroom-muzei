@@ -20,6 +20,7 @@ import coil.request.ImageResult
 import coil.request.SuccessResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanson.lightroom.sdk.Lightroom
+import dev.sanson.lightroom.sdk.getAuthHeaders
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.delay
