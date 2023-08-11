@@ -3,34 +3,29 @@
 app = "0.1"
 versioncode = "1"
 
-# Android build specifications
-minsdk = "24"
-compilesdk = "33"
-targetsdk = "33"
+android-gradle-plugin = "8.1.0"
 
-android-gradle-plugin = "8.0.2"
-
-compose-bom = "2023.06.01"
+compose-bom = "2023.08.00"
 compose-compiler = "1.4.7"
 
 kotlin = "1.8.21"
-kotlinx = "1.6.4"
+kotlinx = "1.7.1"
 kotlinx-serialization-json = "1.5.1"
 ktlint-plugin = "11.3.2"
 ktlint-compose-rules = "0.1.2"
 
 androidx-appcompat = "1.6.1"
 androidx-activity-compose = "1.7.2"
-androidx-browser = "1.5.0"
+androidx-browser = "1.6.0"
 androidx-core = "1.10.1"
 androidx-datastore = "1.0.0"
 androidx-hilt = "1.0.0"
 androidx-hilt-navigation-compose = "1.0.0"
 androidx-lifecycle = "2.6.1"
-androidx-navigation = "2.7.0-beta02"
+androidx-navigation = "2.7.0"
 androidx-splashscreen = "1.0.1"
 androidx-startup = "1.2.0-alpha02"
-androidx-window = "1.2.0-alpha03"
+androidx-window = "1.2.0-beta01"
 
 accompanist = "0.29.2-rc"
 

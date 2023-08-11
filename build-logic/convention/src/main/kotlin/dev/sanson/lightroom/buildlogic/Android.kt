@@ -12,7 +12,7 @@ import org.gradle.kotlin.dsl.getByType
  * Configure base Kotlin with Android options
  */
 internal fun Project.configureAndroid(
-    commonExtension: CommonExtension<*, *, *, *>,
+    commonExtension: CommonExtension<*, *, *, *, *>,
 ) {
     val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 

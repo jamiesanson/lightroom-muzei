@@ -91,7 +91,10 @@ fun ChooseAlbum(
 
     ChooseAlbumScreen(
         model = state.model,
-        onAlbumSelect = state::selectAlbum,
+        onAlbumSelect = {
+            state.selectAlbum(it)
+            onAlbumSelected()
+        },
         onConfirm = { TODO() },
     )
 }

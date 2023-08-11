@@ -10,7 +10,7 @@ import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 
 @Suppress("UnstableApiUsage")
-internal fun Project.configureLinting(androidExtension: CommonExtension<*, *, *, *>) {
+internal fun Project.configureLinting(androidExtension: CommonExtension<*, *, *, *, *>) {
     pluginManager.apply("org.jlleitschuh.gradle.ktlint")
 
     extensions.configure<KtlintExtension> {
