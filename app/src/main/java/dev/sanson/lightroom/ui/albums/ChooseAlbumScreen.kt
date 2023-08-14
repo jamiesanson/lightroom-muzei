@@ -22,6 +22,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
 import coil.compose.AsyncImage
 import dev.sanson.lightroom.coil.rememberImageRequest
 import dev.sanson.lightroom.sdk.Lightroom
@@ -38,6 +40,9 @@ import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import dev.sanson.lightroom.sdk.rememberLightroom
 import dev.sanson.lightroom.ui.settings.Loading
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed class ChooseAlbumModel {
 
@@ -50,7 +55,9 @@ sealed class ChooseAlbumModel {
 }
 
 @Stable
-class ChooseAlbumState {
+class ChooseAlbumState(
+    private val dataStore: DataStore<AlbumId?>,
+) {
     var model by mutableStateOf<ChooseAlbumModel>(ChooseAlbumModel.Loading)
 
     fun selectAlbum(id: AlbumId) {
@@ -64,13 +71,20 @@ class ChooseAlbumState {
         model = (model as? ChooseAlbumModel.Loaded)?.copy(albums = albums)
             ?: ChooseAlbumModel.Loaded(albums = albums)
     }
+
+    suspend fun saveAlbumChoice() = withContext(Dispatchers.IO) {
+        val loaded = model as? ChooseAlbumModel.Loaded ?: return@withContext
+
+        dataStore.updateData { loaded.selectedAlbum }
+    }
 }
 
 @Composable
 fun rememberChooseAlbumState(
     lightroom: Lightroom = rememberLightroom(),
+    albumStore: DataStore<AlbumId?> = rememberAlbumStore(),
 ): ChooseAlbumState {
-    val state = remember(lightroom) { ChooseAlbumState() }
+    val state = remember(lightroom, albumStore) { ChooseAlbumState(albumStore) }
 
     LaunchedEffect(lightroom) {
         val albums = lightroom.getAlbums()
@@ -85,14 +99,19 @@ fun ChooseAlbum(
     onAlbumSelected: () -> Unit,
 ) {
     val state = rememberChooseAlbumState()
+    val scope = rememberCoroutineScope()
 
     ChooseAlbumScreen(
         model = state.model,
         onAlbumSelect = {
             state.selectAlbum(it)
-            onAlbumSelected()
         },
-        onConfirm = { TODO() },
+        onConfirm = {
+            scope.launch {
+                state.saveAlbumChoice()
+                onAlbumSelected()
+            }
+        },
     )
 }
 
@@ -107,18 +126,24 @@ private fun ChooseAlbumScreen(
         // TODO: Wee bit of skeleton loading here would be nice
         when (it) {
             is ChooseAlbumModel.Loaded ->
-                LazyColumn(modifier) {
+                LazyColumn(modifier.background(MaterialTheme.colorScheme.background)) {
                     items(it.albums) { album ->
                         AlbumRow(
                             isSelected = it.selectedAlbum == album.id,
                             onClick = { onAlbumSelect(album.id) },
                             name = album.name,
                             coverAsset = album.cover,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         )
                     }
 
                     item {
-                        Button(onClick = onConfirm) {
+                        Button(
+                            onClick = onConfirm,
+                            modifier = Modifier
+                                .padding(bottom = 24.dp)
+                                .fillMaxWidth(),
+                        ) {
                             Text("Confirm")
                         }
                     }

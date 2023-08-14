@@ -1,6 +1,5 @@
 package dev.sanson.lightroom.sdk.backend.model
 
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -20,7 +19,7 @@ data class Asset(
 
 @Serializable
 data class Payload(
-    val captureDate: LocalDateTime,
+    // val captureDate: LocalDateTime?,
     val xmp: Xmp,
 )
 

@@ -4,6 +4,9 @@ import dev.sanson.lightroom.sdk.backend.AlbumService
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 class GetAlbumAssetsUseCase @Inject constructor(
@@ -15,7 +18,7 @@ class GetAlbumAssetsUseCase @Inject constructor(
         val catalogId = catalogRepository.getCatalog().id
 
         return albumService
-            .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id)
+            .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id, limit = 500)
             .resources
             .map { it.asset }
             .map { asset ->
@@ -23,7 +26,9 @@ class GetAlbumAssetsUseCase @Inject constructor(
 
                 Asset(
                     id = AssetId(asset.id),
-                    captureDate = asset.payload.captureDate,
+                    // TODO: Remediate this hack by fixing time deserializing with optional timezones
+                    captureDate = // asset.payload.captureDate ?:
+                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
                     cameraBody = asset.payload.xmp.tiff.run {
                         "$make $model"
                     },

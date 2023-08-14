@@ -1,5 +1,7 @@
 package dev.sanson.lightroom
 
+import android.graphics.Bitmap
+import androidx.core.graphics.drawable.toBitmap
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
@@ -7,13 +9,32 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
+import coil.Coil
 import com.google.android.apps.muzei.api.provider.Artwork
 import com.google.android.apps.muzei.api.provider.MuzeiArtProvider
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.coil.awaitSuccessfulImageRequest
 import dev.sanson.lightroom.data.LoadAlbumWorker
+import dev.sanson.lightroom.sdk.Lightroom
+import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.Rendition
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
 class LightroomAlbumProvider : MuzeiArtProvider() {
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface EntryPointAccessor {
+        val lightroom: Lightroom
+    }
 
     override fun onLoadRequested(initial: Boolean) {
         val workManager = WorkManager.getInstance(requireNotNull(context))
@@ -39,13 +60,30 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
             .enqueueUniqueWork("load_album", ExistingWorkPolicy.REPLACE, request)
     }
 
-    // TODO: Check if rendition exists for artwork
-    override fun isArtworkValid(artwork: Artwork): Boolean {
-        return super.isArtworkValid(artwork)
-    }
-
-    // TODO: Take persistent URI from artwork, use headers, generate rendition if needed
     override fun openFile(artwork: Artwork): InputStream {
-        return super.openFile(artwork)
+        val context = requireNotNull(context)
+
+        val lightroom = EntryPointAccessors
+            .fromApplication<EntryPointAccessor>(context)
+            .lightroom
+
+        return runBlocking(Dispatchers.IO) {
+            // TODO: Make sure we have up-to-date tokens, make sure this retries successfully
+            val request = lightroom.awaitSuccessfulImageRequest(
+                context = context,
+                assetId = AssetId(artwork.token!!),
+                rendition = Rendition.Full,
+            )
+
+            val result = Coil.imageLoader(context).execute(request)
+
+            val outputStream = ByteArrayOutputStream()
+
+            result.drawable
+                ?.toBitmap()
+                ?.compress(Bitmap.CompressFormat.PNG, 0, outputStream)
+
+            ByteArrayInputStream(outputStream.toByteArray())
+        }
     }
 }

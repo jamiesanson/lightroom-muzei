@@ -43,8 +43,34 @@ suspend fun Lightroom.buildImageRequest(
     return ImageRequest.Builder(context)
         .data(imageUrl)
         .headers(headers)
-        .listener()
         .build()
+}
+
+suspend fun Lightroom.awaitSuccessfulImageRequest(
+    context: Context,
+    assetId: AssetId,
+    rendition: Rendition,
+): ImageRequest {
+    var result: ImageResult? = null
+
+    // Retry image loading until it succeeds. This should really only happen when there's a pending
+    // rendition, so might be able to do more to figure that out.
+    while (result !is SuccessResult) {
+        if (result != null) {
+            delay(2000)
+            Log.v(
+                "ImageRequest",
+                "Retrying request for asset ${assetId.id}",
+                (result as ErrorResult).throwable,
+            )
+        }
+
+        val pendingRequest = buildImageRequest(context, assetId, rendition)
+
+        result = context.imageLoader.execute(pendingRequest)
+    }
+
+    return result.request
 }
 
 @Composable
@@ -75,27 +101,7 @@ private fun rememberImageRequest(
 
     LaunchedEffect(assetId, rendition) {
         request = null
-
-        var result: ImageResult? = null
-
-        // Retry image loading until it succeeds. This should really only happen when there's a pending
-        // rendition, so might be able to do more to figure that out.
-        while (result !is SuccessResult) {
-            if (result != null) {
-                delay(2000)
-                Log.v(
-                    "ImageRequest",
-                    "Retrying request for asset ${assetId.id}",
-                    (result as ErrorResult).throwable,
-                )
-            }
-
-            val pendingRequest = viewModel.lightroom.buildImageRequest(context, assetId, rendition)
-
-            result = context.imageLoader.execute(pendingRequest)
-        }
-
-        request = result.request
+        request = viewModel.lightroom.awaitSuccessfulImageRequest(context, assetId, rendition)
     }
 
     return request
