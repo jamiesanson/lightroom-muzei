@@ -1,6 +1,7 @@
 package dev.sanson.lightroom.data
 
 import android.content.Context
+import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -13,7 +14,9 @@ import dagger.assisted.AssistedInject
 import dev.sanson.lightroom.LightroomAlbumProvider
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.LocalDateTime
 
 /**
  * WorkManager worker, which coordinates loading the selected album and populating
@@ -47,6 +50,7 @@ class LoadAlbumWorker @AssistedInject constructor(
                 }
             } ?: emptyList()
 
+        // TODO: Paging
         val artworks = lightroom
             .getAlbumAssets(albumId)
             // Drop items already added to Muzei
@@ -55,17 +59,18 @@ class LoadAlbumWorker @AssistedInject constructor(
                     asset.token == albumAsset.id.id
                 }
             }
-            .map<_, Artwork> {
-                /*
-                title = "Album Name - Date"
-                byline = "Camera & lens (Fujifilm X-T3, XF16-55mm etc.)
-                attribution = "Capture specs (ISO 160 55mm f/4.0 1/160s)"
-                token = <asset_id>
-                persistentUrl = <asset_id URI>
-                webUrl = <lightroom deeplink??>
-                metadata = <catalog_id>
-                 */
-                TODO("Construct Artwork")
+            .map { asset ->
+                fun LocalDateTime.format(): String = "$dayOfMonth ${month.name} $year"
+
+                Artwork(
+                    title = "${album.name} - ${asset.captureDate.format()}",
+                    byline = "${asset.cameraBody}, ${asset.lens}",
+                    attribution = "ISO ${asset.iso} - ${asset.focalLength} - ${asset.aperture} - ${asset.shutterSpeed}",
+                    token = asset.id.id,
+                    persistentUri = with(lightroom) {
+                        asset.id.asUrl(rendition = Rendition.Full).toUri()
+                    },
+                )
             }
 
         albumProvider.addArtwork(artworks)

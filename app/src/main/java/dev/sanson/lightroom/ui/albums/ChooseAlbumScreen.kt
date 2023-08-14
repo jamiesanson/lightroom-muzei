@@ -1,9 +1,6 @@
-@file:OptIn(ExperimentalAnimationApi::class)
-
 package dev.sanson.lightroom.ui.albums
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -80,7 +77,7 @@ fun rememberChooseAlbumState(
         state.onAlbumsLoaded(albums)
     }
 
-    return ChooseAlbumState()
+    return state
 }
 
 @Composable

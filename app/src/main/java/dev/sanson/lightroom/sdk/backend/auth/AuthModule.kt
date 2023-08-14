@@ -47,7 +47,11 @@ class AuthModule {
         return DataStoreFactory.create(
             serializer = Credential.Serializer,
             scope = scope,
-            produceFile = { File(context.filesDir, "data/credentials") },
+            produceFile = {
+                File(context.filesDir, "data")
+                    .apply { mkdirs() }
+                    .let { File(it, "credentials.json") }
+            },
         )
     }
 

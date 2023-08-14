@@ -17,7 +17,28 @@ class GetAlbumAssetsUseCase @Inject constructor(
         return albumService
             .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id)
             .resources
-            .map { AssetId(it.asset.id) }
-            .map { TODO("Finish mapping operation by deserialising the right information") }
+            .map { it.asset }
+            .map { asset ->
+                requireNotNull(asset.payload) { "No asset metadata found: $asset" }
+
+                Asset(
+                    id = AssetId(asset.id),
+                    captureDate = asset.payload.captureDate,
+                    cameraBody = asset.payload.xmp.tiff.run {
+                        "$make $model"
+                    },
+                    lens = asset.payload.xmp.aux.lens,
+                    iso = asset.payload.xmp.exif.iso,
+                    shutterSpeed = asset.payload.xmp.exif.exposureTime.run {
+                        "$numerator/$denominator sec"
+                    },
+                    aperture = asset.payload.xmp.exif.fNumber.run {
+                        "ƒ / ${numerator / denominator}"
+                    },
+                    focalLength = asset.payload.xmp.exif.focalLength.run {
+                        "${numerator / denominator} mm"
+                    },
+                )
+            }
     }
 }

@@ -27,7 +27,11 @@ class DataModule {
         return DataStoreFactory.create(
             serializer = AlbumIdSerializer,
             scope = scope,
-            produceFile = { File(context.filesDir, "data/album_id") },
+            produceFile = {
+                File(context.filesDir, "data")
+                    .apply { mkdirs() }
+                    .let { File(it, "album_id") }
+            },
         )
     }
 }

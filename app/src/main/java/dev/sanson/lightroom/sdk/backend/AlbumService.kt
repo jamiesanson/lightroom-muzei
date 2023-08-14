@@ -3,8 +3,10 @@ package dev.sanson.lightroom.sdk.backend
 import dev.sanson.lightroom.sdk.backend.model.Album
 import dev.sanson.lightroom.sdk.backend.model.AlbumAssetResponse
 import dev.sanson.lightroom.sdk.backend.model.Resources
+import kotlinx.datetime.LocalDateTime
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface AlbumService {
 
@@ -19,7 +21,21 @@ interface AlbumService {
      */
     @GET("/v2/catalogs/{catalog_id}/albums/{album_id}/assets")
     suspend fun getAlbumAssets(
-        @Path("catalog_id") catalogId: String,
-        @Path("album_id") albumId: String,
+        @Path("catalog_id")
+        catalogId: String,
+        @Path("album_id")
+        albumId: String,
+        @Query("captured_after")
+        capturedAfter: LocalDateTime? = null,
+        @Query("captured_before")
+        capturedBefore: LocalDateTime? = null,
+        @Query("subtype")
+        subtype: String = "image",
+        @Query("embed")
+        embed: String = "asset",
+        @Query("hide_stacked_assets")
+        hideStackedAssets: Boolean = true,
+        @Query("limit")
+        limit: Int = 1,
     ): AlbumAssetResponse
 }
