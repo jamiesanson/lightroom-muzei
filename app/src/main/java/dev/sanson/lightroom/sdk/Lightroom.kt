@@ -15,6 +15,7 @@ import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.Flow
@@ -48,7 +49,7 @@ interface Lightroom {
      *
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Albums/operation/listAssetsOfAlbum
      */
-    suspend fun getAlbumAssets(albumId: AlbumId): List<AssetId>
+    suspend fun getAlbumAssets(albumId: AlbumId): List<Asset>
 
     /**
      * Convert an [AssetId] into a URL to be loaded
@@ -81,7 +82,7 @@ class DefaultLightroom(
 
     override suspend fun getAlbums(): List<Album> = retrieveAlbums()
 
-    override suspend fun getAlbumAssets(albumId: AlbumId): List<AssetId> =
+    override suspend fun getAlbumAssets(albumId: AlbumId): List<Asset> =
         retrieveAlbumAssets(albumId = albumId)
 
     override suspend fun AssetId.asUrl(rendition: Rendition): String {

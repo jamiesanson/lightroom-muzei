@@ -17,6 +17,7 @@ import dev.sanson.lightroom.sdk.backend.interceptor.ClientIdInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.LightroomAuthenticator
 import dev.sanson.lightroom.sdk.backend.interceptor.RemoveBodyPrefixInterceptor
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
+import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
@@ -128,12 +129,14 @@ class LightroomModule {
         @LightroomClientId
         clientId: String,
         retrieveAlbums: GetAlbumsUseCase,
+        retrieveAlbumAssets: GetAlbumAssetsUseCase,
         catalogRepository: CatalogRepository,
     ): Lightroom {
         return DefaultLightroom(
             authManager = authManager,
             clientId = clientId,
             retrieveAlbums = retrieveAlbums,
+            retrieveAlbumAssets = retrieveAlbumAssets,
             catalogRepository = catalogRepository,
         )
     }

@@ -11,6 +11,7 @@ compose-compiler = "1.4.7"
 kotlin = "1.8.21"
 kotlinx = "1.7.1"
 kotlinx-serialization-json = "1.5.1"
+kotlinx-datetime = "0.4.0"
 ktlint-plugin = "11.3.2"
 ktlint-compose-rules = "0.1.2"
 
@@ -67,6 +68,9 @@ androidx-datastore = { module = "androidx.datastore:datastore-core", version.ref
 
 androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "androidx-hilt" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "androidx-hilt" }
+
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 
@@ -75,6 +79,7 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 accompanist-navigation-animations = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 

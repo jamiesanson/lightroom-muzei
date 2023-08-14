@@ -17,7 +17,7 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
     @InstallIn(SingletonComponent::class)
     interface LightroomAlbumProviderEntryPoint {
         val lightroom: Lightroom
-        val albumIdStore: DataStore<AlbumId?> // TODO: Implement this
+        val albumIdStore: DataStore<AlbumId?>
     }
 
     override fun onLoadRequested(initial: Boolean) {
