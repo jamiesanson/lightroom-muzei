@@ -1,5 +1,6 @@
 package dev.sanson.lightroom
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -38,7 +39,10 @@ class LightroomSettingsActivity : ComponentActivity() {
                 },
             ) {
                 Settings(
-                    onAlbumChanged = { finish() },
+                    onAlbumChanged = {
+                        setResult(Activity.RESULT_OK)
+                        finish()
+                    },
                 )
             }
         }

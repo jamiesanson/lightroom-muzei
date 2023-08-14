@@ -17,6 +17,8 @@ import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.LocalDateTime
+import java.time.format.TextStyle
+import java.util.Locale
 
 /**
  * WorkManager worker, which coordinates loading the selected album and populating
@@ -33,8 +35,6 @@ class LoadAlbumWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         val albumId = albumIdStore.data.first() ?: return Result.failure()
         val albumProvider = getProviderClient<LightroomAlbumProvider>(context = applicationContext)
-
-        val album = lightroom.getAlbums().first { it.id == albumId }
 
         val previouslyAddedAssets: List<Artwork> = applicationContext.contentResolver
             .query(albumProvider.contentUri, null, null, null, null)
@@ -60,10 +60,16 @@ class LoadAlbumWorker @AssistedInject constructor(
                 }
             }
             .map { asset ->
-                fun LocalDateTime.format(): String = "$dayOfMonth ${month.name} $year"
+                fun LocalDateTime.format(): String =
+                    "$dayOfMonth ${
+                        month.getDisplayName(
+                            TextStyle.SHORT,
+                            Locale.getDefault(),
+                        )
+                    } $year"
 
                 Artwork(
-                    title = "${album.name} - ${asset.captureDate.format()}",
+                    title = asset.captureDate.format(),
                     byline = "${asset.cameraBody}, ${asset.lens}",
                     attribution = "ISO ${asset.iso} - ${asset.focalLength} - ${asset.aperture} - ${asset.shutterSpeed}",
                     token = asset.id.id,
