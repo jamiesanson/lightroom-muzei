@@ -29,23 +29,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class ImageRequestViewModel @Inject constructor(
-    private val lightroom: Lightroom,
-) : ViewModel() {
+    val lightroom: Lightroom,
+) : ViewModel()
 
-    suspend fun buildImageRequest(
-        context: Context,
-        assetId: AssetId,
-        rendition: Rendition,
-    ): ImageRequest {
-        val imageUrl = with(lightroom) { assetId.asUrl(rendition) }
-        val headers = lightroom.getAuthHeaders().toHeaders()
+suspend fun Lightroom.buildImageRequest(
+    context: Context,
+    assetId: AssetId,
+    rendition: Rendition,
+): ImageRequest {
+    val imageUrl = assetId.asUrl(rendition)
+    val headers = getAuthHeaders().toHeaders()
 
-        return ImageRequest.Builder(context)
-            .data(imageUrl)
-            .headers(headers)
-            .listener()
-            .build()
-    }
+    return ImageRequest.Builder(context)
+        .data(imageUrl)
+        .headers(headers)
+        .listener()
+        .build()
 }
 
 @Composable
@@ -91,7 +90,7 @@ private fun rememberImageRequest(
                 )
             }
 
-            val pendingRequest = viewModel.buildImageRequest(context, assetId, rendition)
+            val pendingRequest = viewModel.lightroom.buildImageRequest(context, assetId, rendition)
 
             result = context.imageLoader.execute(pendingRequest)
         }
