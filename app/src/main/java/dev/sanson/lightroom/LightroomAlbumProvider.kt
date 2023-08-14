@@ -1,37 +1,42 @@
 package dev.sanson.lightroom
 
-import androidx.datastore.core.DataStore
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.WorkManager
 import com.google.android.apps.muzei.api.provider.Artwork
 import com.google.android.apps.muzei.api.provider.MuzeiArtProvider
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.sdk.Lightroom
-import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.data.LoadAlbumWorker
 import java.io.InputStream
+import java.util.concurrent.TimeUnit
 
 class LightroomAlbumProvider : MuzeiArtProvider() {
 
-    @EntryPoint
-    @InstallIn(SingletonComponent::class)
-    interface LightroomAlbumProviderEntryPoint {
-        val lightroom: Lightroom
-        val albumIdStore: DataStore<AlbumId?>
-    }
-
     override fun onLoadRequested(initial: Boolean) {
-        val entryPoint = EntryPointAccessors.fromApplication<LightroomAlbumProviderEntryPoint>(
-            requireNotNull(context).applicationContext,
-        )
+        val workManager = WorkManager.getInstance(requireNotNull(context))
 
-        val lightroom = entryPoint.lightroom
+        val request = OneTimeWorkRequestBuilder<LoadAlbumWorker>()
+            .setConstraints(
+                Constraints(
+                    requiredNetworkType = NetworkType.CONNECTED,
+                    requiresStorageNotLow = true,
+                ),
+            )
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.LINEAR,
+                backoffDelay = 10L,
+                timeUnit = TimeUnit.MINUTES,
+            )
+            .setExpedited(
+                policy = OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST,
+            )
+            .build()
 
-        if (initial) {
-            // TODO: Kick off a workmanager job to load assets
-        } else {
-            // TODO: Grab all artwork added, query album to see if there's any more
-        }
+        workManager
+            .enqueueUniqueWork("load_album", ExistingWorkPolicy.REPLACE, request)
     }
 
     // TODO: Check if rendition exists for artwork
