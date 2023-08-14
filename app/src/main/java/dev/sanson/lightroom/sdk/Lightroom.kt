@@ -11,8 +11,10 @@ import androidx.lifecycle.ViewModelStoreOwner
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
+import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import dev.sanson.lightroom.sdk.model.Album
+import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.Flow
@@ -42,6 +44,13 @@ interface Lightroom {
     suspend fun getAlbums(): List<Album>
 
     /**
+     * List album assets
+     *
+     * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Albums/operation/listAssetsOfAlbum
+     */
+    suspend fun getAlbumAssets(albumId: AlbumId): List<AssetId>
+
+    /**
      * Convert an [AssetId] into a URL to be loaded
      *
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Assets/operation/getAssetRendition
@@ -53,6 +62,7 @@ class DefaultLightroom(
     internal val authManager: AuthManager,
     internal val clientId: String,
     private val retrieveAlbums: GetAlbumsUseCase,
+    private val retrieveAlbumAssets: GetAlbumAssetsUseCase,
     private val catalogRepository: CatalogRepository,
 ) : Lightroom {
 
@@ -70,6 +80,9 @@ class DefaultLightroom(
     }
 
     override suspend fun getAlbums(): List<Album> = retrieveAlbums()
+
+    override suspend fun getAlbumAssets(albumId: AlbumId): List<AssetId> =
+        retrieveAlbumAssets(albumId = albumId)
 
     override suspend fun AssetId.asUrl(rendition: Rendition): String {
         val catalogId = catalogRepository.getCatalog().id.id
