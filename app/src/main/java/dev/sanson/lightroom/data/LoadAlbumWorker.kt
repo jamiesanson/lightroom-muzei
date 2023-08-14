@@ -33,10 +33,28 @@ class LoadAlbumWorker @AssistedInject constructor(
 
         val album = lightroom.getAlbums().first { it.id == albumId }
 
-        // TODO: query the previously loaded assets and only populate ones which haven't been added
+        val previouslyAddedAssets: List<Artwork> = applicationContext.contentResolver
+            .query(albumProvider.contentUri, null, null, null, null)
+            ?.use { cursor ->
+                cursor.moveToFirst()
+
+                buildList {
+                    while (!cursor.isAfterLast) {
+                        add(Artwork.fromCursor(cursor))
+
+                        cursor.moveToNext()
+                    }
+                }
+            } ?: emptyList()
 
         val artworks = lightroom
             .getAlbumAssets(albumId)
+            // Drop items already added to Muzei
+            .filterNot { albumAsset ->
+                previouslyAddedAssets.any { asset ->
+                    asset.token == albumAsset.id.id
+                }
+            }
             .map<_, Artwork> {
                 /*
                 title = "Album Name - Date"
