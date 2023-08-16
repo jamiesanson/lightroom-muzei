@@ -40,16 +40,12 @@ class LoadAlbumWorker @AssistedInject constructor(
 
         val previouslyAddedAssets = albumProvider.getArtwork(
             contentResolver = applicationContext.contentResolver,
-        )
+        ).mapNotNull { it.token }
 
-        // TODO: Paging
         val artworks = lightroom
             .getAlbumAssets(albumId)
-            // Drop items already added to Muzei
             .filterNot { albumAsset ->
-                previouslyAddedAssets.any { asset ->
-                    asset.token == albumAsset.id.id
-                }
+                albumAsset.id.id in previouslyAddedAssets
             }
             .map { asset -> asset.toArtwork() }
 
@@ -63,7 +59,7 @@ class LoadAlbumWorker @AssistedInject constructor(
      *
      * The expected format is as such:
      *
-     * title = Album Name - Date (London - 23 Nov 2022)
+     * title = Album Name - Date (London - 9 Nov 2022)
      * byline = Camera & lens (Fujifilm X-T3, XF16-55mm etc.)
      * attribution = Capture specs (ISO 160 55mm f/4.0 1/160s)
      * token = <asset_id>

@@ -3,7 +3,6 @@ package dev.sanson.lightroom.sdk.backend
 import dev.sanson.lightroom.sdk.backend.model.Album
 import dev.sanson.lightroom.sdk.backend.model.AlbumAssetResponse
 import dev.sanson.lightroom.sdk.backend.model.Resources
-import kotlinx.datetime.LocalDateTime
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -17,6 +16,9 @@ interface AlbumService {
     suspend fun getAlbums(@Path("catalog_id") catalogId: String): Resources<Album>
 
     /**
+     * Note: The API requires negative times for capturedAfter & capturedBefore to support fetching
+     * of assets without captured dates.
+     *
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Albums/operation/listAssetsOfAlbum
      */
     @GET("/v2/catalogs/{catalog_id}/albums/{album_id}/assets")
@@ -26,9 +28,9 @@ interface AlbumService {
         @Path("album_id")
         albumId: String,
         @Query("captured_after")
-        capturedAfter: LocalDateTime? = null,
+        capturedAfter: String? = null,
         @Query("captured_before")
-        capturedBefore: LocalDateTime? = null,
+        capturedBefore: String? = null,
         @Query("subtype")
         subtype: String = "image",
         @Query("embed")
