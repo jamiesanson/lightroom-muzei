@@ -18,7 +18,7 @@ class GetAlbumAssetsUseCase @Inject constructor(
         val catalogId = catalogRepository.getCatalog().id
 
         return albumService
-            .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id, limit = 500)
+            .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id, limit = 50)
             .resources
             .map { it.asset }
             .map { asset ->

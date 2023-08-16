@@ -16,10 +16,13 @@ import dev.sanson.lightroom.sdk.backend.interceptor.AuthInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.ClientIdInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.LightroomAuthenticator
 import dev.sanson.lightroom.sdk.backend.interceptor.RemoveBodyPrefixInterceptor
+import dev.sanson.lightroom.sdk.backend.serializer.LenientInstantSerializer
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -45,6 +48,9 @@ class LightroomModule {
     @Provides
     fun provideJson(): Json = Json {
         ignoreUnknownKeys = true
+        serializersModule = SerializersModule {
+            contextual(LenientInstantSerializer)
+        }
     }
 
     @Provides
