@@ -34,7 +34,12 @@
         <activity-alias
             android:name="dev.sanson.lightroom.LightroomSetupActivity"
             android:exported="true"
-            android:targetActivity="dev.sanson.lightroom.LightroomSettingsActivity"/>
+            android:targetActivity="dev.sanson.lightroom.LightroomSettingsActivity" />
+
+        <activity-alias
+            android:name="dev.sanson.lightroom.LightroomSettingActivity"
+            android:exported="true"
+            android:targetActivity="dev.sanson.lightroom.LightroomSettingsActivity" />
 
         <activity
             android:name="dev.sanson.lightroom.LightroomSettingsActivity"
@@ -76,7 +81,7 @@
 
             <meta-data
                 android:name="settingsActivity"
-                android:value="dev.sanson.lightroom.LightroomSettingsActivity" />
+                android:value="dev.sanson.lightroom.LightroomSettingActivity" />
         </provider>
 
         <provider
