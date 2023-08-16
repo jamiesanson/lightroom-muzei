@@ -106,7 +106,7 @@ internal suspend fun Lightroom.getAuthHeaders(): Map<String, String> {
 
     val apiKey = mapOf("X-Api-Key" to clientId)
     val token = authManager.latestAccessToken.first()
-        ?: return apiKey
+        ?: authManager.refreshTokens().accessToken
 
     return apiKey + ("Authorization" to "Bearer $token")
 }

@@ -28,9 +28,7 @@ class DataModule {
             serializer = AlbumIdSerializer,
             scope = scope,
             produceFile = {
-                File(context.filesDir, "data")
-                    .apply { mkdirs() }
-                    .let { File(it, "album_id") }
+                File("${context.filesDir.path}/album_id")
             },
         )
     }

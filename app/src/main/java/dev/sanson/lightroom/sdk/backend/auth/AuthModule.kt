@@ -48,9 +48,7 @@ class AuthModule {
             serializer = Credential.Serializer,
             scope = scope,
             produceFile = {
-                File(context.filesDir, "data")
-                    .apply { mkdirs() }
-                    .let { File(it, "credentials.json") }
+                File("${context.filesDir.path}/credentials")
             },
         )
     }

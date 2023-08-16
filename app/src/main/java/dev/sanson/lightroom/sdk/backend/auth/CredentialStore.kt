@@ -29,8 +29,9 @@ data class Credential(
             override suspend fun writeTo(t: Credential?, output: OutputStream) {
                 if (t != null) {
                     runCatching {
-                        val credentialString = Json.encodeToString(t)
-                        output.bufferedWriter().write(credentialString)
+                        output.bufferedWriter().use {
+                            it.write(Json.encodeToString(t))
+                        }
                     }
                 }
             }
