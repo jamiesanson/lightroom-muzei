@@ -60,7 +60,7 @@
         </activity>
 
         <provider
-            android:name="dev.sanson.lightroom.LightroomAlbumProvider"
+            android:name="dev.sanson.lightroom.muzei.LightroomAlbumProvider"
             android:authorities="${lightroomAuthority}"
             android:description="@string/description"
             android:exported="true"

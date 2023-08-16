@@ -1,7 +1,6 @@
 package dev.sanson.lightroom.sdk.domain
 
 import dev.sanson.lightroom.sdk.backend.AlbumService
-import dev.sanson.lightroom.sdk.backend.AssetsService
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AssetId
@@ -15,8 +14,8 @@ import javax.inject.Inject
 
 class GetAlbumsUseCase @Inject constructor(
     private val albumService: AlbumService,
-    private val assetsService: AssetsService,
     private val catalogRepository: CatalogRepository,
+    private val generateRendition: GenerateRenditionUseCase,
 ) {
 
     suspend operator fun invoke(): List<Album> = withContext(Dispatchers.IO) {
@@ -51,7 +50,7 @@ class GetAlbumsUseCase @Inject constructor(
                     album.copy(
                         assets = assets,
                         cover = album.cover ?: assets.firstOrNull()?.also {
-                            tryGenerateRendition(catalogId = catalog.id, assetId = it)
+                            generateRendition(assetId = it, rendition = Rendition.Full)
                         },
                     )
                 }
@@ -65,13 +64,5 @@ class GetAlbumsUseCase @Inject constructor(
             .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id)
             .resources
             .map { AssetId(it.asset.id) }
-    }
-
-    private suspend fun tryGenerateRendition(catalogId: CatalogId, assetId: AssetId) = runCatching {
-        assetsService.generateRendition(
-            catalogId = catalogId.id,
-            assetId = assetId.id,
-            renditions = Rendition.Full.code,
-        )
     }
 }

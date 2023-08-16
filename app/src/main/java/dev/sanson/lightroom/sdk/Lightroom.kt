@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
+import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import dev.sanson.lightroom.sdk.model.Album
@@ -60,6 +61,13 @@ interface Lightroom {
     suspend fun getAlbumAssets(albumId: AlbumId): List<Asset>
 
     /**
+     * Generate a new rendition for a given [AssetId]
+     *
+     * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Assets/operation/generateRenditions
+     */
+    suspend fun generateRendition(asset: AssetId, rendition: Rendition)
+
+    /**
      * Convert an [AssetId] into a URL to be loaded
      *
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Assets/operation/getAssetRendition
@@ -72,6 +80,7 @@ class DefaultLightroom(
     internal val clientId: String,
     private val retrieveAlbums: GetAlbumsUseCase,
     private val retrieveAlbumAssets: GetAlbumAssetsUseCase,
+    private val generateRenditions: GenerateRenditionUseCase,
     private val catalogRepository: CatalogRepository,
 ) : Lightroom {
 
@@ -94,6 +103,9 @@ class DefaultLightroom(
 
     override suspend fun getAlbumAssets(albumId: AlbumId): List<Asset> =
         retrieveAlbumAssets(albumId = albumId)
+
+    override suspend fun generateRendition(asset: AssetId, rendition: Rendition) =
+        generateRenditions(asset, rendition)
 
     override suspend fun AssetId.asUrl(rendition: Rendition): String {
         val catalogId = catalogRepository.getCatalog().id.id

@@ -1,10 +1,10 @@
 package dev.sanson.lightroom.sdk.model
 
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Instant
 
 data class Asset(
     val id: AssetId,
-    val captureDate: LocalDateTime,
+    val captureDate: Instant,
     val cameraBody: String,
     val lens: String,
     val iso: Int,

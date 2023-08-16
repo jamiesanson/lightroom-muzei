@@ -1,4 +1,4 @@
-package dev.sanson.lightroom
+package dev.sanson.lightroom.muzei
 
 import android.graphics.Bitmap
 import androidx.core.graphics.drawable.toBitmap
@@ -17,7 +17,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.coil.awaitSuccessfulImageRequest
-import dev.sanson.lightroom.data.LoadAlbumWorker
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
@@ -68,15 +67,25 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
             .lightroom
 
         return runBlocking(Dispatchers.IO) {
-            // TODO: Make sure we have up-to-date tokens, make sure this retries successfully
+            val assetId =
+                AssetId(requireNotNull(artwork.token) { "No token found for artwork $artwork" })
+
+            // Generate rendition for image
+            lightroom.generateRendition(
+                asset = assetId,
+                rendition = Rendition.Full,
+            )
+
+            // Await rendition download
             val request = lightroom.awaitSuccessfulImageRequest(
                 context = context,
-                assetId = AssetId(artwork.token!!),
+                assetId = assetId,
                 rendition = Rendition.Full,
             )
 
             val result = Coil.imageLoader(context).execute(request)
 
+            // Map downloaded bitmap into an inputstream
             val outputStream = ByteArrayOutputStream()
 
             result.drawable

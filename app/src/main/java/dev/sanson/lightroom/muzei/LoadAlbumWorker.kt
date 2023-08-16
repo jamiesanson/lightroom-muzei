@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.data
+package dev.sanson.lightroom.muzei
 
 import android.content.Context
 import androidx.core.net.toUri
@@ -11,13 +11,14 @@ import com.google.android.apps.muzei.api.provider.ProviderClient
 import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderClient
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dev.sanson.lightroom.LightroomAlbumProvider
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -37,19 +38,9 @@ class LoadAlbumWorker @AssistedInject constructor(
         val albumId = albumIdStore.data.first() ?: return Result.failure()
         val albumProvider = getProviderClient<LightroomAlbumProvider>(context = applicationContext)
 
-        val previouslyAddedAssets: List<Artwork> = applicationContext.contentResolver
-            .query(albumProvider.contentUri, null, null, null, null)
-            ?.use { cursor ->
-                cursor.moveToFirst()
-
-                buildList {
-                    while (!cursor.isAfterLast) {
-                        add(Artwork.fromCursor(cursor))
-
-                        cursor.moveToNext()
-                    }
-                }
-            } ?: emptyList()
+        val previouslyAddedAssets = albumProvider.getArtwork(
+            contentResolver = applicationContext.contentResolver,
+        )
 
         // TODO: Paging
         val artworks = lightroom
@@ -92,7 +83,7 @@ class LoadAlbumWorker @AssistedInject constructor(
         val catalogId = lightroom.getCatalog().id
 
         return Artwork(
-            title = captureDate.format(),
+            title = captureDate.toLocalDateTime(TimeZone.currentSystemDefault()).format(),
             byline = "$cameraBody, $lens",
             attribution = "ISO $iso - $focalLength - $aperture - $shutterSpeed",
             token = id.id,
@@ -100,6 +91,7 @@ class LoadAlbumWorker @AssistedInject constructor(
                 id.asUrl(rendition = Rendition.Full).toUri()
             },
             webUri = "https://lightroom.adobe.com/libraries/${catalogId.id}/assets/${id.id}".toUri(),
+            metadata = catalogId.id,
         )
     }
 }
