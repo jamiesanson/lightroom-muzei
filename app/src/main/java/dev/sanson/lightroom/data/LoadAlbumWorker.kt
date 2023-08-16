@@ -14,6 +14,7 @@ import dagger.assisted.AssistedInject
 import dev.sanson.lightroom.LightroomAlbumProvider
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.LocalDateTime
@@ -59,28 +60,46 @@ class LoadAlbumWorker @AssistedInject constructor(
                     asset.token == albumAsset.id.id
                 }
             }
-            .map { asset ->
-                fun LocalDateTime.format(): String =
-                    "$dayOfMonth ${
-                        month.getDisplayName(
-                            TextStyle.SHORT,
-                            Locale.getDefault(),
-                        )
-                    } $year"
-
-                Artwork(
-                    title = asset.captureDate.format(),
-                    byline = "${asset.cameraBody}, ${asset.lens}",
-                    attribution = "ISO ${asset.iso} - ${asset.focalLength} - ${asset.aperture} - ${asset.shutterSpeed}",
-                    token = asset.id.id,
-                    persistentUri = with(lightroom) {
-                        asset.id.asUrl(rendition = Rendition.Full).toUri()
-                    },
-                )
-            }
+            .map { asset -> asset.toArtwork() }
 
         albumProvider.addArtwork(artworks)
 
         return Result.success()
+    }
+
+    /**
+     * Map [Asset] to [Artwork]
+     *
+     * The expected format is as such:
+     *
+     * title = Album Name - Date (London - 23 Nov 2022)
+     * byline = Camera & lens (Fujifilm X-T3, XF16-55mm etc.)
+     * attribution = Capture specs (ISO 160 55mm f/4.0 1/160s)
+     * token = <asset_id>
+     * persistentUrl = <asset_id URI>
+     * webUrl = <lightroom web URL> (https://lightroom.adobe.com/libraries/<catalog_id>/assets/<asset_id>)
+     * metadata = <catalog_id>
+     */
+    private suspend fun Asset.toArtwork(): Artwork {
+        fun LocalDateTime.format(): String =
+            "$dayOfMonth ${
+                month.getDisplayName(
+                    TextStyle.SHORT,
+                    Locale.getDefault(),
+                )
+            } $year"
+
+        val catalogId = lightroom.getCatalog().id
+
+        return Artwork(
+            title = captureDate.format(),
+            byline = "$cameraBody, $lens",
+            attribution = "ISO $iso - $focalLength - $aperture - $shutterSpeed",
+            token = id.id,
+            persistentUri = with(lightroom) {
+                id.asUrl(rendition = Rendition.Full).toUri()
+            },
+            webUri = "https://lightroom.adobe.com/libraries/${catalogId.id}/assets/${id.id}".toUri(),
+        )
     }
 }

@@ -17,6 +17,7 @@ import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.Catalog
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -36,6 +37,13 @@ interface Lightroom {
     fun signIn(context: Context)
 
     fun handleSignInResponse(intent: Intent)
+
+    /**
+     * Load the catalog for the logged in user
+     *
+     * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Catalogs/operation/getCatalog
+     */
+    suspend fun getCatalog(): Catalog
 
     /**
      * Load albums for logged in user
@@ -79,6 +87,8 @@ class DefaultLightroom(
         val code = intent.data?.getQueryParameter("code") ?: error("\"code\" not found in redirect")
         authManager.onAuthorized(code)
     }
+
+    override suspend fun getCatalog(): Catalog = catalogRepository.getCatalog()
 
     override suspend fun getAlbums(): List<Album> = retrieveAlbums()
 

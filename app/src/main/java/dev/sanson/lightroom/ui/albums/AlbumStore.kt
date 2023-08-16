@@ -9,7 +9,7 @@ import dev.sanson.lightroom.sdk.model.AlbumId
 import javax.inject.Inject
 
 @HiltViewModel
-private class AlbumStoreViewModel @Inject constructor(
+class AlbumStoreViewModel @Inject constructor(
     val albumStore: DataStore<AlbumId?>,
 ) : ViewModel()
 
