@@ -19,6 +19,7 @@ class LightroomSettingsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // TODO: Enable edge-to-edge
         setContent {
             MuzeiLightroomTheme {
                 Settings(

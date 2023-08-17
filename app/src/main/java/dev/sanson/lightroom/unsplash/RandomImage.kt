@@ -73,7 +73,7 @@ private fun AttributionText(
     Box(
         modifier
             .background(
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.36f),
                 shape = RoundedCornerShape(50),
             ),
     ) {
