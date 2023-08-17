@@ -71,7 +71,7 @@ class GetAlbumAssetsUseCase @Inject constructor(
                 "$numerator/$denominator sec"
             },
             aperture = payload.xmp.exif.fNumber.run {
-                "ƒ / ${numerator / denominator}"
+                "ƒ / ${numerator.toFloat() / denominator.toFloat()}"
             },
             focalLength = payload.xmp.exif.focalLength.run {
                 "${numerator / denominator} mm"

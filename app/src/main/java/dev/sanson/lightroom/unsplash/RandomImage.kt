@@ -35,8 +35,8 @@ private const val UNSPLASH_REFERRAL = "utm_source=Lightroom%20for%20Muzei&utm_me
 private fun unsplash(path: String) = "https://unsplash.com$path$UNSPLASH_REFERRAL"
 
 @HiltViewModel
-private class RandomImageViewModel @Inject constructor(
-    val unsplashService: UnsplashService,
+class RandomImageViewModel @Inject constructor(
+    private val unsplashService: UnsplashService,
 ) : ViewModel() {
 
     private var cachedPhoto: Photo? = null
@@ -52,7 +52,9 @@ private class RandomImageViewModel @Inject constructor(
 }
 
 @Composable
-fun rememberRandomImage(unsplashService: RandomImageViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)): RandomImage? {
+fun rememberRandomImage(
+    unsplashService: RandomImageViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner),
+): RandomImage? {
     if (LocalView.current.isInEditMode) {
         // Avoid ViewModel fetching in previews
         return null
