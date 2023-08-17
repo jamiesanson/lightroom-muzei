@@ -12,10 +12,10 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun MuzeiLightroomTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
     val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-    val darkTheme = isSystemInDarkTheme()
 
     MaterialTheme(
         colorScheme = when {

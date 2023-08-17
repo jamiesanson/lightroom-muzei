@@ -1,5 +1,6 @@
 package dev.sanson.lightroom.unsplash
 
+import android.os.Parcelable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -23,9 +24,11 @@ import dev.sanson.lightroom.ui.component.HyperlinkText
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import dev.sanson.lightroom.unsplash.api.UnsplashService
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 private const val UNSPLASH_REFERRAL = "utm_source=Lightroom%20for%20Muzei&utm_medium=referral"
+private fun unsplash(path: String) = "https://unsplash.com$path$UNSPLASH_REFERRAL"
 
 @HiltViewModel
 private class RandomImageViewModel @Inject constructor(
@@ -39,59 +42,68 @@ fun rememberRandomImage(): RandomImage? {
     var image by rememberSaveable { mutableStateOf<RandomImage?>(null) }
 
     LaunchedEffect(true) {
-        val photo = runCatching { unsplashService.getRandomPhoto() }
-            .getOrNull()
+        if (image == null) {
+            val photo = runCatching { unsplashService.getRandomPhoto() }
+                .getOrNull()
 
-        if (photo != null) {
-            image = RandomImage(
-                url = photo.urls.regular,
-                attribution = { modifier ->
-                    AttributionText(
-                        modifier = modifier,
+            if (photo != null) {
+                image = RandomImage(
+                    url = photo.urls.regular,
+                    attribution = Attribution(
                         name = photo.user.name,
                         username = photo.user.username,
-                    )
-                },
-            )
+                    ),
+                )
+            }
         }
     }
 
     return image
 }
 
+@Parcelize
 data class RandomImage(
     val url: String,
-    val attribution: @Composable (Modifier) -> Unit,
-)
+    val attribution: Attribution,
+) : Parcelable
+
+@Parcelize
+data class Attribution(
+    val name: String,
+    val username: String,
+) : Parcelable
 
 @Composable
-private fun AttributionText(
+fun AttributionChip(
     name: String,
     username: String,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier
-            .background(
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.36f),
-                shape = RoundedCornerShape(50),
-            ),
-    ) {
-        HyperlinkText(
-            fullText = "Photo by $name on Unsplash",
-            hyperLinks = persistentMapOf(
-                name to "https://unsplash.com/@$username?$UNSPLASH_REFERRAL",
-                "Unsplash" to "https://unsplash.com/?$UNSPLASH_REFERRAL",
-            ),
-            textStyle = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.onSurface,
-            ),
-            linkTextColor = MaterialTheme.colorScheme.secondary,
-            linkTextDecoration = TextDecoration.Underline,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(horizontal = 10.dp, vertical = 6.dp),
-        )
+    // Always use dark theme for attribution chip
+    MuzeiLightroomTheme(darkTheme = true) {
+        Box(
+            modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.36f),
+                    shape = RoundedCornerShape(50),
+                ),
+        ) {
+            HyperlinkText(
+                fullText = "Photo by $name on Unsplash",
+                hyperLinks = persistentMapOf(
+                    name to unsplash("/@$username"),
+                    "Unsplash" to unsplash("/"),
+                ),
+                textStyle = MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
+                linkTextColor = MaterialTheme.colorScheme.secondary,
+                linkTextDecoration = TextDecoration.Underline,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
+            )
+        }
     }
 }
 
@@ -99,6 +111,6 @@ private fun AttributionText(
 @Composable
 fun AttributionTextPreview() {
     MuzeiLightroomTheme {
-        AttributionText(modifier = Modifier, name = "Jamie Sanson", username = "jamiesanson")
+        AttributionChip(modifier = Modifier, name = "Jamie Sanson", username = "jamiesanson")
     }
 }

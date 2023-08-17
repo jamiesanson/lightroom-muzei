@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.view.WindowCompat
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.ui.settings.Settings
@@ -19,7 +20,8 @@ class LightroomSettingsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO: Enable edge-to-edge
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
             MuzeiLightroomTheme {
                 Settings(

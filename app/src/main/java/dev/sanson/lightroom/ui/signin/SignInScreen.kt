@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -46,6 +47,7 @@ import coil.request.ImageRequest
 import dev.sanson.lightroom.R
 import dev.sanson.lightroom.sdk.rememberLightroom
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
+import dev.sanson.lightroom.unsplash.AttributionChip
 import dev.sanson.lightroom.unsplash.rememberRandomImage
 
 @Composable
@@ -144,11 +146,14 @@ private fun BoxScope.RandomBackgroundImage(
             visible = showAttribution,
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier = Modifier.align(Alignment.BottomEnd),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .systemBarsPadding(),
         ) {
-            backgroundImage.attribution(
-                Modifier
-                    .padding(16.dp),
+            AttributionChip(
+                name = backgroundImage.attribution.name,
+                username = backgroundImage.attribution.username,
+                modifier = Modifier.padding(16.dp),
             )
         }
 
