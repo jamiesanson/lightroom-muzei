@@ -14,15 +14,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanson.lightroom.ui.component.HyperlinkText
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
+import dev.sanson.lightroom.unsplash.api.Photo
 import dev.sanson.lightroom.unsplash.api.UnsplashService
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.parcelize.Parcelize
@@ -34,23 +37,32 @@ private fun unsplash(path: String) = "https://unsplash.com$path$UNSPLASH_REFERRA
 @HiltViewModel
 private class RandomImageViewModel @Inject constructor(
     val unsplashService: UnsplashService,
-) : ViewModel()
+) : ViewModel() {
+
+    private var cachedPhoto: Photo? = null
+
+    suspend fun getRandomPhoto(): Photo? {
+        if (cachedPhoto == null) {
+            cachedPhoto = runCatching { unsplashService.getRandomPhoto() }
+                .getOrNull()
+        }
+
+        return cachedPhoto
+    }
+}
 
 @Composable
-fun rememberRandomImage(): RandomImage? {
+fun rememberRandomImage(unsplashService: RandomImageViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)): RandomImage? {
     if (LocalView.current.isInEditMode) {
         // Avoid ViewModel fetching in previews
         return null
     }
 
-    val unsplashService = hiltViewModel<RandomImageViewModel>().unsplashService
-
     var image by rememberSaveable { mutableStateOf<RandomImage?>(null) }
 
     LaunchedEffect(true) {
         if (image == null) {
-            val photo = runCatching { unsplashService.getRandomPhoto() }
-                .getOrNull()
+            val photo = unsplashService.getRandomPhoto()
 
             if (photo != null) {
                 image = RandomImage(

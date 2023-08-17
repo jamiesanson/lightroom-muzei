@@ -39,7 +39,7 @@ import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import dev.sanson.lightroom.sdk.rememberLightroom
-import dev.sanson.lightroom.ui.settings.Loading
+import dev.sanson.lightroom.ui.component.FixedCardLoadingScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -150,7 +150,7 @@ private fun ChooseAlbumScreen(
                 }
 
             else ->
-                Loading(modifier)
+                FixedCardLoadingScreen(modifier)
         }
     }
 }

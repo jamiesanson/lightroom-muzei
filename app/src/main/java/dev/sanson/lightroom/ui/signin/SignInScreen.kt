@@ -1,66 +1,57 @@
 package dev.sanson.lightroom.ui.signin
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import dev.sanson.lightroom.R
 import dev.sanson.lightroom.sdk.rememberLightroom
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
-import dev.sanson.lightroom.unsplash.AttributionChip
-import dev.sanson.lightroom.unsplash.rememberRandomImage
+import dev.sanson.lightroom.unsplash.RandomBackgroundImage
 
 @Composable
 fun SignIn(
+    isLoading: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val lightroom = rememberLightroom()
 
     SignInScreen(
+        isLoading = isLoading,
         onSignIn = { lightroom.signIn(context) },
         modifier = modifier,
     )
@@ -68,6 +59,7 @@ fun SignIn(
 
 @Composable
 private fun SignInScreen(
+    isLoading: Boolean,
     onSignIn: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -82,89 +74,74 @@ private fun SignInScreen(
             backgroundColor = backgroundColor,
         )
 
-        Column(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .wrapContentHeight()
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(2.dp))
-                .shadow(elevation = 8.dp, shape = RoundedCornerShape(2.dp))
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(24.dp),
+        Crossfade(
+            targetState = isLoading,
+            label = "Sign in card",
+            modifier = Modifier.align(Alignment.Center),
+        ) { isLoading ->
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .padding(horizontal = 24.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(2.dp))
+                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.surface),
+                ) {
+                    SignInCard(onSignIn = {}, modifier = Modifier.alpha(0f))
 
-        ) {
-            Text(
-                text = stringResource(R.string.sign_in),
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-
-            Spacer(Modifier.size(12.dp))
-
-            Text(
-                text = stringResource(R.string.sign_in_description),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-
-            Spacer(Modifier.size(24.dp))
-
-            SignInButton(
-                onClick = onSignIn,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth(),
-            )
-
-            Spacer(Modifier.size(2.dp))
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            } else {
+                SignInCard(onSignIn = onSignIn)
+            }
         }
     }
 }
 
 @Composable
-private fun BoxScope.RandomBackgroundImage(
-    backgroundColor: Color,
+private fun SignInCard(
+    onSignIn: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val backgroundImage = rememberRandomImage()
-    if (backgroundImage != null) {
-        var showAttribution by rememberSaveable { mutableStateOf(false) }
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(backgroundImage.url)
-                .crossfade(300)
-                .build(),
-            contentDescription = "",
-            placeholder = ColorPainter(backgroundColor),
-            onSuccess = {
-                showAttribution = true
-            },
-            contentScale = ContentScale.Crop,
-            modifier = modifier
-                .fillMaxSize(),
+    Column(
+        modifier = modifier
+            .wrapContentHeight()
+            .padding(horizontal = 24.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(2.dp))
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(2.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(24.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.sign_in),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
-        AnimatedVisibility(
-            visible = showAttribution,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .systemBarsPadding(),
-        ) {
-            AttributionChip(
-                name = backgroundImage.attribution.name,
-                username = backgroundImage.attribution.username,
-                modifier = Modifier.padding(16.dp),
-            )
-        }
+        Spacer(Modifier.size(12.dp))
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.12f)),
+        Text(
+            text = stringResource(R.string.sign_in_description),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
+
+        Spacer(Modifier.size(24.dp))
+
+        SignInButton(
+            onClick = onSignIn,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth(),
+        )
+
+        Spacer(Modifier.size(2.dp))
     }
 }
 
@@ -194,6 +171,6 @@ fun SignInButton(
 @Composable
 fun SignInScreenPreview() {
     MuzeiLightroomTheme {
-        SignInScreen(onSignIn = {})
+        SignInScreen(isLoading = false, onSignIn = {})
     }
 }

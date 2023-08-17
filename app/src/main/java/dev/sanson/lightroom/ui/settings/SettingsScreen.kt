@@ -1,16 +1,17 @@
 package dev.sanson.lightroom.ui.settings
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.rememberLightroom
 import dev.sanson.lightroom.ui.albums.ChooseAlbum
@@ -52,32 +53,28 @@ fun Settings(
         targetState = model,
         label = "Settings",
         modifier = modifier,
+        transitionSpec = {
+            if (targetState is SettingsModel.SignedIn) {
+                EnterTransition.None.togetherWith(ExitTransition.None)
+            } else {
+                (
+                    fadeIn(animationSpec = tween(220, delayMillis = 90)) +
+                        scaleIn(initialScale = 0.92f, animationSpec = tween(220, delayMillis = 90))
+                    )
+                    .togetherWith(fadeOut(animationSpec = tween(90)))
+            }
+        },
     ) {
         when (it) {
-            SettingsModel.Loading ->
-                Loading()
-
             is SettingsModel.SignedIn ->
                 ChooseAlbum(
                     onAlbumSelected = onAlbumChanged,
                 )
 
-            SettingsModel.SignedOut ->
-                SignIn()
+            SettingsModel.SignedOut, SettingsModel.Loading ->
+                SignIn(
+                    isLoading = it is SettingsModel.Loading,
+                )
         }
-    }
-}
-
-// TODO: Come up with a cooler, less jarring loading indicator
-@Composable
-fun Loading(
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier
-            .fillMaxSize()
-            .background(Color.Black),
-    ) {
-        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     }
 }
