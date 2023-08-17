@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,11 @@ private class RandomImageViewModel @Inject constructor(
 
 @Composable
 fun rememberRandomImage(): RandomImage? {
+    if (LocalView.current.isInEditMode) {
+        // Avoid ViewModel fetching in previews
+        return null
+    }
+
     val unsplashService = hiltViewModel<RandomImageViewModel>().unsplashService
 
     var image by rememberSaveable { mutableStateOf<RandomImage?>(null) }

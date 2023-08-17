@@ -4,9 +4,10 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -18,19 +19,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -170,36 +173,21 @@ fun SignInButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Button(
-        onClick = onClick,
-        border = BorderStroke(
-            width = 2.dp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.36f),
-        ),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
-        modifier = modifier,
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_adobe_logo),
-            contentDescription = "Adobe",
-            modifier = Modifier
-                .padding(vertical = 4.dp)
-                .align(Alignment.CenterVertically)
-                .size(24.dp),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-        )
-
-        Spacer(Modifier.size(12.dp))
-
-        Text(
-            text = stringResource(R.string.continue_with_adobe),
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.align(Alignment.CenterVertically),
-        )
-    }
+    Image(
+        painter = painterResource(id = R.drawable.sign_in_with_adobe_id),
+        contentDescription = "Adobe",
+        modifier = modifier
+            .scale(1.1f)
+            .wrapContentWidth()
+            .clip(RoundedCornerShape(50))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(color = MaterialTheme.colorScheme.primary),
+                onClick = onClick,
+            ),
+        colorFilter = ColorFilter
+            .tint(MaterialTheme.colorScheme.onSurface),
+    )
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
