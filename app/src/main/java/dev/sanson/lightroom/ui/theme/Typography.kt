@@ -3,6 +3,7 @@ package dev.sanson.lightroom.ui.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
@@ -25,17 +26,22 @@ val MuzeiTypography
     @Composable get() = Typography(
         bodyLarge = MaterialTheme.typography.bodyLarge.copy(
             fontFamily = NotoSans,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
         bodyMedium = MaterialTheme.typography.bodyMedium.copy(
             fontFamily = NotoSans,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
         bodySmall = MaterialTheme.typography.bodySmall.copy(
             fontFamily = NotoSans,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
         labelLarge = MaterialTheme.typography.labelLarge.copy(
             fontFamily = NotoSans,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
         titleLarge = MaterialTheme.typography.titleLarge.copy(
             fontFamily = NotoSans,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
     )
