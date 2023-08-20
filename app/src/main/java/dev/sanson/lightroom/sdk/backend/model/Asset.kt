@@ -24,6 +24,23 @@ data class Payload(
     @Contextual
     val captureDate: Instant,
     val xmp: Xmp,
+    /**
+     * Ratings (stars) deserialization:
+     * "ratings": {
+     *    "0a48ef0bacc30e3294f6b6daf1b517ac": {
+     *      "rating": 5,
+     *      "date": "2023-08-20T18:57:40.941Z"
+     *    }
+     * },
+     *
+     * Reviews (pick, reject) deserialization:
+     * "reviews": {
+     *   "0a48ef0bacc30e3294f6b6daf1b517ac": {
+     *     "date": "2023-08-20T18:57:40.337Z",
+     *     "flag": "pick"
+     *   }
+     * }
+     */
 )
 
 @Serializable
@@ -31,6 +48,15 @@ data class Xmp(
     val tiff: Tiff,
     val exif: Exif,
     val aux: Aux,
+    /**
+     * Keyword deserialization:
+     * "dc": {
+     *     "subject": {
+     *         "bridge":true,
+     *         "grungy":true
+     *      }
+     * }
+     */
 )
 
 @Serializable
