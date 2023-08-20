@@ -12,6 +12,9 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeCollection
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 data class Asset(
@@ -19,21 +22,26 @@ data class Asset(
     val payload: Payload? = null,
 )
 
+/**
+ * Note: Kotlinx.serialization doesn't currently have any nicer means of deserializing
+ * dynamically-named objects, such as what we see used for ratings and reviews. As such, the
+ * best we can do for now is manually decode [JsonElement]s.
+ */
 @Serializable
 data class Payload(
     @Contextual
     val captureDate: Instant,
     val xmp: Xmp,
     /**
-     * Ratings (stars) deserialization:
      * "ratings": {
      *    "0a48ef0bacc30e3294f6b6daf1b517ac": {
      *      "rating": 5,
      *      "date": "2023-08-20T18:57:40.941Z"
      *    }
      * },
-     *
-     * Reviews (pick, reject) deserialization:
+     */
+    val ratings: JsonElement? = null,
+    /**
      * "reviews": {
      *   "0a48ef0bacc30e3294f6b6daf1b517ac": {
      *     "date": "2023-08-20T18:57:40.337Z",
@@ -41,7 +49,34 @@ data class Payload(
      *   }
      * }
      */
-)
+    val reviews: JsonElement? = null,
+) {
+    val rating: Int?
+        get() {
+            ratings ?: return null
+
+            // The following is the UUID-named object
+            val ratingObject = ratings.jsonObject.entries.first().value.jsonObject
+
+            return ratingObject["rating"]?.jsonPrimitive?.content?.toInt()
+        }
+
+    val picked: Boolean?
+        get() {
+            reviews ?: return null
+
+            // The following is the UUID-named object
+            val ratingObject = reviews.jsonObject.entries.first().value.jsonObject
+
+            return ratingObject["flag"]?.jsonPrimitive?.content?.let {
+                when (it) {
+                    "pick" -> true
+                    "reject" -> false
+                    else -> null
+                }
+            }
+        }
+}
 
 @Serializable
 data class Xmp(
@@ -49,7 +84,7 @@ data class Xmp(
     val exif: Exif,
     val aux: Aux,
     /**
-     * Keyword deserialization:
+     * TODO: Keyword deserialization:
      * "dc": {
      *     "subject": {
      *         "bridge":true,

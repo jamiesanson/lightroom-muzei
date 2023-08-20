@@ -1,5 +1,6 @@
 package dev.sanson.lightroom.sdk.domain
 
+import android.util.Log
 import androidx.core.net.toUri
 import dev.sanson.lightroom.sdk.backend.AlbumService
 import dev.sanson.lightroom.sdk.backend.model.Href
@@ -42,7 +43,9 @@ class GetAlbumAssetsUseCase @Inject constructor(
             }
         }
 
-        return albumAssets.map { it.asset.toAsset() }
+        return albumAssets.map { it.asset.toAsset() }.also {
+            Log.d("Get assets", "assets: $it")
+        }
     }
 
     /**
@@ -75,6 +78,12 @@ class GetAlbumAssetsUseCase @Inject constructor(
             },
             focalLength = payload.xmp.exif.focalLength.run {
                 "${numerator / denominator} mm"
+            },
+            rating = payload.rating,
+            review = when (payload.picked) {
+                true -> Asset.Flag.Picked
+                false -> Asset.Flag.Rejected
+                null -> null
             },
         )
     }
