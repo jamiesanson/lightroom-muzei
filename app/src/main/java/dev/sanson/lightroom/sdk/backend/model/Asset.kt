@@ -23,7 +23,8 @@ data class Asset(
 )
 
 /**
- * Note: Kotlinx.serialization doesn't currently have any nicer means of deserializing
+ * Note on deserialization in this file:
+ * Kotlinx.serialization doesn't currently have any nicer means of deserializing
  * dynamically-named objects, such as what we see used for ratings and reviews. As such, the
  * best we can do for now is manually decode [JsonElement]s.
  */
@@ -83,15 +84,7 @@ data class Xmp(
     val tiff: Tiff,
     val exif: Exif,
     val aux: Aux,
-    /**
-     * TODO: Keyword deserialization:
-     * "dc": {
-     *     "subject": {
-     *         "bridge":true,
-     *         "grungy":true
-     *      }
-     * }
-     */
+    val dc: Dc,
 )
 
 @Serializable
@@ -119,6 +112,19 @@ data class Aux(
     @SerialName("Lens")
     val lens: String,
 )
+
+@Serializable
+data class Dc(
+    val subject: JsonElement? = null,
+) {
+    /**
+     * "subject": {
+     *     "bridge": true,
+     *     "grungy": true
+     *  }
+     */
+    val subjects: List<String>? get() = subject?.jsonObject?.entries?.map { it.key }
+}
 
 @Serializable(with = FractionSerializer::class)
 data class Fraction(

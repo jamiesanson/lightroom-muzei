@@ -11,6 +11,7 @@ data class Asset(
     val shutterSpeed: String,
     val aperture: String,
     val focalLength: String,
+    val keywords: List<String>,
     val rating: Int? = null,
     val review: Flag? = null,
 ) {
