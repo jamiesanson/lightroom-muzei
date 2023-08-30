@@ -3,13 +3,15 @@
 app = "0.1"
 versioncode = "1"
 
-android-gradle-plugin = "8.1.0"
+android-gradle-plugin = "8.1.1"
 
 compose-bom = "2023.08.00"
-compose-compiler = "1.4.7"
+compose-compiler = "1.5.3"
 
-kotlin = "1.8.21"
-kotlinx = "1.7.1"
+circuit = "0.12.1"
+
+kotlin = "1.9.10"
+kotlinx = "1.7.3"
 kotlinx-collections-immutable = "0.3.5"
 kotlinx-serialization-json = "1.5.1"
 kotlinx-datetime = "0.4.0"
@@ -24,10 +26,6 @@ androidx-datastore = "1.0.0"
 androidx-hilt = "1.0.0"
 androidx-hilt-navigation-compose = "1.0.0"
 androidx-lifecycle = "2.6.1"
-androidx-navigation = "2.7.0"
-androidx-splashscreen = "1.0.1"
-androidx-startup = "1.2.0-alpha02"
-androidx-window = "1.2.0-beta01"
 androidx-work = "2.8.1"
 
 accompanist = "0.29.2-rc"
@@ -47,7 +45,7 @@ desugared-jdk-libs = "2.0.3"
 
 junit = "4.13.2"
 kotest = "5.5.0"
-turbine = "0.11.0"
+turbine = "1.0.0"
 
 coil = "2.4.0"
 
@@ -103,6 +101,9 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
 
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+
+circuit = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
+circuit-test = { module = "com.slack.circuit:circuit-test", version.ref = "circuit" }
 
 # Linting
 ktlint-compose-rules = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "ktlint-compose-rules" }

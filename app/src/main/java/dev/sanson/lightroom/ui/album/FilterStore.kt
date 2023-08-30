@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.filters
+package dev.sanson.lightroom.ui.album
 
 import androidx.compose.runtime.Composable
 import androidx.datastore.core.DataStore

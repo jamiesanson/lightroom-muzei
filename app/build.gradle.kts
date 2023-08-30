@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.collections.immutable)
 
+    implementation(libs.circuit)
+    testImplementation(libs.circuit.test)
+
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

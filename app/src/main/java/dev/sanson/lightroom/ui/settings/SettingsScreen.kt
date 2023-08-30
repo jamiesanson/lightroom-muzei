@@ -14,7 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.rememberLightroom
-import dev.sanson.lightroom.ui.filters.ChooseAlbum
+import dev.sanson.lightroom.ui.album.ChooseAlbum
 import dev.sanson.lightroom.ui.signin.SignIn
 import kotlinx.coroutines.flow.Flow
 
