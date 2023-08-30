@@ -85,7 +85,7 @@ class GetAlbumAssetsUseCase @Inject constructor(
                 false -> Asset.Flag.Rejected
                 null -> null
             },
-            keywords = payload.xmp.dc.subjects ?: emptyList(),
+            keywords = payload.xmp.dc?.subjects ?: emptyList(),
         )
     }
 }

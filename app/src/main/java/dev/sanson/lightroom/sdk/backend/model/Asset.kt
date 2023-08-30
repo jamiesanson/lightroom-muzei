@@ -84,7 +84,7 @@ data class Xmp(
     val tiff: Tiff,
     val exif: Exif,
     val aux: Aux,
-    val dc: Dc,
+    val dc: Dc? = null,
 )
 
 @Serializable
