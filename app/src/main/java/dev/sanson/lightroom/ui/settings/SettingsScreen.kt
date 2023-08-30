@@ -14,7 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.rememberLightroom
-import dev.sanson.lightroom.ui.albums.ChooseAlbum
+import dev.sanson.lightroom.ui.filters.ChooseAlbum
 import dev.sanson.lightroom.ui.signin.SignIn
 import kotlinx.coroutines.flow.Flow
 
@@ -49,6 +49,13 @@ fun Settings(
     modifier: Modifier = Modifier,
     model: SettingsModel = rememberSettingsModel(),
 ) {
+    /**
+     * TODO: This is to become a stepped flow
+     *
+     * Step 1:                   Step 2:               You're all set!
+     * ------           ----->   -------       ----->  ---------------
+     * Choose an album           Filter album          It may take a while...
+     */
     AnimatedContent(
         targetState = model,
         label = "Settings",

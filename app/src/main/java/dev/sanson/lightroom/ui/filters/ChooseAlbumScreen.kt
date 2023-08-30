@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.albums
+package dev.sanson.lightroom.ui.filters
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
