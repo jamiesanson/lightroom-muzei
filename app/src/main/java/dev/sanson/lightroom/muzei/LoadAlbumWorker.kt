@@ -11,8 +11,8 @@ import com.google.android.apps.muzei.api.provider.ProviderClient
 import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderClient
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dev.sanson.lightroom.data.Filter
 import dev.sanson.lightroom.sdk.Lightroom
-import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.first
@@ -31,11 +31,11 @@ class LoadAlbumWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val lightroom: Lightroom,
-    private val albumIdStore: DataStore<AlbumId?>,
+    private val filterStore: DataStore<Filter?>,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val albumId = albumIdStore.data.first() ?: return Result.failure()
+        val filters = filterStore.data.first() ?: return Result.failure()
         val albumProvider = getProviderClient<LightroomAlbumProvider>(context = applicationContext)
 
         val previouslyAddedAssets = albumProvider.getArtwork(
@@ -43,7 +43,7 @@ class LoadAlbumWorker @AssistedInject constructor(
         ).mapNotNull { it.token }
 
         val artworks = lightroom
-            .getAlbumAssets(albumId)
+            .getAlbumAssets(filters.albumId)
             .filterNot { albumAsset ->
                 albumAsset.id.id in previouslyAddedAssets
             }

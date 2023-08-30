@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import coil.compose.AsyncImage
 import dev.sanson.lightroom.coil.rememberImageRequest
+import dev.sanson.lightroom.data.Filter
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
@@ -56,7 +57,7 @@ sealed class ChooseAlbumModel {
 
 @Stable
 class ChooseAlbumState(
-    private val dataStore: DataStore<AlbumId?>,
+    private val dataStore: DataStore<Filter?>,
 ) {
     var model by mutableStateOf<ChooseAlbumModel>(ChooseAlbumModel.Loading)
 
@@ -75,14 +76,14 @@ class ChooseAlbumState(
     suspend fun saveAlbumChoice() = withContext(Dispatchers.IO) {
         val loaded = model as? ChooseAlbumModel.Loaded ?: return@withContext
 
-        dataStore.updateData { loaded.selectedAlbum }
+        dataStore.updateData { loaded.selectedAlbum?.let(::Filter) }
     }
 }
 
 @Composable
 fun rememberChooseAlbumState(
     lightroom: Lightroom = rememberLightroom(),
-    albumStore: DataStore<AlbumId?> = rememberAlbumStore(),
+    albumStore: DataStore<Filter?> = rememberFilterStore(),
 ): ChooseAlbumState {
     val state = remember(lightroom, albumStore) { ChooseAlbumState(albumStore) }
 

@@ -8,8 +8,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.data.AlbumIdSerializer
-import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.data.Filter
+import dev.sanson.lightroom.data.JsonSerializer
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Singleton
@@ -20,15 +20,15 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideAlbumIdStore(
+    fun provideFilterStore(
         @ApplicationScope scope: CoroutineScope,
         @ApplicationContext context: Context,
-    ): DataStore<AlbumId?> {
+    ): DataStore<Filter?> {
         return DataStoreFactory.create(
-            serializer = AlbumIdSerializer,
+            serializer = JsonSerializer<Filter>(),
             scope = scope,
             produceFile = {
-                File("${context.filesDir.path}/album_id")
+                File("${context.filesDir.path}/filters")
             },
         )
     }

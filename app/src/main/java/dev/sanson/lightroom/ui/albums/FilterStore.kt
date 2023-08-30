@@ -5,15 +5,15 @@ import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.data.Filter
 import javax.inject.Inject
 
 @HiltViewModel
-class AlbumStoreViewModel @Inject constructor(
-    val albumStore: DataStore<AlbumId?>,
+class FilterStoreViewModel @Inject constructor(
+    val filterStore: DataStore<Filter?>,
 ) : ViewModel()
 
 @Composable
-fun rememberAlbumStore(viewModel: AlbumStoreViewModel = hiltViewModel()): DataStore<AlbumId?> {
-    return viewModel.albumStore
+fun rememberFilterStore(viewModel: FilterStoreViewModel = hiltViewModel()): DataStore<Filter?> {
+    return viewModel.filterStore
 }

@@ -10,6 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.BuildConfig
+import dev.sanson.lightroom.data.JsonSerializer
 import dev.sanson.lightroom.di.ApplicationScope
 import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +46,7 @@ class AuthModule {
         @ApplicationContext context: Context,
     ): DataStore<Credential?> {
         return DataStoreFactory.create(
-            serializer = Credential.Serializer,
+            serializer = JsonSerializer<Credential>(),
             scope = scope,
             produceFile = {
                 File("${context.filesDir.path}/credentials")
