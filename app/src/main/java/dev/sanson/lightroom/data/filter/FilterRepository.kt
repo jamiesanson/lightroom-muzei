@@ -1,6 +1,7 @@
 package dev.sanson.lightroom.data.filter
 
 import androidx.datastore.core.DataStore
+import dev.sanson.lightroom.sdk.model.Asset
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -11,6 +12,7 @@ interface FilterRepository {
     suspend fun removeKeyword(keyword: String)
     suspend fun setRating(rating: Int)
     suspend fun setRatingUpToMax(upToMax: Boolean)
+    suspend fun updateFlag(flag: Asset.Flag?)
 }
 
 class DefaultFilterRepository @Inject constructor(
@@ -47,5 +49,9 @@ class DefaultFilterRepository @Inject constructor(
                 ),
             )
         }
+    }
+
+    override suspend fun updateFlag(flag: Asset.Flag?) {
+        filterStore.updateData { it?.copy(review = flag) }
     }
 }

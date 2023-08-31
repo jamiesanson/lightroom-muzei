@@ -26,5 +26,6 @@ data class FilterAssetsScreen(
         data class RemoveKeyword(val keyword: String) : Event
         data class UpdateRating(val rating: Int) : Event
         data class UpdateUpToMax(val upToMax: Boolean) : Event
+        data class UpdateFlag(val flag: Asset.Flag?) : Event
     }
 }

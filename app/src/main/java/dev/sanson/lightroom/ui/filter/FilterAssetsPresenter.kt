@@ -76,6 +76,11 @@ class FilterAssetsPresenter @AssistedInject constructor(
                         scope.launch {
                             filterRepository.setRatingUpToMax(event.upToMax)
                         }
+
+                    is FilterAssetsScreen.Event.UpdateFlag ->
+                        scope.launch {
+                            filterRepository.updateFlag(event.flag)
+                        }
                 }
             },
         )
