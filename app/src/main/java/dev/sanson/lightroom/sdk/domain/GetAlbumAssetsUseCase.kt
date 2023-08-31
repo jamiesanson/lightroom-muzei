@@ -1,6 +1,5 @@
 package dev.sanson.lightroom.sdk.domain
 
-import android.util.Log
 import androidx.core.net.toUri
 import dev.sanson.lightroom.sdk.backend.AlbumService
 import dev.sanson.lightroom.sdk.backend.model.Href
@@ -43,9 +42,7 @@ class GetAlbumAssetsUseCase @Inject constructor(
             }
         }
 
-        return albumAssets.map { it.asset.toAsset() }.also {
-            Log.d("Get assets", "assets: $it")
-        }
+        return albumAssets.map { it.asset.toAsset() }
     }
 
     /**
@@ -62,6 +59,7 @@ class GetAlbumAssetsUseCase @Inject constructor(
     private fun BackendAsset.toAsset(): Asset {
         requireNotNull(payload) { "No asset metadata found: $this" }
 
+        // TODO: Some assets may not have focal length & aperture ratings. How does the API behave for these?
         return Asset(
             id = AssetId(id),
             captureDate = payload.captureDate,

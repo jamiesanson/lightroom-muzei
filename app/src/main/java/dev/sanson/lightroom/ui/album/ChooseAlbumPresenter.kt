@@ -20,6 +20,7 @@ import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loaded
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loading
+import dev.sanson.lightroom.ui.filter.FilterAssetsScreen
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -68,7 +69,7 @@ class ChooseAlbumPresenter @AssistedInject constructor(
                             }
 
                         is Confirm ->
-                            Unit // navigator.goTo(TODO("next screen/finish"))
+                            navigator.goTo(FilterAssetsScreen)
                     }
                 },
             )
