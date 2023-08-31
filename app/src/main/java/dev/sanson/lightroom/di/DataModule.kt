@@ -8,8 +8,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.data.Filter
 import dev.sanson.lightroom.data.JsonSerializer
+import dev.sanson.lightroom.data.filter.DefaultFilterRepository
+import dev.sanson.lightroom.data.filter.Filter
+import dev.sanson.lightroom.data.filter.FilterRepository
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Singleton
@@ -32,4 +34,10 @@ class DataModule {
             },
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideFilterRepository(
+        store: DataStore<Filter?>,
+    ): FilterRepository = DefaultFilterRepository(store)
 }

@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.datastore.core.DataStore
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.Screen
@@ -12,7 +11,8 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dev.sanson.lightroom.data.Filter
+import dev.sanson.lightroom.data.filter.Filter
+import dev.sanson.lightroom.data.filter.FilterRepository
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateRating
@@ -40,12 +40,12 @@ class FilterAssetsPresenterFactory @Inject constructor(
 class FilterAssetsPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: FilterAssetsScreen,
-    private val filterStore: DataStore<Filter?>,
+    private val filterRepository: FilterRepository,
 ) : Presenter<FilterAssetsScreen.State> {
     @Composable
     override fun present(): FilterAssetsScreen.State {
         val filter by produceState(Filter(albumId = screen.albumId)) {
-            filterStore.data.filterNotNull().collect { value = it }
+            filterRepository.filter.filterNotNull().collect { value = it }
         }
 
         val scope = rememberCoroutineScope()
@@ -59,37 +59,22 @@ class FilterAssetsPresenter @AssistedInject constructor(
                 when (event) {
                     is AddKeyword ->
                         scope.launch {
-                            filterStore.updateData { it?.copy(keywords = it.keywords + event.keyword) }
+                            filterRepository.addKeyword(event.keyword)
                         }
 
                     is RemoveKeyword ->
                         scope.launch {
-                            filterStore.updateData { it?.copy(keywords = it.keywords - event.keyword) }
+                            filterRepository.removeKeyword(event.keyword)
                         }
 
                     is UpdateRating ->
                         scope.launch {
-                            filterStore.updateData {
-                                it?.copy(
-                                    rating = IntRange(
-                                        start = event.rating,
-                                        endInclusive = it.rating?.endInclusive ?: event.rating,
-                                    ),
-                                )
-                            }
+                            filterRepository.setRating(event.rating)
                         }
 
                     is UpdateUpToMax ->
                         scope.launch {
-                            filterStore.updateData {
-                                val start = it?.rating?.first ?: 0
-                                it?.copy(
-                                    rating = IntRange(
-                                        start = start,
-                                        endInclusive = if (event.upToMax) 5 else start,
-                                    ),
-                                )
-                            }
+                            filterRepository.setRatingUpToMax(event.upToMax)
                         }
                 }
             },

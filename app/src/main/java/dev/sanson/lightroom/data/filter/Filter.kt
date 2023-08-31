@@ -1,5 +1,6 @@
-package dev.sanson.lightroom.data
+package dev.sanson.lightroom.data.filter
 
+import dev.sanson.lightroom.data.IntRangeSerializer
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
 import kotlinx.serialization.Serializable
@@ -21,7 +22,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Filter(
     val albumId: AlbumId,
-    val keywords: List<String> = emptyList(),
+    val keywords: Set<String> = emptySet(),
     @Serializable(with = IntRangeSerializer::class)
     val rating: IntRange? = null,
     val review: Asset.Flag? = null,

@@ -13,7 +13,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dev.sanson.lightroom.data.Filter
+import dev.sanson.lightroom.data.filter.Filter
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm

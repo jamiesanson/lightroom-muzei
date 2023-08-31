@@ -11,7 +11,7 @@ import com.google.android.apps.muzei.api.provider.ProviderClient
 import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderClient
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dev.sanson.lightroom.data.Filter
+import dev.sanson.lightroom.data.filter.Filter
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
