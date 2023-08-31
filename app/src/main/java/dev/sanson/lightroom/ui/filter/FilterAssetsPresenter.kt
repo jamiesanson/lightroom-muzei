@@ -1,8 +1,8 @@
 package dev.sanson.lightroom.ui.filter
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.datastore.core.DataStore
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
@@ -12,7 +12,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dev.sanson.lightroom.data.Filter
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.State.Loading
+import kotlinx.coroutines.flow.filterNotNull
 import javax.inject.Inject
 
 class FilterAssetsPresenterFactory @Inject constructor(
@@ -24,7 +24,7 @@ class FilterAssetsPresenterFactory @Inject constructor(
         context: CircuitContext,
     ): Presenter<*>? {
         return when (screen) {
-            is FilterAssetsScreen -> factory.create(navigator)
+            is FilterAssetsScreen -> factory.create(navigator, screen)
             else -> null
         }
     }
@@ -32,22 +32,30 @@ class FilterAssetsPresenterFactory @Inject constructor(
 
 class FilterAssetsPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
+    @Assisted private val screen: FilterAssetsScreen,
     private val filterStore: DataStore<Filter?>,
 ) : Presenter<FilterAssetsScreen.State> {
     @Composable
     override fun present(): FilterAssetsScreen.State {
-        val filter by filterStore.data.collectAsState(initial = null)
-
-        return when (null) {
-            null ->
-                Loading
-
-            else -> TODO()
+        val filter by produceState(Filter(albumId = screen.albumId)) {
+            filterStore.data.filterNotNull().collect { value = it }
         }
+
+        return FilterAssetsScreen.State(
+            keywords = filter.keywords,
+            rating = filter.rating,
+            flag = filter.review,
+            eventSink = {
+//                event ->
+//                when (event) {
+//                    else -> {}
+//                }
+            },
+        )
     }
 
     @AssistedFactory
     interface Factory {
-        fun create(navigator: Navigator): FilterAssetsPresenter
+        fun create(navigator: Navigator, screen: FilterAssetsScreen): FilterAssetsPresenter
     }
 }

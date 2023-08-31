@@ -69,7 +69,7 @@ class ChooseAlbumPresenter @AssistedInject constructor(
                             }
 
                         is Confirm ->
-                            navigator.goTo(FilterAssetsScreen)
+                            navigator.goTo(FilterAssetsScreen(albumId = requireNotNull(filter).albumId))
                     }
                 },
             )

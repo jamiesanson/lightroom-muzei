@@ -36,6 +36,7 @@ import dev.sanson.lightroom.coil.rememberImageRequest
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import dev.sanson.lightroom.ui.component.FixedCardLoadingScreen
+import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import javax.inject.Inject
 
 class ChooseAlbumUiFactory @Inject constructor() : Ui.Factory {
@@ -152,7 +153,7 @@ fun AssetThumbnail(
 @Preview
 @Composable
 fun AlbumRowPreview() {
-    MaterialTheme {
+    MuzeiLightroomTheme {
         Box(Modifier.padding(8.dp)) {
             var selected by remember { mutableStateOf(false) }
             AlbumRow(
