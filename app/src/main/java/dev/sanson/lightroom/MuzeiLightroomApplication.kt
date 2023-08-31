@@ -7,23 +7,44 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 /**
- * TODO(s) in no particular order:
- * * Tablet support
- * * Screen transitions
+ * TODO(s):
+ * ---------
+ *   Build
+ * ---------
+ * * Finish off filtering
  * * Testing presenters
  * * Modularise + revisit build-logic
- * * Adobe review
- * * Unsplash review
- * * Move secrets out of source
+ * * Form-factor support
+ * * Screen transitions & UI polish
+ *
+ * ---------------
+ *   Open source
+ * ---------------
  * * UI testing
- * * Finish off filtering
- * * CI - testing
+ * * Snapshot testing
+ * * CI - run suite on commits
+ * * Move secrets out of source
+ * * Documentation & licensing
+ *
+ * --------------------
+ *   Production-ready
+ * --------------------
  * * Crash analytics; Leak detection
  * * Deployment - Automated beta/internal test
  * * Deployment - Automated prod deployment
  * * App icon
+ *
+ * --------------------
+ *   Release prep
+ * --------------------
+ * * Adobe review
+ * * Unsplash review
+ * * Play Store account
+ *
+ * --------------------
+ *   Extra-curricular
+ * --------------------
  * * Blog - Circuit without Anvil (can I make this better Circuit-side? Perhaps circuit-codegen-hilt?)
- * *
  */
 @HiltAndroidApp
 class MuzeiLightroomApplication : Application(), Configuration.Provider {
