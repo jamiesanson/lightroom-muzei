@@ -28,3 +28,18 @@ data class Filter(
     val review: Asset.Flag? = null,
     val serialVersion: Int = 1,
 )
+
+fun Filter.permitsAsset(asset: Asset): Boolean {
+    return when {
+        // Has matching keyword
+        keywords.isNotEmpty() && asset.keywords.none { it in keywords } -> false
+
+        // Has rating within bounds
+        rating != null && asset.rating in rating -> false
+
+        // Has correct flag
+        review != null && asset.review != review -> false
+
+        else -> true
+    }
+}

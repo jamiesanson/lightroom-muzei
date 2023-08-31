@@ -12,6 +12,7 @@ import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderCl
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dev.sanson.lightroom.data.filter.Filter
+import dev.sanson.lightroom.data.filter.permitsAsset
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
@@ -44,6 +45,7 @@ class LoadAlbumWorker @AssistedInject constructor(
 
         val artworks = lightroom
             .getAlbumAssets(filters.albumId)
+            .filter { filters.permitsAsset(it) }
             .filterNot { albumAsset ->
                 albumAsset.id.id in previouslyAddedAssets
             }
