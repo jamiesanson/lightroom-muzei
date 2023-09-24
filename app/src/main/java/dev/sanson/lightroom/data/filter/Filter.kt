@@ -35,7 +35,7 @@ fun Filter.permitsAsset(asset: Asset): Boolean {
         keywords.isNotEmpty() && asset.keywords.none { it in keywords } -> false
 
         // Has rating within bounds
-        rating != null && asset.rating in rating -> false
+        rating != null && asset.rating !in rating -> false
 
         // Has correct flag
         review != null && asset.review != review -> false

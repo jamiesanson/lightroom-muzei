@@ -5,7 +5,7 @@ versioncode = "1"
 
 android-gradle-plugin = "8.1.1"
 
-compose-bom = "2023.08.00"
+compose-bom = "2023.09.00"
 compose-compiler = "1.5.3"
 
 circuit = "0.13.0-beta01"
@@ -21,14 +21,12 @@ ktlint-compose-rules = "0.1.2"
 androidx-appcompat = "1.6.1"
 androidx-activity-compose = "1.7.2"
 androidx-browser = "1.6.0"
-androidx-core = "1.10.1"
+androidx-core = "1.12.0"
 androidx-datastore = "1.0.0"
 androidx-hilt = "1.0.0"
 androidx-hilt-navigation-compose = "1.0.0"
-androidx-lifecycle = "2.6.1"
+androidx-lifecycle = "2.6.2"
 androidx-work = "2.8.1"
-
-accompanist = "0.29.2-rc"
 
 muzei-api = "3.4.1"
 
@@ -81,12 +79,11 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
 
-accompanist-navigation-animations = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
-
 android-desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugared-jdk-libs" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 kotest = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 muzei-api = { module = "com.google.android.apps.muzei:muzei-api", version.ref = "muzei-api" }
@@ -116,7 +113,6 @@ ktlint-gradle-plugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
-android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -127,6 +123,7 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
 testing-unit = [
     "junit",
     "kotest",
+    "kotest-property",
     "kotlinx-coroutines-test",
     "turbine",
 ]

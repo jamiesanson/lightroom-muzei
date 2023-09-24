@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.circuit)
     testImplementation(libs.circuit.test)
 
+    testImplementation(libs.bundles.testing.unit)
+
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
