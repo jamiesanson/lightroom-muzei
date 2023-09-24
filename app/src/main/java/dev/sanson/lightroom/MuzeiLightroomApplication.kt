@@ -12,6 +12,7 @@ import javax.inject.Inject
  *   Build
  * ---------
  * * Finish off filtering
+ * * Confirmation screen which populates Muzei before finishing
  * * Testing presenters
  * * Modularise + revisit build-logic
  * * Form-factor support
