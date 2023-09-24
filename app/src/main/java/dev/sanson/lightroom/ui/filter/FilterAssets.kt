@@ -2,6 +2,7 @@ package dev.sanson.lightroom.ui.filter
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +32,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -131,7 +135,7 @@ private fun FilterAssets(
 }
 
 @Composable
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 private fun KeywordChipGroup(
     keywords: ImmutableList<String>,
     onAddKeyword: (String) -> Unit,
@@ -141,8 +145,15 @@ private fun KeywordChipGroup(
     FlowRow(
         modifier = modifier
             .fillMaxWidth(1f)
-            .wrapContentHeight(align = Alignment.Top),
-        horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
+            .wrapContentHeight(align = Alignment.Top)
+            .border(
+                width = 1.dp,
+                shape = RoundedCornerShape(4.dp),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+            )
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         keywords.forEach { keyword ->
             KeywordChip(
@@ -151,27 +162,42 @@ private fun KeywordChipGroup(
             )
         }
 
-        var keywordText by remember { mutableStateOf("") }
-        val textColor = MaterialTheme.colorScheme.onSurface
-
-        BasicTextField(
-            value = keywordText,
-            onValueChange = { keywordText = it },
-            singleLine = true,
-            textStyle = MaterialTheme.typography.labelLarge.copy(color = textColor),
-            cursorBrush = SolidColor(textColor),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onAddKeyword(keywordText)
-                    keywordText = ""
-                },
-            ),
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done,
-            ),
-            modifier = Modifier.align(Alignment.CenterVertically),
+        KeywordTextField(
+            onAddKeyword = onAddKeyword,
+            modifier = Modifier.weight(1f),
         )
     }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun KeywordTextField(
+    onAddKeyword: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var keywordText by remember { mutableStateOf("") }
+    val textColor = MaterialTheme.colorScheme.onSurface
+
+    BasicTextField(
+        value = keywordText,
+        onValueChange = { keywordText = it },
+        singleLine = true,
+        textStyle = MaterialTheme.typography.labelLarge.copy(color = textColor),
+        cursorBrush = SolidColor(textColor),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onAddKeyword(keywordText)
+                keywordText = ""
+            },
+        ),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+        ),
+        modifier = modifier
+            .requiredHeightIn(min = InputChipDefaults.Height)
+            .requiredWidthIn(min = 48.dp)
+            .fillMaxWidth(),
+    )
 }
 
 /**
@@ -224,46 +250,54 @@ private fun RatingRow(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@ExperimentalMaterial3Api
 @Composable
 private fun KeywordChip(
     keyword: String,
     onRemoveKeyword: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    InputChip(
-        selected = false,
-        onClick = {},
-        label = {
-            Text(
-                text = keyword,
-                style = MaterialTheme.typography.labelLarge,
-            )
-        },
-        colors = InputChipDefaults.inputChipColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-        ),
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_tag),
-                contentDescription = "tag",
-                modifier = Modifier
-                    .size(14.dp),
-            )
-        },
-        trailingIcon = {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Remove $keyword filter",
-                modifier = Modifier
-                    .size(InputChipDefaults.IconSize)
-                    .clickable { onRemoveKeyword() },
-            )
-        },
-        modifier = modifier,
-        border = null,
-        shape = RoundedCornerShape(4.dp),
-    )
+    // The following removes the implicit padding around clickable elements in the chip,
+    // used to enforce minimum touch target sizes. We turn this off here, as the target height with
+    // vertical padding DOES equal minimum touch target size. The vertical arrangement
+    // originally leads to far bigger vertical spacing than necessary.
+    //
+    // https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary#LocalMinimumInteractiveComponentEnforcement()
+    CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+        InputChip(
+            selected = false,
+            onClick = {},
+            label = {
+                Text(
+                    text = keyword,
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            },
+            colors = InputChipDefaults.inputChipColors(
+                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+            ),
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_tag),
+                    contentDescription = "tag",
+                    modifier = Modifier
+                        .size(14.dp),
+                )
+            },
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Remove $keyword filter",
+                    modifier = Modifier
+                        .size(InputChipDefaults.IconSize)
+                        .clickable { onRemoveKeyword() },
+                )
+            },
+            modifier = modifier,
+            border = null,
+            shape = RoundedCornerShape(4.dp),
+        )
+    }
 }
 
 @Preview
