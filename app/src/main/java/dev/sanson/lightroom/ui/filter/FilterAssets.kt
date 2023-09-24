@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,6 +32,7 @@ import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -41,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,6 +51,7 @@ import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
+import dev.sanson.lightroom.R
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
@@ -127,7 +131,7 @@ private fun FilterAssets(
 }
 
 @Composable
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 private fun KeywordChipGroup(
     keywords: ImmutableList<String>,
     onAddKeyword: (String) -> Unit,
@@ -141,27 +145,9 @@ private fun KeywordChipGroup(
         horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
     ) {
         keywords.forEach { keyword ->
-            InputChip(
-                selected = false,
-                onClick = { /*TODO*/ },
-                label = {
-                    Text(
-                        text = keyword,
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                },
-                colors = InputChipDefaults.inputChipColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                ),
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Remove $keyword filter",
-                        modifier = Modifier
-                            .size(InputChipDefaults.IconSize)
-                            .clickable { onRemoveKeyword(keyword) },
-                    )
-                },
+            KeywordChip(
+                keyword = keyword,
+                onRemoveKeyword = { onRemoveKeyword(keyword) },
             )
         }
 
@@ -236,6 +222,48 @@ private fun RatingRow(
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun KeywordChip(
+    keyword: String,
+    onRemoveKeyword: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    InputChip(
+        selected = false,
+        onClick = {},
+        label = {
+            Text(
+                text = keyword,
+                style = MaterialTheme.typography.labelLarge,
+            )
+        },
+        colors = InputChipDefaults.inputChipColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+        ),
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_tag),
+                contentDescription = "tag",
+                modifier = Modifier
+                    .size(14.dp),
+            )
+        },
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Remove $keyword filter",
+                modifier = Modifier
+                    .size(InputChipDefaults.IconSize)
+                    .clickable { onRemoveKeyword() },
+            )
+        },
+        modifier = modifier,
+        border = null,
+        shape = RoundedCornerShape(4.dp),
+    )
 }
 
 @Preview
