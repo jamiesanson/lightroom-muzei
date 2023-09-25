@@ -41,6 +41,13 @@ private fun Equality.next(): Equality {
     }
 }
 
+/**
+ * An Equality toggle is a control allowing choice between three equality states, as defined
+ * in [Equality].
+ *
+ * @param equality The current equality
+ * @param onEqualityChange Callback for when equality changes
+ */
 @Composable
 fun EqualityToggle(
     equality: Equality,
@@ -85,8 +92,12 @@ fun EqualityToggle(
                 shape = RoundedCornerShape(50),
             ),
     ) {
+        // The following draws two canvas elements - the bottom line of the lteq, gteq and eq symbol,
+        // and a path which draws the top element of the symbol, allowing animation from line to
+        // less than or greater than symbol.
         val totalHeight = equalityHeight.value + 16f
         translate(left = (size.width - 36f) / 2f, top = (size.height - totalHeight) / 2f) {
+            // Less than/greater than path
             rotate(topPathRotation.value, pivot = Offset(widthPx / 2f, equalityHeight.value / 2f)) {
                 drawPath(
                     path = Path().apply {
@@ -104,6 +115,7 @@ fun EqualityToggle(
                 )
             }
 
+            // Bottom line
             drawLine(
                 brush = SolidColor(lineColor),
                 start = Offset(x = 0f, y = equalityHeight.value + 16f),
