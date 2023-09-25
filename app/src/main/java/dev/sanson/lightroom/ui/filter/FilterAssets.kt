@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -59,6 +61,7 @@ import dev.sanson.lightroom.ui.component.EqualityToggle
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateEquality
+import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateFlag
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateRating
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -128,6 +131,12 @@ private fun FilterAssets(
             Text(
                 text = "Review",
                 style = MaterialTheme.typography.titleMedium,
+            )
+
+            FlagRow(
+                flag = state.flag,
+                onFlagChange = { state.eventSink(UpdateFlag(it)) },
+                modifier = Modifier.padding(top = 8.dp),
             )
         }
     }
@@ -199,11 +208,6 @@ private fun KeywordTextField(
     )
 }
 
-/**
- * TODO:
- * * Some way of clearing the rating
- * * Colors, assets match
- */
 @Composable
 private fun RatingRow(
     rating: Int,
@@ -284,6 +288,49 @@ private fun KeywordChip(
             border = null,
             shape = RoundedCornerShape(4.dp),
         )
+    }
+}
+
+@Composable
+private fun FlagRow(
+    flag: Asset.Flag?,
+    onFlagChange: (Asset.Flag?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier.fillMaxWidth()) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.align(Alignment.Center),
+        ) {
+            Icon(
+                imageVector = Icons.Default.ThumbUp,
+                contentDescription = "Picked",
+                tint = MaterialTheme.colorScheme.onSurface
+                    .copy(alpha = if (flag == Asset.Flag.Picked) 1f else 0.32f),
+                modifier = Modifier
+                    .clickable { onFlagChange(Asset.Flag.Picked) },
+            )
+
+            Icon(
+                imageVector = Icons.Default.ThumbUp,
+                contentDescription = "Any",
+                tint = MaterialTheme.colorScheme.onSurface
+                    .copy(alpha = if (flag == null) 1f else 0.32f),
+                modifier = Modifier
+                    .rotate(90f)
+                    .clickable { onFlagChange(null) },
+            )
+
+            Icon(
+                imageVector = Icons.Default.ThumbUp,
+                contentDescription = "Rejected",
+                tint = MaterialTheme.colorScheme.onSurface
+                    .copy(alpha = if (flag == Asset.Flag.Rejected) 1f else 0.32f),
+                modifier = Modifier
+                    .rotate(180f)
+                    .clickable { onFlagChange(Asset.Flag.Rejected) },
+            )
+        }
     }
 }
 
