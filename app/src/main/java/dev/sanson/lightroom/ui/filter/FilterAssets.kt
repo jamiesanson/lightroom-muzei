@@ -58,8 +58,8 @@ import dev.sanson.lightroom.ui.component.Equality
 import dev.sanson.lightroom.ui.component.EqualityToggle
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
+import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateEquality
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateRating
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateUpToMax
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -115,9 +115,9 @@ private fun FilterAssets(
 
             RatingRow(
                 rating = state.rating,
-                upToMax = state.ratingUpToMax,
+                equality = state.equality,
                 onRatingChange = { state.eventSink(UpdateRating(it)) },
-                onUpToMaxChange = { state.eventSink(UpdateUpToMax(it)) },
+                onEqualityChange = { state.eventSink(UpdateEquality(it)) },
                 modifier = Modifier.padding(top = 8.dp),
             )
 
@@ -207,9 +207,9 @@ private fun KeywordTextField(
 @Composable
 private fun RatingRow(
     rating: Int,
-    upToMax: Boolean,
+    equality: Equality,
     onRatingChange: (Int) -> Unit,
-    onUpToMaxChange: (Boolean) -> Unit,
+    onEqualityChange: (Equality) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -230,8 +230,8 @@ private fun RatingRow(
             }
 
             EqualityToggle(
-                equality = if (upToMax) Equality.GreaterThan else Equality.EqualTo,
-                onEqualityChange = { onUpToMaxChange(false) },
+                equality = equality,
+                onEqualityChange = onEqualityChange,
             )
         }
     }
@@ -304,7 +304,7 @@ fun FilterAssetsPreview() {
                     "wallpaper",
                 ),
                 rating = 3,
-                ratingUpToMax = false,
+                equality = Equality.GreaterThan,
                 flag = Asset.Flag.Picked,
                 eventSink = {},
             ),

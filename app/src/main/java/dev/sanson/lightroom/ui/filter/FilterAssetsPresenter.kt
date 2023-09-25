@@ -13,10 +13,10 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dev.sanson.lightroom.data.filter.Filter
 import dev.sanson.lightroom.data.filter.FilterRepository
+import dev.sanson.lightroom.ui.component.Equality
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateRating
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateUpToMax
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -37,6 +37,23 @@ class FilterAssetsPresenterFactory @Inject constructor(
     }
 }
 
+private val Filter.starRating: Int
+    get() = when {
+        rating == null -> 0
+        rating.isEmpty() -> rating.first
+        rating.first == 0 -> rating.last
+        rating.last == 5 -> rating.first
+        else -> 0
+    }
+
+private val Filter.ratingEquality: Equality
+    get() = when {
+        rating == null || rating.isEmpty() -> Equality.EqualTo
+        rating.first == 0 -> Equality.LessThan
+        rating.last == 5 -> Equality.GreaterThan
+        else -> Equality.EqualTo
+    }
+
 class FilterAssetsPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: FilterAssetsScreen,
@@ -53,7 +70,7 @@ class FilterAssetsPresenter @AssistedInject constructor(
         return FilterAssetsScreen.State(
             keywords = filter.keywords.toPersistentList(),
             rating = filter.rating?.first ?: 0,
-            ratingUpToMax = filter.rating?.run { last == 5 } ?: false,
+            equality = filter.ratingEquality,
             flag = filter.review,
             eventSink = { event ->
                 when (event) {
@@ -69,12 +86,33 @@ class FilterAssetsPresenter @AssistedInject constructor(
 
                     is UpdateRating ->
                         scope.launch {
-                            filterRepository.setRating(event.rating)
+                            filterRepository.setRatingRange(
+                                start = event.rating,
+                                end = when (filter.ratingEquality) {
+                                    Equality.GreaterThan -> 5
+                                    Equality.EqualTo -> event.rating
+                                    Equality.LessThan -> 0
+                                },
+                            )
                         }
 
-                    is UpdateUpToMax ->
+                    is FilterAssetsScreen.Event.UpdateEquality ->
                         scope.launch {
-                            filterRepository.setRatingUpToMax(event.upToMax)
+                            filterRepository.setRatingRange(
+                                start = when (filter.ratingEquality) {
+                                    Equality.GreaterThan,
+                                    Equality.EqualTo,
+                                    -> filter.starRating
+
+                                    Equality.LessThan -> 0
+                                },
+                                end = when (filter.ratingEquality) {
+                                    Equality.GreaterThan -> 5
+                                    Equality.EqualTo,
+                                    Equality.LessThan,
+                                    -> filter.starRating
+                                },
+                            )
                         }
 
                     is FilterAssetsScreen.Event.UpdateFlag ->

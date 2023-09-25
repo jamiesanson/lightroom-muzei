@@ -10,8 +10,7 @@ interface FilterRepository {
 
     suspend fun addKeyword(keyword: String)
     suspend fun removeKeyword(keyword: String)
-    suspend fun setRating(rating: Int)
-    suspend fun setRatingUpToMax(upToMax: Boolean)
+    suspend fun setRatingRange(start: Int, end: Int = start)
     suspend fun updateFlag(flag: Asset.Flag?)
 }
 
@@ -28,24 +27,12 @@ class DefaultFilterRepository @Inject constructor(
         filterStore.updateData { it?.copy(keywords = it.keywords - keyword) }
     }
 
-    override suspend fun setRating(rating: Int) {
+    override suspend fun setRatingRange(start: Int, end: Int) {
         filterStore.updateData {
-            it?.copy(
-                rating = IntRange(
-                    start = rating,
-                    endInclusive = it.rating?.endInclusive ?: rating,
-                ),
-            )
-        }
-    }
-
-    override suspend fun setRatingUpToMax(upToMax: Boolean) {
-        filterStore.updateData {
-            val start = it?.rating?.first ?: 0
             it?.copy(
                 rating = IntRange(
                     start = start,
-                    endInclusive = if (upToMax) 5 else start,
+                    endInclusive = end,
                 ),
             )
         }
