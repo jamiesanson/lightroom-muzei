@@ -11,8 +11,8 @@ import com.google.android.apps.muzei.api.provider.ProviderClient
 import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderClient
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dev.sanson.lightroom.data.filter.Filter
-import dev.sanson.lightroom.data.filter.permitsAsset
+import dev.sanson.lightroom.data.config.Config
+import dev.sanson.lightroom.data.config.permitsAsset
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
@@ -32,20 +32,23 @@ class LoadAlbumWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val lightroom: Lightroom,
-    private val filterStore: DataStore<Filter?>,
+    private val configStore: DataStore<Config?>,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val filters = filterStore.data.first() ?: return Result.failure()
+        val config = configStore.data.first() ?: return Result.failure()
         val albumProvider = getProviderClient<LightroomAlbumProvider>(context = applicationContext)
 
         val previouslyAddedAssets = albumProvider.getArtwork(
             contentResolver = applicationContext.contentResolver,
         ).mapNotNull { it.token }
 
+        // TODO: Support catalog asset loading
+        val album = config.source as? Config.Source.Album ?: return Result.failure()
+
         val artworks = lightroom
-            .getAlbumAssets(filters.albumId)
-            .filter { filters.permitsAsset(it) }
+            .getAlbumAssets(albumId = album.id)
+            .filter { config.permitsAsset(it) }
             .filterNot { albumAsset ->
                 albumAsset.id.id in previouslyAddedAssets
             }

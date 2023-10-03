@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.data.filter
+package dev.sanson.lightroom.data.config
 
 import dev.sanson.lightroom.data.IntRangeSerializer
 import dev.sanson.lightroom.sdk.model.AlbumId
@@ -9,27 +9,32 @@ import kotlinx.serialization.Serializable
  * Model representing a filter to apply to a collection of assets, used when populating images
  * for Muzei.
  *
- * @param albumId       The ID of the album to access.
- *                          Note: one possible "improvement" could be to make this optional, and filter the entire
- *                          catalog worth of assets client-side. This would certainly mean more flexibility in
- *                          assets chosen, but in cases of large catalogs would mean more thrashing of the API
- *                          than I'd be comfortable with.
+ * @param source        The source of the collection of assets
  * @param keywords      Keywords to filter the set of assets by
  * @param rating        IntRange describing the rating of images to include
  * @param review        Select picked (or rejected) assets
  * @param serialVersion Version used to ease future migrations
  */
 @Serializable
-data class Filter(
-    val albumId: AlbumId,
+data class Config(
+    val source: Source,
     val keywords: Set<String> = emptySet(),
     @Serializable(with = IntRangeSerializer::class)
     val rating: IntRange? = null,
     val review: Asset.Flag? = null,
     val serialVersion: Int = 1,
-)
+) {
 
-fun Filter.permitsAsset(asset: Asset): Boolean {
+    sealed interface Source {
+        @Serializable
+        data class Album(val id: AlbumId) : Source
+
+        @Serializable
+        data object Catalog : Source
+    }
+}
+
+fun Config.permitsAsset(asset: Asset): Boolean {
     return when {
         // Has matching keyword
         keywords.isNotEmpty() && asset.keywords.none { it in keywords } -> false

@@ -11,8 +11,9 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dev.sanson.lightroom.data.filter.Filter
-import dev.sanson.lightroom.data.filter.FilterRepository
+import dev.sanson.lightroom.data.config.Config
+import dev.sanson.lightroom.data.config.ConfigRepository
+import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.ui.component.Equality
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
@@ -37,7 +38,7 @@ class FilterAssetsPresenterFactory @Inject constructor(
     }
 }
 
-private val Filter.starRating: Int
+private val Config.starRating: Int
     get() = when {
         rating == null -> 0
         rating.isEmpty() -> rating.first
@@ -46,7 +47,7 @@ private val Filter.starRating: Int
         else -> 0
     }
 
-private val Filter.ratingEquality: Equality
+private val Config.ratingEquality: Equality
     get() = when {
         rating == null || rating.isEmpty() -> Equality.EqualTo
         rating.first == 0 -> Equality.LessThan
@@ -56,13 +57,12 @@ private val Filter.ratingEquality: Equality
 
 class FilterAssetsPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
-    @Assisted private val screen: FilterAssetsScreen,
-    private val filterRepository: FilterRepository,
+    private val configRepository: ConfigRepository,
 ) : Presenter<FilterAssetsScreen.State> {
     @Composable
     override fun present(): FilterAssetsScreen.State {
-        val filter by produceState(Filter(albumId = screen.albumId)) {
-            filterRepository.filter.filterNotNull().collect { value = it }
+        val filter by produceState(Config(source = Config.Source.Album(id = AlbumId("")))) {
+            configRepository.config.filterNotNull().collect { value = it }
         }
 
         val scope = rememberCoroutineScope()
@@ -76,17 +76,17 @@ class FilterAssetsPresenter @AssistedInject constructor(
                 when (event) {
                     is AddKeyword ->
                         scope.launch {
-                            filterRepository.addKeyword(event.keyword)
+                            configRepository.addKeyword(event.keyword)
                         }
 
                     is RemoveKeyword ->
                         scope.launch {
-                            filterRepository.removeKeyword(event.keyword)
+                            configRepository.removeKeyword(event.keyword)
                         }
 
                     is UpdateRating ->
                         scope.launch {
-                            filterRepository.setRatingRange(
+                            configRepository.setRatingRange(
                                 start = event.rating,
                                 end = when (filter.ratingEquality) {
                                     Equality.GreaterThan -> 5
@@ -98,7 +98,7 @@ class FilterAssetsPresenter @AssistedInject constructor(
 
                     is FilterAssetsScreen.Event.UpdateEquality ->
                         scope.launch {
-                            filterRepository.setRatingRange(
+                            configRepository.setRatingRange(
                                 start = when (filter.ratingEquality) {
                                     Equality.GreaterThan,
                                     Equality.EqualTo,
@@ -117,7 +117,7 @@ class FilterAssetsPresenter @AssistedInject constructor(
 
                     is FilterAssetsScreen.Event.UpdateFlag ->
                         scope.launch {
-                            filterRepository.updateFlag(event.flag)
+                            configRepository.updateFlag(event.flag)
                         }
 
                     is FilterAssetsScreen.Event.PopBackToAlbumSelection ->

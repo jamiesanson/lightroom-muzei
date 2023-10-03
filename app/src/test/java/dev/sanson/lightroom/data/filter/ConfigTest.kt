@@ -1,6 +1,7 @@
 package dev.sanson.lightroom.data.filter
 
-import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.data.config.Config
+import dev.sanson.lightroom.data.config.permitsAsset
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import io.kotest.matchers.shouldBe
@@ -13,7 +14,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import org.junit.Test
 
-class FilterTest {
+class ConfigTest {
 
     /**
      * An asset with no user-defined tags, such as rating, keywords or flags
@@ -34,41 +35,41 @@ class FilterTest {
     private val rejectedAsset = untaggedAsset.copy(review = Asset.Flag.Rejected)
 
     @Test
-    fun `Empty Filter permits all assets`() = runTest {
-        val filter = Filter(albumId = AlbumId("1"))
+    fun `Empty Config permits all assets`() = runTest {
+        val config = Config(source = Config.Source.Catalog)
 
         forAll(listOf(untaggedAsset, pickedAsset, rejectedAsset).exhaustive()) {
-            filter.permitsAsset(it)
+            config.permitsAsset(it)
         }
     }
 
     @Test
-    fun `Filter with picked condition rejects all other asset`() {
-        val filter = Filter(albumId = AlbumId("1"), review = Asset.Flag.Picked)
+    fun `Config with picked condition rejects all other asset`() {
+        val config = Config(source = Config.Source.Catalog, review = Asset.Flag.Picked)
 
-        with(filter) {
+        with(config) {
             permitsAsset(rejectedAsset) shouldBe false
             permitsAsset(untaggedAsset) shouldBe false
         }
     }
 
     @Test
-    fun `Filter with rating specification rejects outlying assets`() = runTest {
-        val filter = Filter(albumId = AlbumId("1"), rating = 3..5)
+    fun `Config with rating specification rejects outlying assets`() = runTest {
+        val config = Config(source = Config.Source.Catalog, rating = 3..5)
 
         forAll(Arb.int(min = 0, max = 5)) { rating ->
-            val accepted = filter.permitsAsset(untaggedAsset.copy(rating = rating))
+            val accepted = config.permitsAsset(untaggedAsset.copy(rating = rating))
 
             accepted == (rating >= 3)
         }
     }
 
     @Test
-    fun `Filter with keywords rejects unmatching assets`() = runTest {
-        val filter = Filter(albumId = AlbumId("1"), keywords = setOf("wallpaper"))
+    fun `Config with keywords rejects unmatching assets`() = runTest {
+        val config = Config(source = Config.Source.Catalog, keywords = setOf("wallpaper"))
 
         forAll(Arb.string()) { keyword ->
-            val accepted = filter.permitsAsset(untaggedAsset.copy(keywords = listOf(keyword)))
+            val accepted = config.permitsAsset(untaggedAsset.copy(keywords = listOf(keyword)))
 
             accepted == (keyword == "wallpaper")
         }

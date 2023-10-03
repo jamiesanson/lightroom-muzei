@@ -1,11 +1,9 @@
 package dev.sanson.lightroom.ui.album
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.datastore.core.DataStore
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.Screen
@@ -13,14 +11,17 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dev.sanson.lightroom.data.filter.Filter
+import dev.sanson.lightroom.data.config.Config
+import dev.sanson.lightroom.data.config.ConfigRepository
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Album
+import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loaded
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loading
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,7 +43,7 @@ class ChooseAlbumPresenterFactory @Inject constructor(
 class ChooseAlbumPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
     private val lightroom: Lightroom,
-    private val filterStore: DataStore<Filter?>,
+    private val configRepository: ConfigRepository,
 ) : Presenter<ChooseAlbumScreen.State> {
     @Composable
     override fun present(): ChooseAlbumScreen.State {
@@ -52,7 +53,12 @@ class ChooseAlbumPresenter @AssistedInject constructor(
             value = lightroom.getAlbums()
         }
 
-        val filter by filterStore.data.collectAsState(initial = null)
+        val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {
+            configRepository.config
+                .map { it?.source as? Config.Source.Album }
+                .map { it?.id }
+                .collect { value = it }
+        }
 
         return when (val albums = albumState) {
             null ->
@@ -60,16 +66,16 @@ class ChooseAlbumPresenter @AssistedInject constructor(
 
             else -> Loaded(
                 albums = albums,
-                selectedAlbum = filter?.albumId,
+                selectedAlbum = albumId,
                 eventSink = { event ->
                     when (event) {
                         is SelectAlbum ->
                             scope.launch {
-                                filterStore.updateData { Filter(albumId = event.albumId) }
+                                configRepository.setAlbum(event.albumId)
                             }
 
                         is Confirm ->
-                            navigator.goTo(FilterAssetsScreen(albumId = requireNotNull(filter).albumId))
+                            navigator.goTo(FilterAssetsScreen)
                     }
                 },
             )

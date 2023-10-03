@@ -9,9 +9,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.data.JsonSerializer
-import dev.sanson.lightroom.data.filter.DefaultFilterRepository
-import dev.sanson.lightroom.data.filter.Filter
-import dev.sanson.lightroom.data.filter.FilterRepository
+import dev.sanson.lightroom.data.config.Config
+import dev.sanson.lightroom.data.config.ConfigRepository
+import dev.sanson.lightroom.data.config.DefaultConfigRepository
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Singleton
@@ -22,22 +22,22 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideFilterStore(
+    fun provideConfigStore(
         @ApplicationScope scope: CoroutineScope,
         @ApplicationContext context: Context,
-    ): DataStore<Filter?> {
+    ): DataStore<Config?> {
         return DataStoreFactory.create(
-            serializer = JsonSerializer<Filter>(),
+            serializer = JsonSerializer<Config>(),
             scope = scope,
             produceFile = {
-                File("${context.filesDir.path}/filters")
+                File("${context.filesDir.path}/config")
             },
         )
     }
 
     @Provides
     @Singleton
-    fun provideFilterRepository(
-        store: DataStore<Filter?>,
-    ): FilterRepository = DefaultFilterRepository(store)
+    fun provideConfigRepository(
+        store: DataStore<Config?>,
+    ): ConfigRepository = DefaultConfigRepository(store)
 }
