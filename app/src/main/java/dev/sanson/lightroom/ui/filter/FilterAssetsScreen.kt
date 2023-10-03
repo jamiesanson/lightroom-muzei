@@ -28,5 +28,7 @@ data class FilterAssetsScreen(
         data class UpdateRating(val rating: Int) : Event
         data class UpdateEquality(val equality: Equality) : Event
         data class UpdateFlag(val flag: Asset.Flag?) : Event
+
+        data object PopBackToAlbumSelection : Event
     }
 }

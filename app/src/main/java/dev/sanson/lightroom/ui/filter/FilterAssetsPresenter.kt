@@ -119,6 +119,9 @@ class FilterAssetsPresenter @AssistedInject constructor(
                         scope.launch {
                             filterRepository.updateFlag(event.flag)
                         }
+
+                    is FilterAssetsScreen.Event.PopBackToAlbumSelection ->
+                        navigator.pop()
                 }
             },
         )

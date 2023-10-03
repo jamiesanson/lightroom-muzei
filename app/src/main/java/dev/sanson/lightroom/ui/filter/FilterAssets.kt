@@ -3,6 +3,8 @@ package dev.sanson.lightroom.ui.filter
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,12 +18,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.ThumbUp
@@ -33,8 +38,10 @@ import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -46,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -59,6 +67,7 @@ import dev.sanson.lightroom.ui.component.DarkModePreviews
 import dev.sanson.lightroom.ui.component.Equality
 import dev.sanson.lightroom.ui.component.EqualityToggle
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
+import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.PopBackToAlbumSelection
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateEquality
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateFlag
@@ -81,18 +90,47 @@ class FilterAssetsUiFactory @Inject constructor() : Ui.Factory {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FilterAssets(
     state: FilterAssetsScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(modifier.fillMaxSize()) { paddingValues ->
+    val topAppBarScrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    Scaffold(
+        topBar = {
+            MediumTopAppBar(
+                title = {
+                    Text(
+                        text = "Step 2: Filter",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                },
+                navigationIcon = {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .clickable { state.eventSink(PopBackToAlbumSelection) },
+                    )
+                },
+                scrollBehavior = topAppBarScrollBehaviour,
+            )
+        },
+        modifier = modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
+    ) { paddingValues ->
         Column(
             Modifier
                 .padding(horizontal = 16.dp)
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .scrollable(rememberScrollState(), orientation = Orientation.Vertical)
+                .nestedScroll(topAppBarScrollBehaviour.nestedScrollConnection),
         ) {
-            Spacer(Modifier.size(54.dp))
+            Spacer(Modifier.size(8.dp))
 
             Text(
                 text = "Keywords",
