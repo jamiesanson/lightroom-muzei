@@ -22,6 +22,7 @@ class GetAlbumsUseCase @Inject constructor(
         val catalog = catalogRepository.getCatalog()
         val albums = albumService.getAlbums(catalogId = catalog.id.id)
 
+        // TODO: This doesn't support folder nesting
         val folders = albums.resources
             .filter { it.subtype == "collection_set" }
 

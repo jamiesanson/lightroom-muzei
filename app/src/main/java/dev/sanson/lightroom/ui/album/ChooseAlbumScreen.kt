@@ -14,7 +14,7 @@ data object ChooseAlbumScreen : Screen {
         data object Loading : State
 
         data class Loaded(
-            val albums: List<Album>,
+            val albums: List<Pair<String?, List<Album>>>,
             val selectedAlbum: AlbumId?,
             val eventSink: (Event) -> Unit,
         ) : State

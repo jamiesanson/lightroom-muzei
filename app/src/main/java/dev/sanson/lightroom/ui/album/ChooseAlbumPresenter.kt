@@ -49,8 +49,14 @@ class ChooseAlbumPresenter @AssistedInject constructor(
     override fun present(): ChooseAlbumScreen.State {
         val scope = rememberCoroutineScope()
 
-        val albumState by produceState<List<Album>?>(initialValue = null, lightroom) {
+        val albumState by produceState<List<Pair<String?, List<Album>>>?>(
+            initialValue = null,
+            lightroom,
+        ) {
             value = lightroom.getAlbums()
+                .groupBy { it.folder }
+                .entries
+                .map { it.key to it.value }
         }
 
         val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {
