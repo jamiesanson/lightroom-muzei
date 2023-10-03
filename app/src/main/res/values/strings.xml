@@ -9,8 +9,8 @@
     <string name="sign_in_description">To provide Muzei with images, the Muzei Lightroom source needs access to your Adobe account.</string>
     <string name="sign_in">Sign in</string>
     <string name="continue_with_adobe">Continue with Adobe</string>
-    <string name="album_source_description">Use assets from a specific album</string>
+    <string name="album_source_description">Use images from a specific album</string>
     <string name="album_source_title">Album</string>
     <string name="catalog_source_title">Entire Catalog</string>
-    <string name="catalog_source_description">Use every assets in your Lightroom catalog</string>
+    <string name="catalog_source_description">Use every image in your Lightroom catalog</string>
 </resources>

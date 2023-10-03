@@ -27,5 +27,7 @@ data object FilterAssetsScreen : Screen {
         data class UpdateFlag(val flag: Asset.Flag?) : Event
 
         data object PopBackToAlbumSelection : Event
+
+        data object Confirm : Event
     }
 }

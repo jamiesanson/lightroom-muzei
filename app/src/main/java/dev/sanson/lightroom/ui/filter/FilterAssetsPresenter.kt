@@ -15,6 +15,7 @@ import dev.sanson.lightroom.data.config.Config
 import dev.sanson.lightroom.data.config.ConfigRepository
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.ui.component.Equality
+import dev.sanson.lightroom.ui.confirmation.ConfirmationScreen
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateRating
@@ -122,6 +123,9 @@ class FilterAssetsPresenter @AssistedInject constructor(
 
                     is FilterAssetsScreen.Event.PopBackToAlbumSelection ->
                         navigator.pop()
+
+                    is FilterAssetsScreen.Event.Confirm ->
+                        navigator.goTo(ConfirmationScreen)
                 }
             },
         )
