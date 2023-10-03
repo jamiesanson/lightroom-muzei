@@ -32,7 +32,7 @@ class FilterAssetsPresenterFactory @Inject constructor(
         context: CircuitContext,
     ): Presenter<*>? {
         return when (screen) {
-            is FilterAssetsScreen -> factory.create(navigator, screen)
+            is FilterAssetsScreen -> factory.create(navigator)
             else -> null
         }
     }
@@ -129,6 +129,6 @@ class FilterAssetsPresenter @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(navigator: Navigator, screen: FilterAssetsScreen): FilterAssetsPresenter
+        fun create(navigator: Navigator): FilterAssetsPresenter
     }
 }

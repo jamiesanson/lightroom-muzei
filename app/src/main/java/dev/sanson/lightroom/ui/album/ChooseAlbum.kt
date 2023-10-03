@@ -50,7 +50,7 @@ class ChooseAlbumUiFactory @Inject constructor() : Ui.Factory {
     override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
         is ChooseAlbumScreen -> ui<ChooseAlbumScreen.State> { state, modifier ->
             ChooseAlbum(
-                state = state,
+                viewState = state,
                 modifier = modifier,
             )
         }
@@ -62,7 +62,7 @@ class ChooseAlbumUiFactory @Inject constructor() : Ui.Factory {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChooseAlbum(
-    state: ChooseAlbumScreen.State,
+    viewState: ChooseAlbumScreen.State,
     modifier: Modifier = Modifier,
 ) {
     val topAppBarScrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -91,7 +91,7 @@ private fun ChooseAlbum(
                 .nestedScroll(topAppBarScrollBehaviour.nestedScrollConnection),
         ) {
             AnimatedContent(
-                targetState = state,
+                targetState = viewState,
                 label = "Choose album",
             ) {
                 // TODO: Wee bit of skeleton loading here would be nice
@@ -199,7 +199,7 @@ fun AssetThumbnail(
 fun ChooseAlbumScreenPreview() {
     MuzeiLightroomTheme {
         ChooseAlbum(
-            state = ChooseAlbumScreen.State.Loaded(
+            viewState = ChooseAlbumScreen.State.Loaded(
                 albums = listOf(),
                 selectedAlbum = null,
                 eventSink = {},

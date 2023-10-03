@@ -16,10 +16,10 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dev.sanson.lightroom.sdk.Lightroom
-import dev.sanson.lightroom.ui.album.ChooseAlbumScreen
 import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn
+import dev.sanson.lightroom.ui.source.ChooseSourceScreen
 import javax.inject.Inject
 
 // TODO: There's a significant amount of boilerplate that comes with wiring up a screen, when
@@ -54,7 +54,7 @@ class SignInPresenter @AssistedInject constructor(
 
         LaunchedEffect(isSignedIn) {
             if (isSignedIn == true) {
-                navigator.resetRoot(ChooseAlbumScreen)
+                navigator.resetRoot(ChooseSourceScreen)
             }
         }
 

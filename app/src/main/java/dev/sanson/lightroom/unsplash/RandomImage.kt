@@ -34,14 +34,21 @@ import javax.inject.Inject
 private const val UNSPLASH_REFERRAL = "utm_source=Lightroom%20for%20Muzei&utm_medium=referral"
 private fun unsplash(path: String) = "https://unsplash.com$path$UNSPLASH_REFERRAL"
 
+/**
+ * Basic interface wrapping Unsplash API usage
+ */
+interface Unsplash {
+    suspend fun getRandomPhoto(): Photo?
+}
+
 @HiltViewModel
-class RandomImageViewModel @Inject constructor(
+private class RandomImageViewModel @Inject constructor(
     private val unsplashService: UnsplashService,
-) : ViewModel() {
+) : ViewModel(), Unsplash {
 
     private var cachedPhoto: Photo? = null
 
-    suspend fun getRandomPhoto(): Photo? {
+    override suspend fun getRandomPhoto(): Photo? {
         if (cachedPhoto == null) {
             cachedPhoto = runCatching { unsplashService.getRandomPhoto() }
                 .getOrNull()
@@ -52,19 +59,26 @@ class RandomImageViewModel @Inject constructor(
 }
 
 @Composable
-fun rememberRandomImage(
-    unsplashService: RandomImageViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner),
-): RandomImage? {
-    if (LocalView.current.isInEditMode) {
+private fun rememberUnsplash(): Unsplash {
+    return if (LocalView.current.isInEditMode) {
         // Avoid ViewModel fetching in previews
-        return null
+        object : Unsplash {
+            override suspend fun getRandomPhoto(): Photo? = null
+        }
+    } else {
+        hiltViewModel(LocalContext.current as ViewModelStoreOwner)
     }
+}
 
+@Composable
+fun rememberRandomImage(
+    unsplash: Unsplash = rememberUnsplash(),
+): RandomImage? {
     var image by rememberSaveable { mutableStateOf<RandomImage?>(null) }
 
     LaunchedEffect(true) {
         if (image == null) {
-            val photo = unsplashService.getRandomPhoto()
+            val photo = unsplash.getRandomPhoto()
 
             if (photo != null) {
                 image = RandomImage(

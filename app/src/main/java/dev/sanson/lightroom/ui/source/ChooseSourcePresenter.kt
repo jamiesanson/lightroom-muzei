@@ -1,7 +1,7 @@
 package dev.sanson.lightroom.ui.source
 
 import androidx.compose.runtime.Composable
-import androidx.datastore.core.DataStore
+import androidx.compose.runtime.rememberCoroutineScope
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.Screen
@@ -9,8 +9,13 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dev.sanson.lightroom.data.config.Config
-import dev.sanson.lightroom.sdk.Lightroom
+import dev.sanson.lightroom.data.config.ConfigRepository
+import dev.sanson.lightroom.ui.album.ChooseAlbumScreen
+import dev.sanson.lightroom.ui.filter.FilterAssetsScreen
+import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseAlbum
+import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseCatalog
+import dev.sanson.lightroom.ui.source.ChooseSourceScreen.State
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChooseSourcePresenterFactory @Inject constructor(
@@ -30,13 +35,24 @@ class ChooseSourcePresenterFactory @Inject constructor(
 
 class ChooseSourcePresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
-    private val lightroom: Lightroom,
-    private val filterStore: DataStore<Config?>,
-) : Presenter<ChooseSourceScreen.State> {
+    private val configRepository: ConfigRepository,
+) : Presenter<State> {
     @Composable
-    override fun present(): ChooseSourceScreen.State {
-        return ChooseSourceScreen.State(
-            eventSink = {
+    override fun present(): State {
+        val scope = rememberCoroutineScope()
+
+        return State(
+            eventSink = { event ->
+                when (event) {
+                    OnChooseAlbum ->
+                        navigator.goTo(ChooseAlbumScreen)
+
+                    OnChooseCatalog ->
+                        scope.launch {
+                            configRepository.setUseCatalog()
+                            navigator.goTo(FilterAssetsScreen)
+                        }
+                }
             },
         )
     }
