@@ -3,7 +3,7 @@ package dev.sanson.lightroom.sdk.backend.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AlbumAssetResponse(
+data class AssetsPageResponse(
     val resources: List<AlbumAsset>,
     val links: Links? = null,
 )

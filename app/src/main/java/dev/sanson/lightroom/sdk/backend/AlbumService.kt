@@ -1,7 +1,7 @@
 package dev.sanson.lightroom.sdk.backend
 
 import dev.sanson.lightroom.sdk.backend.model.Album
-import dev.sanson.lightroom.sdk.backend.model.AlbumAssetResponse
+import dev.sanson.lightroom.sdk.backend.model.AssetsPageResponse
 import dev.sanson.lightroom.sdk.backend.model.Resources
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -39,5 +39,5 @@ interface AlbumService {
         hideStackedAssets: Boolean = true,
         @Query("limit")
         limit: Int = 1,
-    ): AlbumAssetResponse
+    ): AssetsPageResponse
 }

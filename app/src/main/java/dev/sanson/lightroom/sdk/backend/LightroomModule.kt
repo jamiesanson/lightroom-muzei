@@ -21,6 +21,7 @@ import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
+import dev.sanson.lightroom.sdk.domain.GetCatalogAssetsUseCase
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
@@ -137,6 +138,7 @@ class LightroomModule {
         clientId: String,
         retrieveAlbums: GetAlbumsUseCase,
         retrieveAlbumAssets: GetAlbumAssetsUseCase,
+        retrieveCatalogAssets: GetCatalogAssetsUseCase,
         generateRendition: GenerateRenditionUseCase,
         catalogRepository: CatalogRepository,
     ): Lightroom {
@@ -145,6 +147,7 @@ class LightroomModule {
             clientId = clientId,
             retrieveAlbums = retrieveAlbums,
             retrieveAlbumAssets = retrieveAlbumAssets,
+            retrieveCatalogAssets = retrieveCatalogAssets,
             catalogRepository = catalogRepository,
             generateRenditions = generateRendition,
         )

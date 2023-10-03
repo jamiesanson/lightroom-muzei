@@ -43,11 +43,7 @@ class LoadAlbumWorker @AssistedInject constructor(
             contentResolver = applicationContext.contentResolver,
         ).mapNotNull { it.token }
 
-        // TODO: Support catalog asset loading
-        val album = config.source as? Config.Source.Album ?: return Result.failure()
-
-        val artworks = lightroom
-            .getAlbumAssets(albumId = album.id)
+        val artworks = loadAssets(config.source)
             .filter { config.permitsAsset(it) }
             .filterNot { albumAsset ->
                 albumAsset.id.id in previouslyAddedAssets
@@ -94,5 +90,15 @@ class LoadAlbumWorker @AssistedInject constructor(
             webUri = "https://lightroom.adobe.com/libraries/${catalogId.id}/assets/${id.id}".toUri(),
             metadata = catalogId.id,
         )
+    }
+
+    private suspend fun loadAssets(source: Config.Source): List<Asset> {
+        return when (source) {
+            is Config.Source.Album ->
+                lightroom.getAlbumAssets(source.id)
+
+            is Config.Source.Catalog ->
+                lightroom.getCatalogAssets()
+        }
     }
 }

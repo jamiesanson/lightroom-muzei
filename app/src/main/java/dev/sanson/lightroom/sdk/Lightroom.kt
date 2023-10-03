@@ -14,6 +14,7 @@ import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
+import dev.sanson.lightroom.sdk.domain.GetCatalogAssetsUseCase
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
@@ -54,6 +55,13 @@ interface Lightroom {
     suspend fun getAlbums(): List<Album>
 
     /**
+     * List catalog assets
+     *
+     * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Assets/operation/getAssets
+     */
+    suspend fun getCatalogAssets(): List<Asset>
+
+    /**
      * List album assets
      *
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Albums/operation/listAssetsOfAlbum
@@ -80,6 +88,7 @@ class DefaultLightroom(
     internal val clientId: String,
     private val retrieveAlbums: GetAlbumsUseCase,
     private val retrieveAlbumAssets: GetAlbumAssetsUseCase,
+    private val retrieveCatalogAssets: GetCatalogAssetsUseCase,
     private val generateRenditions: GenerateRenditionUseCase,
     private val catalogRepository: CatalogRepository,
 ) : Lightroom {
@@ -100,6 +109,8 @@ class DefaultLightroom(
     override suspend fun getCatalog(): Catalog = catalogRepository.getCatalog()
 
     override suspend fun getAlbums(): List<Album> = retrieveAlbums()
+
+    override suspend fun getCatalogAssets(): List<Asset> = retrieveCatalogAssets()
 
     override suspend fun getAlbumAssets(albumId: AlbumId): List<Asset> =
         retrieveAlbumAssets(albumId = albumId)

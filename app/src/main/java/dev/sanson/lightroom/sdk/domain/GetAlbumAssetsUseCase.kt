@@ -9,7 +9,49 @@ import dev.sanson.lightroom.sdk.model.AssetId
 import javax.inject.Inject
 import dev.sanson.lightroom.sdk.backend.model.Asset as BackendAsset
 
-private const val PAGE_SIZE = 50
+/**
+ * Pull the "captured_after" parameter out of an [Href]
+ *
+ * @throws IllegalStateException throws in absence of captured_after parameter
+ */
+internal val Href.capturedAfter: String
+    get() = "http://example.com/$href"
+        .toUri()
+        .getQueryParameter("captured_after")
+        ?: throw IllegalStateException("No captured_after parameter on next href")
+
+internal fun BackendAsset.toAsset(): Asset {
+    requireNotNull(payload) { "No asset metadata found: $this" }
+
+    // TODO: Some assets may not have focal length & aperture ratings. How does the API behave for these?
+    return Asset(
+        id = AssetId(id),
+        captureDate = payload.captureDate,
+        cameraBody = payload.xmp.tiff.run {
+            "$make $model"
+        },
+        lens = payload.xmp.aux.lens,
+        iso = payload.xmp.exif.iso,
+        shutterSpeed = payload.xmp.exif.exposureTime.run {
+            "$numerator/$denominator sec"
+        },
+        aperture = payload.xmp.exif.fNumber.run {
+            "ƒ / ${numerator.toFloat() / denominator.toFloat()}"
+        },
+        focalLength = payload.xmp.exif.focalLength.run {
+            "${numerator / denominator} mm"
+        },
+        rating = payload.rating,
+        review = when (payload.picked) {
+            true -> Asset.Flag.Picked
+            false -> Asset.Flag.Rejected
+            null -> null
+        },
+        keywords = payload.xmp.dc?.subjects ?: emptyList(),
+    )
+}
+
+internal const val API_PAGE_SIZE = 50
 
 class GetAlbumAssetsUseCase @Inject constructor(
     private val albumService: AlbumService,
@@ -32,7 +74,7 @@ class GetAlbumAssetsUseCase @Inject constructor(
                 val page = albumService.getAlbumAssets(
                     catalogId = catalogId.id,
                     albumId = albumId.id,
-                    limit = PAGE_SIZE,
+                    limit = API_PAGE_SIZE,
                     capturedAfter = capturedAfter,
                 )
 
@@ -43,47 +85,5 @@ class GetAlbumAssetsUseCase @Inject constructor(
         }
 
         return albumAssets.map { it.asset.toAsset() }
-    }
-
-    /**
-     * Pull the "captured_after" parameter out of an [Href]
-     *
-     * @throws IllegalStateException throws in absence of captured_after parameter
-     */
-    private val Href.capturedAfter: String
-        get() = "http://example.com/$href"
-            .toUri()
-            .getQueryParameter("captured_after")
-            ?: throw IllegalStateException("No captured_after parameter on next href")
-
-    private fun BackendAsset.toAsset(): Asset {
-        requireNotNull(payload) { "No asset metadata found: $this" }
-
-        // TODO: Some assets may not have focal length & aperture ratings. How does the API behave for these?
-        return Asset(
-            id = AssetId(id),
-            captureDate = payload.captureDate,
-            cameraBody = payload.xmp.tiff.run {
-                "$make $model"
-            },
-            lens = payload.xmp.aux.lens,
-            iso = payload.xmp.exif.iso,
-            shutterSpeed = payload.xmp.exif.exposureTime.run {
-                "$numerator/$denominator sec"
-            },
-            aperture = payload.xmp.exif.fNumber.run {
-                "ƒ / ${numerator.toFloat() / denominator.toFloat()}"
-            },
-            focalLength = payload.xmp.exif.focalLength.run {
-                "${numerator / denominator} mm"
-            },
-            rating = payload.rating,
-            review = when (payload.picked) {
-                true -> Asset.Flag.Picked
-                false -> Asset.Flag.Rejected
-                null -> null
-            },
-            keywords = payload.xmp.dc?.subjects ?: emptyList(),
-        )
     }
 }
