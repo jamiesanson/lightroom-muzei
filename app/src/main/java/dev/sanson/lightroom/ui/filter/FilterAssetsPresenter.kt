@@ -2,8 +2,11 @@ package dev.sanson.lightroom.ui.filter
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.Screen
@@ -66,12 +69,16 @@ class FilterAssetsPresenter @AssistedInject constructor(
             configRepository.config.filterNotNull().collect { value = it }
         }
 
+        var equality by remember {
+            mutableStateOf(filter.ratingEquality)
+        }
+
         val scope = rememberCoroutineScope()
 
         return FilterAssetsScreen.State(
             keywords = filter.keywords.toPersistentList(),
-            rating = filter.rating?.first ?: 0,
-            equality = filter.ratingEquality,
+            rating = filter.starRating,
+            equality = equality,
             flag = filter.review,
             eventSink = { event ->
                 when (event) {
@@ -99,6 +106,8 @@ class FilterAssetsPresenter @AssistedInject constructor(
 
                     is FilterAssetsScreen.Event.UpdateEquality ->
                         scope.launch {
+                            equality = event.equality
+
                             configRepository.setRatingRange(
                                 start = when (filter.ratingEquality) {
                                     Equality.GreaterThan,
