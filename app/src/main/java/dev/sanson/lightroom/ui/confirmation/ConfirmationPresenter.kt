@@ -28,16 +28,19 @@ class ConfirmationPresenterFactory @Inject constructor(
     }
 }
 
+@Suppress("unused") // TODO: Remove
 class ConfirmationPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
     private val configRepository: ConfigRepository,
 ) : Presenter<State> {
+
+    @Suppress("UNUSED_VARIABLE")
     @Composable
     override fun present(): State {
         val scope = rememberCoroutineScope()
 
         return State(
-            eventSink = { event ->
+            eventSink = {
             },
         )
     }

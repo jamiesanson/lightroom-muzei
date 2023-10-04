@@ -66,7 +66,7 @@ private fun rememberUnsplash(): Unsplash {
             override suspend fun getRandomPhoto(): Photo? = null
         }
     } else {
-        hiltViewModel(LocalContext.current as ViewModelStoreOwner)
+        hiltViewModel<RandomImageViewModel>(LocalContext.current as ViewModelStoreOwner)
     }
 }
 
