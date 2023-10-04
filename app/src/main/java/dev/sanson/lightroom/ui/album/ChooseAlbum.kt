@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -46,6 +47,7 @@ import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CollectionSet
 import dev.sanson.lightroom.sdk.model.CollectionSetId
 import dev.sanson.lightroom.sdk.model.Rendition
+import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
 import dev.sanson.lightroom.ui.component.DarkModePreviews
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
@@ -93,13 +95,18 @@ private fun ChooseAlbum(
             when (state) {
                 is ChooseAlbumScreen.State.Loaded ->
                     LazyColumn(
-                        Modifier.padding(horizontal = 8.dp),
+                        Modifier
+                            .padding(horizontal = 8.dp),
                     ) {
                         collectionSet(
                             children = state.albumTree,
                             selectedAlbum = state.selectedAlbum,
                             onAlbumClick = { state.eventSink(SelectAlbum(it)) },
                         )
+
+                        item {
+                            Spacer(Modifier.height(96.dp))
+                        }
                     }
 
                 else ->
@@ -111,15 +118,18 @@ private fun ChooseAlbum(
                     }
             }
 
-            Button(
-                onClick = { },
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter),
-            ) {
-                Text("Confirm")
+            if (state is ChooseAlbumScreen.State.Loaded) {
+                Button(
+                    onClick = { state.eventSink(Confirm) },
+                    enabled = state.selectedAlbum != null,
+                    modifier = Modifier
+                        .padding(bottom = 24.dp)
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter),
+                ) {
+                    Text("Confirm")
+                }
             }
         }
     }
