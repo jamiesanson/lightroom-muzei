@@ -1,13 +1,9 @@
 package dev.sanson.lightroom.ui.album
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,11 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,28 +23,31 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
+import dev.sanson.lightroom.R
 import dev.sanson.lightroom.coil.rememberImageRequest
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.sdk.model.AlbumTreeItem
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.CollectionSet
+import dev.sanson.lightroom.sdk.model.CollectionSetId
 import dev.sanson.lightroom.sdk.model.Rendition
+import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
 import dev.sanson.lightroom.ui.component.DarkModePreviews
-import dev.sanson.lightroom.ui.component.FixedCardLoadingScreen
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import javax.inject.Inject
 
@@ -59,7 +55,7 @@ class ChooseAlbumUiFactory @Inject constructor() : Ui.Factory {
     override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
         is ChooseAlbumScreen -> ui<ChooseAlbumScreen.State> { state, modifier ->
             ChooseAlbum(
-                viewState = state,
+                state = state,
                 modifier = modifier,
             )
         }
@@ -71,11 +67,9 @@ class ChooseAlbumUiFactory @Inject constructor() : Ui.Factory {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChooseAlbum(
-    viewState: ChooseAlbumScreen.State,
+    state: ChooseAlbumScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    val topAppBarScrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-
     Scaffold(
         topBar = {
             MediumTopAppBar(
@@ -85,7 +79,6 @@ private fun ChooseAlbum(
                         style = MaterialTheme.typography.titleLarge,
                     )
                 },
-                scrollBehavior = topAppBarScrollBehaviour,
             )
         },
         modifier = modifier
@@ -97,72 +90,25 @@ private fun ChooseAlbum(
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            Column(
-                Modifier
-                    .padding(horizontal = 16.dp)
-                    .scrollable(rememberScrollState(), orientation = Orientation.Vertical)
-                    .nestedScroll(topAppBarScrollBehaviour.nestedScrollConnection),
-            ) {
-                AnimatedContent(
-                    targetState = viewState,
-                    label = "Choose album",
-                ) {
-                    // TODO: Wee bit of skeleton loading here would be nice
-                    when (val state = it) {
-                        is ChooseAlbumScreen.State.Loaded ->
-                            LazyColumn(Modifier.background(MaterialTheme.colorScheme.background)) {
-                                items(state.albums) { (parent, albums) ->
-                                    if (parent != null) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .clip(RoundedCornerShape(8.dp))
-                                                .clickable { /* TODO: Expand and contract folder */ }
-                                                .padding(vertical = 4.dp),
-                                        ) {
-                                            Icon(
-                                                Icons.Default.KeyboardArrowDown,
-                                                contentDescription = null,
-                                            )
-
-                                            Spacer(modifier = Modifier.size(4.dp))
-
-                                            Text(text = parent)
-                                        }
-                                    }
-
-                                    Column {
-                                        Spacer(Modifier.size(8.dp))
-                                        for (album in albums) {
-                                            AlbumRow(
-                                                isSelected = state.selectedAlbum == album.id,
-                                                onClick = {
-                                                    state.eventSink(
-                                                        ChooseAlbumScreen.Event.SelectAlbum(
-                                                            albumId = album.id,
-                                                        ),
-                                                    )
-                                                },
-                                                name = album.name,
-                                                coverAsset = album.cover,
-                                                assetCount = remember(album) { album.assets.size.toString() },
-                                                modifier = Modifier
-                                                    .padding(
-                                                        horizontal = 8.dp,
-                                                        vertical = 4.dp,
-                                                    )
-                                                    .padding(start = if (parent != null) 12.dp else 0.dp),
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
-                        else ->
-                            FixedCardLoadingScreen()
+            when (state) {
+                is ChooseAlbumScreen.State.Loaded ->
+                    LazyColumn(
+                        Modifier.padding(horizontal = 8.dp),
+                    ) {
+                        collectionSet(
+                            children = state.albumTree,
+                            selectedAlbum = state.selectedAlbum,
+                            onAlbumClick = { state.eventSink(SelectAlbum(it)) },
+                        )
                     }
-                }
+
+                else ->
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        CircularProgressIndicator()
+                    }
             }
 
             Button(
@@ -179,13 +125,70 @@ private fun ChooseAlbum(
     }
 }
 
+private fun LazyListScope.collectionSet(
+    children: List<AlbumTreeItem>,
+    selectedAlbum: AlbumId?,
+    onAlbumClick: (AlbumId) -> Unit,
+    name: String? = null,
+    inset: Dp = 0.dp,
+) {
+    if (name != null) {
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .padding(top = 16.dp, bottom = 8.dp)
+                    .padding(start = inset - 8.dp),
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.ic_folder),
+                    contentDescription = null,
+                )
+
+                Spacer(modifier = Modifier.size(8.dp))
+
+                Text(text = name)
+            }
+        }
+    }
+
+    for (child in children) {
+        when (child) {
+            is Album -> {
+                item {
+                    AlbumRow(
+                        isSelected = selectedAlbum == child.id,
+                        onClick = { onAlbumClick(child.id) },
+                        name = child.name,
+                        coverAsset = child.cover,
+                        modifier = Modifier
+                            .padding(vertical = 4.dp)
+                            .padding(start = inset + 8.dp, end = 8.dp),
+                    )
+                }
+            }
+
+            is CollectionSet -> {
+                collectionSet(
+                    name = child.name,
+                    children = child.children,
+                    selectedAlbum = selectedAlbum,
+                    onAlbumClick = onAlbumClick,
+                    inset = inset + 16.dp,
+                )
+            }
+        }
+    }
+}
+
 @Composable
-fun AlbumRow(
+private fun AlbumRow(
     isSelected: Boolean,
     onClick: () -> Unit,
     name: String,
     coverAsset: AssetId?,
-    assetCount: String,
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor by animateColorAsState(
@@ -228,16 +231,7 @@ fun AlbumRow(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.32f),
                             shape = RoundedCornerShape(6.dp),
                         ),
-                ) {
-                    if (assetCount.toInt() != 0) {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier
-                                .size(24.dp)
-                                .align(Alignment.Center),
-                        )
-                    }
-                }
+                )
             }
 
             Spacer(Modifier.size(12.dp))
@@ -247,21 +241,12 @@ fun AlbumRow(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-
-            Spacer(Modifier.weight(1f))
-
-            Text(
-                text = assetCount,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(end = 12.dp),
-            )
         }
     }
 }
 
 @Composable
-fun AssetThumbnail(
+private fun AssetThumbnail(
     id: AssetId,
     modifier: Modifier = Modifier,
 ) {
@@ -282,39 +267,37 @@ fun AssetThumbnail(
 fun ChooseAlbumScreenPreview() {
     MuzeiLightroomTheme {
         ChooseAlbum(
-            viewState = ChooseAlbumScreen.State.Loaded(
-                albums = listOf(
-                    "Travel" to listOf(
-                        Album(
-                            id = AlbumId("1"),
-                            name = "Portugal",
-                            folder = "Travel",
-                            cover = null,
-                            assets = List(168) { AssetId("") },
-                        ),
-                        Album(
-                            id = AlbumId("2"),
-                            name = "Spain",
-                            folder = "Travel",
-                            cover = null,
-                            assets = List(340) { AssetId("") },
-                        ),
-                        Album(
-                            id = AlbumId("3"),
-                            name = "Morocco",
-                            folder = "Travel",
-                            cover = null,
-                            assets = List(210) { AssetId("") },
+            state = ChooseAlbumScreen.State.Loaded(
+                albumTree = listOf(
+                    CollectionSet(
+                        id = CollectionSetId("0"),
+                        name = "Travel",
+                        children = listOf(
+                            Album(
+                                id = AlbumId("1"),
+                                name = "Portugal",
+                                cover = null,
+                                assets = List(168) { AssetId("") },
+                            ),
+                            Album(
+                                id = AlbumId("2"),
+                                name = "Spain",
+                                cover = null,
+                                assets = List(340) { AssetId("") },
+                            ),
+                            Album(
+                                id = AlbumId("3"),
+                                name = "Morocco",
+                                cover = null,
+                                assets = List(210) { AssetId("") },
+                            ),
                         ),
                     ),
-                    null to listOf(
-                        Album(
-                            id = AlbumId("4"),
-                            name = "NZ Birdlife",
-                            folder = null,
-                            cover = null,
-                            assets = List(10) { AssetId("") },
-                        ),
+                    Album(
+                        id = AlbumId("4"),
+                        name = "NZ Birdlife",
+                        cover = null,
+                        assets = List(10) { AssetId("") },
                     ),
                 ),
                 selectedAlbum = AlbumId("3"),

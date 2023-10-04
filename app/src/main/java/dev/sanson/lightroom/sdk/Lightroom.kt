@@ -3,27 +3,20 @@ package dev.sanson.lightroom.sdk
 import android.content.Context
 import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStoreOwner
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import dev.sanson.lightroom.sdk.domain.GetCatalogAssetsUseCase
-import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.sdk.model.AlbumTreeItem
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Catalog
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
 
 interface Lightroom {
     /**
@@ -48,11 +41,11 @@ interface Lightroom {
     suspend fun getCatalog(): Catalog
 
     /**
-     * Load albums for logged in user
+     * Load album tree for logged in user
      *
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Albums/operation/getAlbums
      */
-    suspend fun getAlbums(): List<Album>
+    suspend fun getAlbums(): List<AlbumTreeItem>
 
     /**
      * List catalog assets
@@ -108,7 +101,7 @@ class DefaultLightroom(
 
     override suspend fun getCatalog(): Catalog = catalogRepository.getCatalog()
 
-    override suspend fun getAlbums(): List<Album> = retrieveAlbums()
+    override suspend fun getAlbums(): List<AlbumTreeItem> = retrieveAlbums()
 
     override suspend fun getCatalogAssets(): List<Asset> = retrieveCatalogAssets()
 
@@ -132,14 +125,4 @@ internal suspend fun Lightroom.getAuthHeaders(): Map<String, String> {
         ?: authManager.refreshTokens().accessToken
 
     return apiKey + ("Authorization" to "Bearer $token")
-}
-
-@HiltViewModel
-private class LightroomViewModel @Inject constructor(
-    val lightroom: Lightroom,
-) : ViewModel()
-
-@Composable
-fun rememberLightroom(): Lightroom {
-    return hiltViewModel<LightroomViewModel>(LocalContext.current as ViewModelStoreOwner).lightroom
 }

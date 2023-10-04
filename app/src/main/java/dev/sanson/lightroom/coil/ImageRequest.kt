@@ -70,6 +70,8 @@ suspend fun Lightroom.awaitSuccessfulImageRequest(
         result = context.imageLoader.execute(pendingRequest)
     }
 
+    Log.v("ImageRequest", "Successful result: $result")
+
     return result.request
 }
 

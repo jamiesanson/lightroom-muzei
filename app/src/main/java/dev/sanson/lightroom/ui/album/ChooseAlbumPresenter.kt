@@ -16,6 +16,8 @@ import dev.sanson.lightroom.data.config.ConfigRepository
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
+import dev.sanson.lightroom.sdk.model.AlbumTreeItem
+import dev.sanson.lightroom.sdk.model.CollectionSet
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loaded
@@ -49,14 +51,16 @@ class ChooseAlbumPresenter @AssistedInject constructor(
     override fun present(): ChooseAlbumScreen.State {
         val scope = rememberCoroutineScope()
 
-        val albumState by produceState<List<Pair<String?, List<Album>>>?>(
+        val albumState by produceState<List<AlbumTreeItem>?>(
             initialValue = null,
             lightroom,
         ) {
-            value = lightroom.getAlbums()
-                .groupBy { it.folder }
-                .entries
-                .map { it.key to it.value }
+            value = lightroom.getAlbums().sortedBy {
+                when (it) {
+                    is Album -> 1
+                    is CollectionSet -> 0
+                }
+            }
         }
 
         val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {
@@ -71,7 +75,7 @@ class ChooseAlbumPresenter @AssistedInject constructor(
                 Loading
 
             else -> Loaded(
-                albums = albums,
+                albumTree = albums,
                 selectedAlbum = albumId,
                 eventSink = { event ->
                     when (event) {
