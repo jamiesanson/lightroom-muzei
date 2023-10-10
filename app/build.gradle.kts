@@ -40,13 +40,6 @@ android {
     }
 }
 
-// TODO: This should be wired up properly - maybe worth trying KSP hilt?
-kotlin {
-    sourceSets.main {
-        kotlin.srcDir("build/generated/ksp/debug/kotlin")
-    }
-}
-
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)

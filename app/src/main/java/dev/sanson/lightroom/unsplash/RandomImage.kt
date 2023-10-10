@@ -42,7 +42,7 @@ interface Unsplash {
 }
 
 @HiltViewModel
-private class RandomImageViewModel @Inject constructor(
+class RandomImageViewModel @Inject constructor(
     private val unsplashService: UnsplashService,
 ) : ViewModel(), Unsplash {
 

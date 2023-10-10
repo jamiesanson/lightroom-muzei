@@ -37,8 +37,8 @@ retrofit = "2.9.0"
 retrofit-kotlinx-serialization-converter = "1.0.0"
 okhttp = "4.11.0"
 
-dagger = "2.46.1"
-hilt = "2.46.1"
+dagger = "2.48"
+hilt = "2.48"
 hilt-ext = "1.0.0"
 
 desugared-jdk-libs = "2.0.3"
