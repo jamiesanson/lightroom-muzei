@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
 
     implementation(libs.circuit)
+    implementation(libs.circuitx)
     testImplementation(libs.circuit.test)
 
     testImplementation(libs.bundles.testing.unit)

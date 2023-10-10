@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.Screen
+import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
 import dev.sanson.lightroom.ui.component.DarkModePreviews
@@ -87,6 +87,6 @@ fun Confirmation(
 @Composable
 fun ChooseSourcePreview() {
     MuzeiLightroomTheme {
-        Confirmation(state = ConfirmationScreen.State {})
+        Confirmation(state = ConfirmationScreen.State.LoadingArtwork)
     }
 }

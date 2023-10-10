@@ -2,7 +2,7 @@ package dev.sanson.lightroom.ui.filter
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.Screen
+import com.slack.circuit.runtime.screen.Screen
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.ui.component.Equality
 import kotlinx.collections.immutable.ImmutableList

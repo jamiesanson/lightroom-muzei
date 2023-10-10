@@ -5,10 +5,10 @@ versioncode = "1"
 
 android-gradle-plugin = "8.1.1"
 
-compose-bom = "2023.09.00"
+compose-bom = "2023.10.00"
 compose-compiler = "1.5.3"
 
-circuit = "0.13.0-beta01"
+circuit = "0.15.0"
 
 kotlin = "1.9.10"
 kotlinx = "1.7.3"
@@ -100,6 +100,7 @@ androidx-browser = { module = "androidx.browser:browser", version.ref = "android
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 circuit = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
+circuitx = { module = "com.slack.circuit:circuitx-android", version.ref = "circuit" }
 circuit-test = { module = "com.slack.circuit:circuit-test", version.ref = "circuit" }
 
 # Linting
