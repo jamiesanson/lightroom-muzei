@@ -18,26 +18,22 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
+import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.ui.component.DarkModePreviews
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
-import javax.inject.Inject
 
-class ConfirmationUiFactory @Inject constructor() : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is ConfirmationScreen -> ui<ConfirmationScreen.State> { state, modifier ->
-            Confirmation(
-                state = state,
-                modifier = modifier,
-            )
-        }
-
-        else -> null
-    }
-}
+@CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
+class ConfirmationUi : Ui<ConfirmationScreen.State> by ui(
+    body = { state, modifier ->
+        Confirmation(
+            state = state,
+            modifier = modifier,
+        )
+    },
+)
 
 /**
  * Note to self: Confirmation in a two-stage process
