@@ -18,6 +18,9 @@ kotlinx-datetime = "0.4.0"
 ktlint-plugin = "11.3.2"
 ktlint-compose-rules = "0.1.2"
 
+kotlinpoet = "1.14.2"
+ksp = "1.9.10-1.0.13"
+
 androidx-appcompat = "1.6.1"
 androidx-activity-compose = "1.7.2"
 androidx-browser = "1.6.0"
@@ -33,7 +36,6 @@ muzei-api = "3.4.1"
 retrofit = "2.9.0"
 retrofit-kotlinx-serialization-converter = "1.0.0"
 okhttp = "4.11.0"
-
 
 dagger = "2.46.1"
 hilt = "2.46.1"
@@ -70,6 +72,7 @@ androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "androi
 
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
+dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidx-hilt-navigation-compose" }
 
@@ -78,6 +81,16 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
+
+ksp = { module = "com.google.devtools.ksp:symbol-processing", version.ref = "ksp" }
+ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+
+autoService-annotations = { module = "com.google.auto.service:auto-service-annotations", version = "1.1.1" }
+autoService-ksp = { module = "dev.zacsweers.autoservice:auto-service-ksp", version = "1.1.0" }
+
+kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
+kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
+
 
 android-desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugared-jdk-libs" }
 
@@ -100,6 +113,8 @@ androidx-browser = { module = "androidx.browser:browser", version.ref = "android
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 circuit = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
+circuit-codegen-annotations = { module = "com.slack.circuit:circuit-codegen-annotations", version.ref = "circuit" }
+circuitx = { module = "com.slack.circuit:circuitx-android", version.ref = "circuit" }
 circuit-test = { module = "com.slack.circuit:circuit-test", version.ref = "circuit" }
 
 # Linting
@@ -118,6 +133,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]
 testing-unit = [

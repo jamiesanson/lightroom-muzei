@@ -1,6 +1,8 @@
 import dev.sanson.lightroom.buildlogic.BuildType
 
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
+    alias(libs.plugins.ksp)
     id("dev.sanson.lightroom.android.application")
     id("dev.sanson.lightroom.android.hilt")
 }
@@ -71,6 +73,12 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
 
     implementation(libs.circuit)
+    implementation(libs.circuit.codegen.annotations)
+
+    implementation(projects.circuitCodegen)
+    ksp(projects.circuitCodegen)
+
+    implementation(libs.circuitx)
     testImplementation(libs.circuit.test)
 
     testImplementation(libs.bundles.testing.unit)
