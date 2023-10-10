@@ -19,6 +19,7 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.Visibility
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -47,26 +48,30 @@ import javax.inject.Provider
  *
  * TODO: Generate module; Re-implement function code-gen for UI
  */
+private const val ANVIL_ANNOTATIONS_PACKAGE = "com.squareup.anvil.annotations"
 private const val CIRCUIT_RUNTIME_BASE_PACKAGE = "com.slack.circuit.runtime"
 private const val CIRCUIT_RUNTIME_UI_PACKAGE = "$CIRCUIT_RUNTIME_BASE_PACKAGE.ui"
 private const val CIRCUIT_RUNTIME_SCREEN_PACKAGE = "$CIRCUIT_RUNTIME_BASE_PACKAGE.screen"
 private const val CIRCUIT_RUNTIME_PRESENTER_PACKAGE = "$CIRCUIT_RUNTIME_BASE_PACKAGE.presenter"
-private val MODIFIER = ClassName("androidx.compose.ui", "Modifier")
 private val CIRCUIT_INJECT_ANNOTATION =
     ClassName("com.slack.circuit.codegen.annotations", "CircuitInject")
 private val CIRCUIT_PRESENTER = ClassName(CIRCUIT_RUNTIME_PRESENTER_PACKAGE, "Presenter")
 private val CIRCUIT_PRESENTER_FACTORY = CIRCUIT_PRESENTER.nestedClass("Factory")
 private val CIRCUIT_UI = ClassName(CIRCUIT_RUNTIME_UI_PACKAGE, "Ui")
 private val CIRCUIT_UI_FACTORY = CIRCUIT_UI.nestedClass("Factory")
-private val CIRCUIT_UI_STATE = ClassName(CIRCUIT_RUNTIME_BASE_PACKAGE, "CircuitUiState")
 private val SCREEN = ClassName(CIRCUIT_RUNTIME_SCREEN_PACKAGE, "Screen")
 private val NAVIGATOR = ClassName(CIRCUIT_RUNTIME_BASE_PACKAGE, "Navigator")
 private val CIRCUIT_CONTEXT = ClassName(CIRCUIT_RUNTIME_BASE_PACKAGE, "CircuitContext")
+private val ANVIL_CONTRIBUTES_MULTIBINDING =
+    ClassName(ANVIL_ANNOTATIONS_PACKAGE, "ContributesMultibinding")
 private const val FACTORY = "Factory"
 
 private class CircuitSymbols private constructor(resolver: Resolver) {
     val screen = resolver.loadKSType(SCREEN.canonicalName)
     val navigator = resolver.loadKSType(NAVIGATOR.canonicalName)
+
+    val contributesMultibinding =
+        resolver.loadOptionalKSType(ANVIL_CONTRIBUTES_MULTIBINDING.canonicalName)
 
     companion object {
         fun create(resolver: Resolver): CircuitSymbols? {
@@ -138,6 +143,7 @@ private class CircuitHiltSymbolProcessor(
         val screenIsObject =
             screenKSType.declaration.let { it is KSClassDeclaration && it.classKind == ClassKind.OBJECT }
         val screenType = screenKSType.toTypeName()
+        val scope = (circuitInjectAnnotation.arguments[1].value as KSType).toTypeName()
 
         val factoryData =
             computeFactoryData(annotatedElement, symbols, screenKSType, logger)
@@ -151,6 +157,18 @@ private class CircuitHiltSymbolProcessor(
 
         val builder =
             TypeSpec.classBuilder(className + FACTORY)
+                .let {
+                    // TODO: This could be tidied up, put behind a KSP processor parameter, and upstreamed
+                    if (symbols.contributesMultibinding != null) {
+                        it.addAnnotation(
+                            AnnotationSpec.builder(ANVIL_CONTRIBUTES_MULTIBINDING)
+                                .addMember("%T::class", scope)
+                                .build(),
+                        )
+                    } else {
+                        it
+                    }
+                }
                 .primaryConstructor(
                     FunSpec.constructorBuilder()
                         .addAnnotation(Inject::class)
