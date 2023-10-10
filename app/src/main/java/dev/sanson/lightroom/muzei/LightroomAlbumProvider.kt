@@ -36,7 +36,6 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
     }
 
     override fun onLoadRequested(initial: Boolean) {
-        // TODO: Could be nice to have a "Loading" initial state which is shown immediately
         val workManager = WorkManager.getInstance(requireNotNull(context))
 
         val request = OneTimeWorkRequestBuilder<LoadAlbumWorker>()

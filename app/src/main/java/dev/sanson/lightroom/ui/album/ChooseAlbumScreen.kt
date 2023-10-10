@@ -2,7 +2,7 @@ package dev.sanson.lightroom.ui.album
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.Screen
+import com.slack.circuit.runtime.screen.Screen
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
 import kotlinx.parcelize.Parcelize
