@@ -44,6 +44,8 @@ import javax.inject.Provider
 /**
  * The following code is derived from Circuit's Anvil-based KSP codegen processor, but instead
  * generates hilt-compatible code using the same CircuitInject paradigm
+ *
+ * TODO: Generate module; Re-implement function code-gen for UI
  */
 private const val CIRCUIT_RUNTIME_BASE_PACKAGE = "com.slack.circuit.runtime"
 private const val CIRCUIT_RUNTIME_UI_PACKAGE = "$CIRCUIT_RUNTIME_BASE_PACKAGE.ui"
@@ -63,8 +65,6 @@ private val CIRCUIT_CONTEXT = ClassName(CIRCUIT_RUNTIME_BASE_PACKAGE, "CircuitCo
 private const val FACTORY = "Factory"
 
 private class CircuitSymbols private constructor(resolver: Resolver) {
-    val modifier = resolver.loadKSType(MODIFIER.canonicalName)
-    val circuitUiState = resolver.loadKSType(CIRCUIT_UI_STATE.canonicalName)
     val screen = resolver.loadKSType(SCREEN.canonicalName)
     val navigator = resolver.loadKSType(NAVIGATOR.canonicalName)
 
