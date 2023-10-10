@@ -39,6 +39,12 @@ class ConfirmationUiFactory @Inject constructor() : Ui.Factory {
     }
 }
 
+/**
+ * Note to self: Confirmation in a two-stage process
+ *
+ * * Loading your images... (paginating and fetching all images)
+ * * Found XX photos, let's start here (date, time, details, use loaded image as background)
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Confirmation(
