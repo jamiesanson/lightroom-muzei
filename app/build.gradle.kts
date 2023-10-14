@@ -41,7 +41,7 @@ android {
 }
 
 ksp {
-    arg("circuit-generate_anvil_bindings", "false")
+    arg("circuit-di", "hilt")
 }
 
 dependencies {
