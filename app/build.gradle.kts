@@ -40,6 +40,10 @@ android {
     }
 }
 
+ksp {
+    arg("circuit-generate_anvil_bindings", "false")
+}
+
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)

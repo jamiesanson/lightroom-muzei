@@ -1,5 +1,7 @@
 package dev.sanson.circuit.codegen
 
+// Copyright (C) 2022 Slack Technologies, LLC
+// SPDX-License-Identifier: Apache-2.0
 import com.google.auto.service.AutoService
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.containingFile
@@ -25,6 +27,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -46,32 +49,46 @@ import javax.inject.Provider
  * The following code is derived from Circuit's Anvil-based KSP codegen processor, but instead
  * generates hilt-compatible code using the same CircuitInject paradigm
  *
- * TODO: Generate module; Re-implement function code-gen for UI
+ * TODO: It'd be nice to split out the module creation, allowing for upstreaming
+ *       and open-sourcing of Hilt support. We'll leave this for later.
  */
 private const val ANVIL_ANNOTATIONS_PACKAGE = "com.squareup.anvil.annotations"
 private const val CIRCUIT_RUNTIME_BASE_PACKAGE = "com.slack.circuit.runtime"
 private const val CIRCUIT_RUNTIME_UI_PACKAGE = "$CIRCUIT_RUNTIME_BASE_PACKAGE.ui"
 private const val CIRCUIT_RUNTIME_SCREEN_PACKAGE = "$CIRCUIT_RUNTIME_BASE_PACKAGE.screen"
 private const val CIRCUIT_RUNTIME_PRESENTER_PACKAGE = "$CIRCUIT_RUNTIME_BASE_PACKAGE.presenter"
+private val MODIFIER = ClassName("androidx.compose.ui", "Modifier")
 private val CIRCUIT_INJECT_ANNOTATION =
     ClassName("com.slack.circuit.codegen.annotations", "CircuitInject")
 private val CIRCUIT_PRESENTER = ClassName(CIRCUIT_RUNTIME_PRESENTER_PACKAGE, "Presenter")
 private val CIRCUIT_PRESENTER_FACTORY = CIRCUIT_PRESENTER.nestedClass("Factory")
 private val CIRCUIT_UI = ClassName(CIRCUIT_RUNTIME_UI_PACKAGE, "Ui")
 private val CIRCUIT_UI_FACTORY = CIRCUIT_UI.nestedClass("Factory")
+private val CIRCUIT_UI_STATE = ClassName(CIRCUIT_RUNTIME_BASE_PACKAGE, "CircuitUiState")
 private val SCREEN = ClassName(CIRCUIT_RUNTIME_SCREEN_PACKAGE, "Screen")
 private val NAVIGATOR = ClassName(CIRCUIT_RUNTIME_BASE_PACKAGE, "Navigator")
 private val CIRCUIT_CONTEXT = ClassName(CIRCUIT_RUNTIME_BASE_PACKAGE, "CircuitContext")
 private val ANVIL_CONTRIBUTES_MULTIBINDING =
     ClassName(ANVIL_ANNOTATIONS_PACKAGE, "ContributesMultibinding")
 private const val FACTORY = "Factory"
+private const val GENERATE_ANVIL_BINDINGS = "circuit-generate_anvil_bindings"
+
+@AutoService(SymbolProcessorProvider::class)
+class CircuitSymbolProcessorProvider : SymbolProcessorProvider {
+    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
+        return CircuitSymbolProcessor(
+            environment.logger,
+            environment.codeGenerator,
+            environment.options,
+        )
+    }
+}
 
 private class CircuitSymbols private constructor(resolver: Resolver) {
+    val modifier = resolver.loadKSType(MODIFIER.canonicalName)
+    val circuitUiState = resolver.loadKSType(CIRCUIT_UI_STATE.canonicalName)
     val screen = resolver.loadKSType(SCREEN.canonicalName)
     val navigator = resolver.loadKSType(NAVIGATOR.canonicalName)
-
-    val contributesMultibinding =
-        resolver.loadOptionalKSType(ANVIL_CONTRIBUTES_MULTIBINDING.canonicalName)
 
     companion object {
         fun create(resolver: Resolver): CircuitSymbols? {
@@ -93,46 +110,49 @@ private fun Resolver.loadOptionalKSType(name: String?): KSType? {
     return getClassDeclarationByName(getKSNameFromString(name))?.asType(emptyList())
 }
 
-private enum class FactoryType { Presenter, Ui }
-
-@AutoService(SymbolProcessorProvider::class)
-class CircuitSymbolProcessorProvider : SymbolProcessorProvider {
-
-    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        return CircuitHiltSymbolProcessor(environment.logger, environment.codeGenerator)
-    }
-}
-
-private class CircuitHiltSymbolProcessor(
+private class CircuitSymbolProcessor(
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator,
+    private val options: Map<String, String>,
 ) : SymbolProcessor {
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = CircuitSymbols.create(resolver) ?: return emptyList()
+        val generateAnvilBindings = options[GENERATE_ANVIL_BINDINGS] != "false"
 
         resolver.getSymbolsWithAnnotation(CIRCUIT_INJECT_ANNOTATION.canonicalName)
-            .forEach { annotated ->
-                when (annotated) {
-                    is KSClassDeclaration ->
+            .forEach { annotatedElement ->
+                when (annotatedElement) {
+                    is KSClassDeclaration -> generateFactory(
+                        annotatedElement = annotatedElement,
+                        instantiationType = InstantiationType.CLASS,
+                        symbols = symbols,
+                        generateAnvilBindings = generateAnvilBindings,
+                    )
+
+                    is KSFunctionDeclaration ->
                         generateFactory(
-                            annotatedElement = annotated,
+                            annotatedElement = annotatedElement,
+                            instantiationType = InstantiationType.FUNCTION,
                             symbols = symbols,
+                            generateAnvilBindings = generateAnvilBindings,
                         )
 
                     else ->
                         logger.error(
-                            message = "CircuitInject for Hilt is only applicable on classes.",
-                            symbol = annotated,
+                            "CircuitInject is only applicable on classes and functions.",
+                            annotatedElement,
                         )
                 }
             }
-
         return emptyList()
     }
 
     private fun generateFactory(
         annotatedElement: KSAnnotated,
+        instantiationType: InstantiationType,
         symbols: CircuitSymbols,
+        generateAnvilBindings: Boolean,
     ) {
         val circuitInjectAnnotation =
             annotatedElement.annotations.first {
@@ -146,7 +166,7 @@ private class CircuitHiltSymbolProcessor(
         val scope = (circuitInjectAnnotation.arguments[1].value as KSType).toTypeName()
 
         val factoryData =
-            computeFactoryData(annotatedElement, symbols, screenKSType, logger)
+            computeFactoryData(annotatedElement, symbols, screenKSType, instantiationType, logger)
                 ?: return
 
         val className =
@@ -157,16 +177,15 @@ private class CircuitHiltSymbolProcessor(
 
         val builder =
             TypeSpec.classBuilder(className + FACTORY)
-                .let {
-                    // TODO: This could be tidied up, put behind a KSP processor parameter, and upstreamed
-                    if (symbols.contributesMultibinding != null) {
-                        it.addAnnotation(
+                .run {
+                    if (generateAnvilBindings) {
+                        addAnnotation(
                             AnnotationSpec.builder(ANVIL_CONTRIBUTES_MULTIBINDING)
                                 .addMember("%T::class", scope)
                                 .build(),
                         )
                     } else {
-                        it
+                        this
                     }
                 }
                 .primaryConstructor(
@@ -194,14 +213,14 @@ private class CircuitHiltSymbolProcessor(
             }
         val typeSpec =
             when (factoryData.factoryType) {
-                FactoryType.Presenter ->
+                FactoryType.PRESENTER ->
                     builder.buildPresenterFactory(
                         annotatedElement,
                         screenBranch,
                         factoryData.codeBlock,
                     )
 
-                FactoryType.Ui ->
+                FactoryType.UI ->
                     builder.buildUiFactory(annotatedElement, screenBranch, factoryData.codeBlock)
             }
 
@@ -225,6 +244,7 @@ private class CircuitHiltSymbolProcessor(
         annotatedElement: KSAnnotated,
         symbols: CircuitSymbols,
         screenKSType: KSType,
+        instantiationType: InstantiationType,
         logger: KSPLogger,
     ): FactoryData? {
         val className: String
@@ -233,144 +253,199 @@ private class CircuitHiltSymbolProcessor(
         val constructorParams = mutableListOf<ParameterSpec>()
         val codeBlock: CodeBlock
 
-        val cd = annotatedElement as KSClassDeclaration
-        cd.checkVisibility(logger) {
-            return null
-        }
-        val isAssisted = cd.isAnnotationPresent(AssistedFactory::class)
-        val creatorOrConstructor: KSFunctionDeclaration?
-        val targetClass: KSClassDeclaration
-        if (isAssisted) {
-            val creatorFunction = cd.getAllFunctions().filter { it.isAbstract }.single()
-            creatorOrConstructor = creatorFunction
-            targetClass = creatorFunction.returnType!!.resolve().declaration as KSClassDeclaration
-            targetClass.checkVisibility(logger) {
-                return null
-            }
-        } else {
-            creatorOrConstructor = cd.primaryConstructor
-            targetClass = cd
-        }
-        val useProvider =
-            !isAssisted && creatorOrConstructor?.isAnnotationPresent(Inject::class) == true
-        className = targetClass.simpleName.getShortName()
-        packageName = targetClass.packageName.asString()
-        factoryType =
-            targetClass
-                .getAllSuperTypes()
-                .mapNotNull {
-                    when (it.declaration.qualifiedName?.asString()) {
-                        CIRCUIT_UI.canonicalName -> FactoryType.Ui
-                        CIRCUIT_PRESENTER.canonicalName -> FactoryType.Presenter
-                        else -> null
-                    }
-                }
-                .firstOrNull()
-                ?: run {
-                    logger.error(
-                        "Factory must be for a UI or Presenter class, but was " +
-                                "${targetClass.qualifiedName?.asString()}. " +
-                                "Supertypes: ${targetClass.getAllSuperTypes().toList()}",
-                        targetClass,
-                    )
+        when (instantiationType) {
+            InstantiationType.FUNCTION -> {
+                val fd = annotatedElement as KSFunctionDeclaration
+                fd.checkVisibility(logger) {
                     return null
                 }
-        val assistedParams =
-            if (useProvider) {
-                // Nothing to do here, we'll just use the provider directly.
-                CodeBlock.of("")
-            } else {
-                creatorOrConstructor?.assistedParameters(
-                    symbols,
-                    logger,
-                    screenKSType,
-                    allowNavigator = factoryType == FactoryType.Presenter,
-                )
-            }
-        codeBlock =
-            if (useProvider) {
-                // Inject a Provider<TargetClass> that we'll call get() on.
-                constructorParams.add(
-                    ParameterSpec.builder(
-                        "provider",
-                        Provider::class.asClassName().parameterizedBy(targetClass.toClassName()),
+                val name = annotatedElement.simpleName.getShortName()
+                className = name
+                packageName = fd.packageName.asString()
+                factoryType =
+                    if (name.endsWith("Presenter")) {
+                        FactoryType.PRESENTER
+                    } else {
+                        FactoryType.UI
+                    }
+                val assistedParams =
+                    fd.assistedParameters(
+                        symbols,
+                        logger,
+                        screenKSType,
+                        factoryType == FactoryType.PRESENTER,
                     )
-                        .build(),
-                )
-                CodeBlock.of("provider.get()")
-            } else if (isAssisted) {
-                // Inject the target class's assisted factory that we'll call its create() on.
-                constructorParams.add(ParameterSpec.builder("factory", cd.toClassName()).build())
-                CodeBlock.of(
-                    "factory.%L(%L)",
-                    creatorOrConstructor!!.simpleName.getShortName(),
-                    assistedParams,
-                )
-            } else {
-                // Simple constructor call, no injection.
-                CodeBlock.of("%T(%L)", targetClass.toClassName(), assistedParams)
+                codeBlock =
+                    when (factoryType) {
+                        FactoryType.PRESENTER ->
+                            CodeBlock.of(
+                                "%M·{·%M(%L)·}",
+                                MemberName(CIRCUIT_RUNTIME_PRESENTER_PACKAGE, "presenterOf"),
+                                MemberName(packageName, name),
+                                assistedParams,
+                            )
+
+                        FactoryType.UI -> {
+                            // State param is optional
+                            val stateParam =
+                                fd.parameters.singleOrNull { parameter ->
+                                    symbols.circuitUiState.isAssignableFrom(parameter.type.resolve())
+                                }
+
+                            // Modifier param is required
+                            val modifierParam =
+                                fd.parameters.singleOrNull { parameter ->
+                                    symbols.modifier.isAssignableFrom(parameter.type.resolve())
+                                }
+                                    ?: run {
+                                        logger.error(
+                                            "UI composable functions must have a Modifier parameter!",
+                                            fd,
+                                        )
+                                        return null
+                                    }
+
+                            /*
+                            Diagram of what goes into generating a function!
+                            - State parameter is _optional_ and can be omitted if it's static state.
+                              - When omitted, the argument becomes _ and the param is omitted entirely.
+                            - <StateType> is either the State or CircuitUiState if no state param is used.
+                            - Modifier parameter is required.
+                            - Assisted parameters can be 0 or more extra supported assisted parameters.
+
+                                                                         Optional state param
+                                          Optional state arg                   │
+                                              │                                │       Required modifier param
+                                              │      Req modifier arg          │               │
+                            ┌─── ui function  │       │                        │               │            Any assisted params
+                            │                 │       │       Composable       │               │                    │
+                            │   State type    │       │          │             │               │                    │
+                            │      │          │       │          │             │               │                    │
+                            │      │          │       │          │             │               │                    │
+                            └──────┴─────   ──┴──  ───┴────    ──┴───── ───────┴─────  ────────┴──────────  ────────┴────────
+                            ui<StateType> { state, modifier -> Function(state = state, modifier = modifier, <assisted params>) }
+                            ────────────────────────────────────────────────────────────────────────────────────────────────────
+
+                            Diagram generated with asciiflow. You can make new ones or edit with this link.
+                            https://asciiflow.com/#/share/eJzVVM1KxDAQfpVhTgr1IizLlt2CCF4F9ZhLdGclkKbd%2FMCW0rfwcXwan8SsWW27sd0qXixzmDTffN83bSY1Kp4TpspJmaDkFWlMsWa4Y5guZvOEYeWzy%2FnCZ5Z21i8Ywg%2Be29KKQnEJxnJLUHLNc8bUKIjr55jo7eXVR1R62Dplo4Xc0dYJTWvIi7XYCNIDnnpVvqjF9%2BzF2sFlsBvCCdg49bTvsVcx4vtb2u7ySlXAjRHG%2BlY%2BOjBBdYSqza6LvCwMf5Q0VS%2FqDjq%2FzVYlDfV1zPMrpWHSf6w1JeDz4HfejGCH9ybrTQT%2BUan%2FEk4s7%2Fdj%2F%2BAPUQZ1uAOSdtwuMrg5TM9ZuB9WEWb1lSawPBqL7Bwahg027%2Byjz8s%3D)
+                            */
+
+                            @Suppress("IfThenToElvis") // The elvis is less readable here
+                            val stateType =
+                                if (stateParam == null) CIRCUIT_UI_STATE else stateParam.type.resolve()
+                                    .toTypeName()
+                            val stateArg = if (stateParam == null) "_" else "state"
+                            val stateParamBlock =
+                                if (stateParam == null) CodeBlock.of("")
+                                else CodeBlock.of("%L·=·state,·", stateParam.name!!.getShortName())
+                            val modifierParamBlock =
+                                CodeBlock.of("%L·=·modifier", modifierParam.name!!.getShortName())
+                            val assistedParamsBlock =
+                                if (assistedParams.isEmpty()) {
+                                    CodeBlock.of("")
+                                } else {
+                                    CodeBlock.of(",·%L", assistedParams)
+                                }
+                            CodeBlock.of(
+                                "%M<%T>·{·%L,·modifier·->·%M(%L%L%L)·}",
+                                MemberName(CIRCUIT_RUNTIME_UI_PACKAGE, "ui"),
+                                stateType,
+                                stateArg,
+                                MemberName(packageName, name),
+                                stateParamBlock,
+                                modifierParamBlock,
+                                assistedParamsBlock,
+                            )
+                        }
+                    }
             }
+
+            InstantiationType.CLASS -> {
+                val cd = annotatedElement as KSClassDeclaration
+                cd.checkVisibility(logger) {
+                    return null
+                }
+                val isAssisted = cd.isAnnotationPresent(AssistedFactory::class)
+                val creatorOrConstructor: KSFunctionDeclaration?
+                val targetClass: KSClassDeclaration
+                if (isAssisted) {
+                    val creatorFunction = cd.getAllFunctions().filter { it.isAbstract }.single()
+                    creatorOrConstructor = creatorFunction
+                    targetClass =
+                        creatorFunction.returnType!!.resolve().declaration as KSClassDeclaration
+                    targetClass.checkVisibility(logger) {
+                        return null
+                    }
+                } else {
+                    creatorOrConstructor = cd.primaryConstructor
+                    targetClass = cd
+                }
+                val useProvider =
+                    !isAssisted && creatorOrConstructor?.isAnnotationPresent(Inject::class) == true
+                className = targetClass.simpleName.getShortName()
+                packageName = targetClass.packageName.asString()
+                factoryType =
+                    targetClass
+                        .getAllSuperTypes()
+                        .mapNotNull {
+                            when (it.declaration.qualifiedName?.asString()) {
+                                CIRCUIT_UI.canonicalName -> FactoryType.UI
+                                CIRCUIT_PRESENTER.canonicalName -> FactoryType.PRESENTER
+                                else -> null
+                            }
+                        }
+                        .firstOrNull()
+                        ?: run {
+                            logger.error(
+                                "Factory must be for a UI or Presenter class, but was " +
+                                        "${targetClass.qualifiedName?.asString()}. " +
+                                        "Supertypes: ${targetClass.getAllSuperTypes().toList()}",
+                                targetClass,
+                            )
+                            return null
+                        }
+                val assistedParams =
+                    if (useProvider) {
+                        // Nothing to do here, we'll just use the provider directly.
+                        CodeBlock.of("")
+                    } else {
+                        creatorOrConstructor?.assistedParameters(
+                            symbols,
+                            logger,
+                            screenKSType,
+                            allowNavigator = factoryType == FactoryType.PRESENTER,
+                        )
+                    }
+                codeBlock =
+                    if (useProvider) {
+                        // Inject a Provider<TargetClass> that we'll call get() on.
+                        constructorParams.add(
+                            ParameterSpec.builder(
+                                "provider",
+                                Provider::class.asClassName()
+                                    .parameterizedBy(targetClass.toClassName()),
+                            )
+                                .build(),
+                        )
+                        CodeBlock.of("provider.get()")
+                    } else if (isAssisted) {
+                        // Inject the target class's assisted factory that we'll call its create() on.
+                        constructorParams.add(
+                            ParameterSpec.builder("factory", cd.toClassName()).build(),
+                        )
+                        CodeBlock.of(
+                            "factory.%L(%L)",
+                            creatorOrConstructor!!.simpleName.getShortName(),
+                            assistedParams,
+                        )
+                    } else {
+                        // Simple constructor call, no injection.
+                        CodeBlock.of("%T(%L)", targetClass.toClassName(), assistedParams)
+                    }
+            }
+        }
         return FactoryData(className, packageName, factoryType, constructorParams, codeBlock)
     }
-}
-
-
-private fun TypeSpec.Builder.buildUiFactory(
-    originatingSymbol: KSAnnotated,
-    screenBranch: CodeBlock,
-    instantiationCodeBlock: CodeBlock,
-): TypeSpec {
-    return addSuperinterface(CIRCUIT_UI_FACTORY)
-        .addFunction(
-            FunSpec.builder("create")
-                .addModifiers(KModifier.OVERRIDE)
-                .addParameter("screen", SCREEN)
-                .addParameter("context", CIRCUIT_CONTEXT)
-                .returns(CIRCUIT_UI.parameterizedBy(STAR).copy(nullable = true))
-                .beginControlFlow("return·when·(screen)")
-                .addStatement("%L·->·%L", screenBranch, instantiationCodeBlock)
-                .addStatement("else·->·null")
-                .endControlFlow()
-                .build(),
-        )
-        .addOriginatingKSFile(originatingSymbol.containingFile!!)
-        .build()
-}
-
-private fun TypeSpec.Builder.buildPresenterFactory(
-    originatingSymbol: KSAnnotated,
-    screenBranch: CodeBlock,
-    instantiationCodeBlock: CodeBlock,
-): TypeSpec {
-    // The TypeSpec below will generate something similar to the following.
-    //  public class AboutPresenterFactory : Presenter.Factory {
-    //    public override fun create(
-    //      screen: Screen,
-    //      navigator: Navigator,
-    //      context: CircuitContext,
-    //    ): Presenter<*>? = when (screen) {
-    //      is AboutScreen -> AboutPresenter()
-    //      is AboutScreen -> presenterOf { AboutPresenter() }
-    //      else -> null
-    //    }
-    //  }
-
-    return addSuperinterface(CIRCUIT_PRESENTER_FACTORY)
-        .addFunction(
-            FunSpec.builder("create")
-                .addModifiers(KModifier.OVERRIDE)
-                .addParameter("screen", SCREEN)
-                .addParameter("navigator", NAVIGATOR)
-                .addParameter("context", CIRCUIT_CONTEXT)
-                .returns(CIRCUIT_PRESENTER.parameterizedBy(STAR).copy(nullable = true))
-                .beginControlFlow("return when (screen)")
-                .addStatement("%L·->·%L", screenBranch, instantiationCodeBlock)
-                .addStatement("else·->·null")
-                .endControlFlow()
-                .build(),
-        )
-        .addOriginatingKSFile(originatingSymbol.containingFile!!)
-        .build()
 }
 
 private data class AssistedType(
@@ -378,7 +453,6 @@ private data class AssistedType(
     val type: TypeName,
     val name: String,
 )
-
 
 /**
  * Returns a [CodeBlock] representation of all named assisted parameters on this
@@ -451,7 +525,6 @@ private fun KSFunctionDeclaration.assistedParameters(
         .joinToCode(",·")
 }
 
-
 private fun KSType.isSameDeclarationAs(type: KSType): Boolean {
     return this.declaration == type.declaration
 }
@@ -460,6 +533,73 @@ private fun KSType.isInstanceOf(type: KSType): Boolean {
     return type.isAssignableFrom(this)
 }
 
+private fun TypeSpec.Builder.buildUiFactory(
+    originatingSymbol: KSAnnotated,
+    screenBranch: CodeBlock,
+    instantiationCodeBlock: CodeBlock,
+): TypeSpec {
+    return addSuperinterface(CIRCUIT_UI_FACTORY)
+        .addFunction(
+            FunSpec.builder("create")
+                .addModifiers(KModifier.OVERRIDE)
+                .addParameter("screen", SCREEN)
+                .addParameter("context", CIRCUIT_CONTEXT)
+                .returns(CIRCUIT_UI.parameterizedBy(STAR).copy(nullable = true))
+                .beginControlFlow("return·when·(screen)")
+                .addStatement("%L·->·%L", screenBranch, instantiationCodeBlock)
+                .addStatement("else·->·null")
+                .endControlFlow()
+                .build(),
+        )
+        .addOriginatingKSFile(originatingSymbol.containingFile!!)
+        .build()
+}
+
+private fun TypeSpec.Builder.buildPresenterFactory(
+    originatingSymbol: KSAnnotated,
+    screenBranch: CodeBlock,
+    instantiationCodeBlock: CodeBlock,
+): TypeSpec {
+    // The TypeSpec below will generate something similar to the following.
+    //  public class AboutPresenterFactory : Presenter.Factory {
+    //    public override fun create(
+    //      screen: Screen,
+    //      navigator: Navigator,
+    //      context: CircuitContext,
+    //    ): Presenter<*>? = when (screen) {
+    //      is AboutScreen -> AboutPresenter()
+    //      is AboutScreen -> presenterOf { AboutPresenter() }
+    //      else -> null
+    //    }
+    //  }
+
+    return addSuperinterface(CIRCUIT_PRESENTER_FACTORY)
+        .addFunction(
+            FunSpec.builder("create")
+                .addModifiers(KModifier.OVERRIDE)
+                .addParameter("screen", SCREEN)
+                .addParameter("navigator", NAVIGATOR)
+                .addParameter("context", CIRCUIT_CONTEXT)
+                .returns(CIRCUIT_PRESENTER.parameterizedBy(STAR).copy(nullable = true))
+                .beginControlFlow("return when (screen)")
+                .addStatement("%L·->·%L", screenBranch, instantiationCodeBlock)
+                .addStatement("else·->·null")
+                .endControlFlow()
+                .build(),
+        )
+        .addOriginatingKSFile(originatingSymbol.containingFile!!)
+        .build()
+}
+
+private enum class FactoryType {
+    PRESENTER,
+    UI
+}
+
+private enum class InstantiationType {
+    FUNCTION,
+    CLASS
+}
 
 private inline fun KSDeclaration.checkVisibility(logger: KSPLogger, returnBody: () -> Unit) {
     if (!getVisibility().isVisible) {
