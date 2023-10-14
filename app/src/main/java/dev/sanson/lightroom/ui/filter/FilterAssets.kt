@@ -57,10 +57,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
-import com.slack.circuit.runtime.ui.Ui
-import com.slack.circuit.runtime.ui.ui
+import com.slack.circuit.codegen.annotations.CircuitInject
+import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.ui.component.DarkModePreviews
@@ -75,24 +73,11 @@ import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateRating
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import javax.inject.Inject
-
-class FilterAssetsUiFactory @Inject constructor() : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is FilterAssetsScreen -> ui<FilterAssetsScreen.State> { state, modifier ->
-            FilterAssets(
-                state = state,
-                modifier = modifier,
-            )
-        }
-
-        else -> null
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
+@CircuitInject(FilterAssetsScreen::class, SingletonComponent::class)
 @Composable
-private fun FilterAssets(
+fun FilterAssets(
     state: FilterAssetsScreen.State,
     modifier: Modifier = Modifier,
 ) {

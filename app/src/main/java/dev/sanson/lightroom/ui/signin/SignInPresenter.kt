@@ -8,36 +8,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.slack.circuit.runtime.CircuitContext
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn
 import dev.sanson.lightroom.ui.source.ChooseSourceScreen
-import javax.inject.Inject
-
-// TODO: There's a significant amount of boilerplate that comes with wiring up a screen, when
-//       not using anvil. Live templates/file templates would solve this, given it's repetitive
-class SignInPresenterFactory @Inject constructor(
-    private val factory: SignInPresenter.Factory,
-) : Presenter.Factory {
-    override fun create(
-        screen: Screen,
-        navigator: Navigator,
-        context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is SignInScreen -> factory.create(navigator)
-            else -> null
-        }
-    }
-}
 
 class SignInPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
@@ -74,6 +56,7 @@ class SignInPresenter @AssistedInject constructor(
         }
     }
 
+    @CircuitInject(SignInScreen::class, SingletonComponent::class)
     @AssistedFactory
     interface Factory {
         fun create(navigator: Navigator): SignInPresenter

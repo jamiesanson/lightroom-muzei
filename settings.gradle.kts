@@ -1,4 +1,7 @@
 @file:Suppress("UnstableApiUsage")
+
+include(":circuit-codegen")
+
 pluginManagement {
     includeBuild("build-logic")
 

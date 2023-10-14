@@ -11,13 +11,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.google.android.apps.muzei.api.provider.Artwork
 import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderClient
-import com.slack.circuit.runtime.CircuitContext
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.circuit.FinishActivityScreen
 import dev.sanson.lightroom.coil.awaitSuccessfulImageRequest
 import dev.sanson.lightroom.data.config.ConfigRepository
@@ -28,22 +28,6 @@ import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import dev.sanson.lightroom.ui.confirmation.ConfirmationScreen.State
 import kotlinx.coroutines.flow.firstOrNull
-import javax.inject.Inject
-
-class ConfirmationPresenterFactory @Inject constructor(
-    private val factory: ConfirmationPresenter.Factory,
-) : Presenter.Factory {
-    override fun create(
-        screen: Screen,
-        navigator: Navigator,
-        context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is ConfirmationScreen -> factory.create(navigator)
-            else -> null
-        }
-    }
-}
 
 class ConfirmationPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
@@ -113,6 +97,7 @@ class ConfirmationPresenter @AssistedInject constructor(
         }
     }
 
+    @CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
     @AssistedFactory
     interface Factory {
         fun create(navigator: Navigator): ConfirmationPresenter

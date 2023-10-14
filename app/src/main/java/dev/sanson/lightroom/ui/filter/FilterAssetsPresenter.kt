@@ -7,13 +7,13 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import com.slack.circuit.runtime.CircuitContext
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.data.config.Config
 import dev.sanson.lightroom.data.config.ConfigRepository
 import dev.sanson.lightroom.sdk.model.AlbumId
@@ -25,22 +25,6 @@ import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateRating
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
-class FilterAssetsPresenterFactory @Inject constructor(
-    private val factory: FilterAssetsPresenter.Factory,
-) : Presenter.Factory {
-    override fun create(
-        screen: Screen,
-        navigator: Navigator,
-        context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is FilterAssetsScreen -> factory.create(navigator)
-            else -> null
-        }
-    }
-}
 
 private val Config.starRating: Int
     get() = when {
@@ -140,6 +124,7 @@ class FilterAssetsPresenter @AssistedInject constructor(
         )
     }
 
+    @CircuitInject(FilterAssetsScreen::class, SingletonComponent::class)
     @AssistedFactory
     interface Factory {
         fun create(navigator: Navigator): FilterAssetsPresenter

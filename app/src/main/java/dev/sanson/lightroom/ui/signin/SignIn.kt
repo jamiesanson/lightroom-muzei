@@ -36,31 +36,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
-import com.slack.circuit.runtime.ui.Ui
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.ui.ui
+import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
 import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import dev.sanson.lightroom.unsplash.RandomBackgroundImage
-import javax.inject.Inject
 
-class SignInUiFactory @Inject constructor() : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is SignInScreen -> ui<SignInScreen.State> { state, modifier ->
-            SignIn(
-                viewState = state,
-                modifier = modifier,
-            )
-        }
-
-        else -> null
-    }
-}
-
+@CircuitInject(SignInScreen::class, SingletonComponent::class)
 @Composable
 fun SignIn(
     viewState: SignInScreen.State,
