@@ -32,31 +32,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
-import com.slack.circuit.runtime.ui.Ui
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.ui.ui
+import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
 import dev.sanson.lightroom.ui.component.DarkModePreviews
 import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseAlbum
 import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseCatalog
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
-import javax.inject.Inject
-
-class ChooseSourceUiFactory @Inject constructor() : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is ChooseSourceScreen -> ui<ChooseSourceScreen.State> { state, modifier ->
-            ChooseSource(
-                state = state,
-                modifier = modifier,
-            )
-        }
-
-        else -> null
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
+@CircuitInject(ChooseSourceScreen::class, SingletonComponent::class)
 @Composable
 fun ChooseSource(
     state: ChooseSourceScreen.State,
