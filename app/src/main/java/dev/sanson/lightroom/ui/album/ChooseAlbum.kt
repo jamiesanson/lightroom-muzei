@@ -34,10 +34,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
+import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
 import dev.sanson.lightroom.coil.rememberImageRequest
 import dev.sanson.lightroom.sdk.model.Album
@@ -51,20 +51,16 @@ import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
 import dev.sanson.lightroom.ui.component.DarkModePreviews
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
-import javax.inject.Inject
 
-class ChooseAlbumUiFactory @Inject constructor() : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is ChooseAlbumScreen -> ui<ChooseAlbumScreen.State> { state, modifier ->
-            ChooseAlbum(
-                state = state,
-                modifier = modifier,
-            )
-        }
-
-        else -> null
-    }
-}
+@CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
+class ChooseAlbumUi : Ui<ChooseAlbumScreen.State> by ui(
+    body = { state, modifier ->
+        ChooseAlbum(
+            state = state,
+            modifier = modifier,
+        )
+    },
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

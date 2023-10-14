@@ -4,13 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
-import com.slack.circuit.runtime.CircuitContext
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.data.config.Config
 import dev.sanson.lightroom.data.config.ConfigRepository
 import dev.sanson.lightroom.sdk.Lightroom
@@ -25,22 +25,6 @@ import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loading
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
-class ChooseAlbumPresenterFactory @Inject constructor(
-    private val factory: ChooseAlbumPresenter.Factory,
-) : Presenter.Factory {
-    override fun create(
-        screen: Screen,
-        navigator: Navigator,
-        context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is ChooseAlbumScreen -> factory.create(navigator)
-            else -> null
-        }
-    }
-}
 
 class ChooseAlbumPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
@@ -92,6 +76,7 @@ class ChooseAlbumPresenter @AssistedInject constructor(
         }
     }
 
+    @CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
     @AssistedFactory
     interface Factory {
         fun create(navigator: Navigator): ChooseAlbumPresenter
