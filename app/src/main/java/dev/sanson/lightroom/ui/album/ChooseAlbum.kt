@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
@@ -52,19 +51,10 @@ import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
 import dev.sanson.lightroom.ui.component.DarkModePreviews
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 
-@CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
-class ChooseAlbumUi : Ui<ChooseAlbumScreen.State> by ui(
-    body = { state, modifier ->
-        ChooseAlbum(
-            state = state,
-            modifier = modifier,
-        )
-    },
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
+@CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
 @Composable
-private fun ChooseAlbum(
+fun ChooseAlbum(
     state: ChooseAlbumScreen.State,
     modifier: Modifier = Modifier,
 ) {

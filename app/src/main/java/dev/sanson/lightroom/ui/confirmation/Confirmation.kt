@@ -19,21 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.ui.component.DarkModePreviews
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
-
-@CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
-class ConfirmationUi : Ui<ConfirmationScreen.State> by ui(
-    body = { state, modifier ->
-        Confirmation(
-            state = state,
-            modifier = modifier,
-        )
-    },
-)
 
 /**
  * Note to self: Confirmation in a two-stage process
@@ -42,6 +31,7 @@ class ConfirmationUi : Ui<ConfirmationScreen.State> by ui(
  * * Found XX photos, let's start here (date, time, details, use loaded image as background)
  */
 @OptIn(ExperimentalMaterial3Api::class)
+@CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
 @Composable
 fun Confirmation(
     state: ConfirmationScreen.State,
