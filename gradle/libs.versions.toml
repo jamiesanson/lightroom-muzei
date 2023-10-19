@@ -114,6 +114,7 @@ coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 circuit = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
 circuit-codegen-annotations = { module = "com.slack.circuit:circuit-codegen-annotations", version.ref = "circuit" }
+circuit-codegen = { module = "com.slack.circuit:circuit-codegen", version.ref = "circuit" }
 circuitx = { module = "com.slack.circuit:circuitx-android", version.ref = "circuit" }
 circuit-test = { module = "com.slack.circuit:circuit-test", version.ref = "circuit" }
 

@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":circuit-codegen")
+include(":hilt-circuit-codegen")
 
 pluginManagement {
     includeBuild("build-logic")

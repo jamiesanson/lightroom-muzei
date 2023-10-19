@@ -40,10 +40,6 @@ android {
     }
 }
 
-ksp {
-    arg("circuit-di", "hilt")
-}
-
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
@@ -79,8 +75,8 @@ dependencies {
     implementation(libs.circuit)
     implementation(libs.circuit.codegen.annotations)
 
-    implementation(projects.circuitCodegen)
-    ksp(projects.circuitCodegen)
+    ksp(libs.circuit.codegen)
+    ksp(projects.hiltCircuitCodegen)
 
     implementation(libs.circuitx)
     testImplementation(libs.circuit.test)
