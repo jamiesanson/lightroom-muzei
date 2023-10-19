@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.runtime.ui.ui
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
 import dev.sanson.lightroom.coil.rememberImageRequest
