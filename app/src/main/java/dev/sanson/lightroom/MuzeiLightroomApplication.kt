@@ -11,7 +11,6 @@ import javax.inject.Inject
  * ---------
  *   Build
  * ---------
- * * Confirmation screen which populates Muzei before finishing - WIP: Move loading & pagination to its own utility
  * * Testing presenters
  * * Modularise + revisit build-logic
  * * Form-factor support
@@ -44,7 +43,7 @@ import javax.inject.Inject
  * --------------------
  *   Extra-curricular
  * --------------------
- * * Blog - Circuit without Anvil (can I make this better Circuit-side? Perhaps circuit-codegen-hilt?)
+ * * Blog - Circuit without Anvil
  */
 @HiltAndroidApp
 class MuzeiLightroomApplication : Application(), Configuration.Provider {

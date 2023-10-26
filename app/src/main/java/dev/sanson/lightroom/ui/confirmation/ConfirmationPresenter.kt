@@ -55,7 +55,7 @@ class ConfirmationPresenter @AssistedInject constructor(
         LaunchedEffect(artwork) {
             val art = artwork ?: return@LaunchedEffect
 
-            val firstArtwork = art.random()
+            val firstArtwork = art.first()
 
             val assetId =
                 AssetId(requireNotNull(firstArtwork.token) { "No token found for artwork: $firstArtwork" })
@@ -86,6 +86,7 @@ class ConfirmationPresenter @AssistedInject constructor(
                     State.Loaded(
                         artwork = art,
                         firstWallpaperId = firstImage,
+                        firstArtworkCaptureDate = requireNotNull(art.first().title),
                         eventSink = { event ->
                             when (event) {
                                 ConfirmationScreen.Event.OnFinish ->

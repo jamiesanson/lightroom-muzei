@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
+import dev.sanson.lightroom.ui.component.LightroomCard
 import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn
@@ -109,15 +109,8 @@ private fun SignInCard(
     onSignIn: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .wrapContentHeight()
-            .padding(horizontal = 24.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(2.dp))
-            .shadow(elevation = 8.dp, shape = RoundedCornerShape(2.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(24.dp),
+    LightroomCard(
+        modifier = modifier.padding(24.dp),
     ) {
         Text(
             text = stringResource(R.string.sign_in),
@@ -147,7 +140,7 @@ private fun SignInCard(
 }
 
 @Composable
-fun SignInButton(
+private fun SignInButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

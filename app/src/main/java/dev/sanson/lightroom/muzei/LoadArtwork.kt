@@ -28,7 +28,7 @@ suspend fun Lightroom.loadArtwork(config: Config): List<Artwork> {
      *
      * The expected format is as such:
      *
-     * title = Album Name - Date (London - 9 Nov 2022)
+     * title = Date (London - 9 Nov 2022)
      * byline = Camera & lens (Fujifilm X-T3, XF16-55mm etc.)
      * attribution = Capture specs (ISO 160 55mm f/4.0 1/160s)
      * token = <asset_id>

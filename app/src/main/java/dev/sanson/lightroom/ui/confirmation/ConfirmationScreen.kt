@@ -19,6 +19,7 @@ data object ConfirmationScreen : Screen {
 
         data class Loaded(
             val firstWallpaperId: AssetId,
+            val firstArtworkCaptureDate: String,
             val artwork: List<Artwork>,
             val eventSink: (Event) -> Unit,
         ) : State
