@@ -1,7 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":hilt-circuit-codegen")
-
 pluginManagement {
     includeBuild("build-logic")
 
@@ -17,6 +15,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
 
