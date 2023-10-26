@@ -33,6 +33,11 @@ gradlePlugin {
             implementationClass = "AppConventionPlugin"
         }
 
+        register("androidLibrary") {
+            id = "dev.sanson.lightroom.android.library"
+            implementationClass = "LibraryConventionPlugin"
+        }
+
         register("androidHilt") {
             id = "dev.sanson.lightroom.android.hilt"
             implementationClass = "HiltConventionPlugin"

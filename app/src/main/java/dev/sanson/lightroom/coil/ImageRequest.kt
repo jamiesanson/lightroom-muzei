@@ -20,7 +20,7 @@ import coil.request.ImageResult
 import coil.request.SuccessResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanson.lightroom.sdk.Lightroom
-import dev.sanson.lightroom.sdk.getAuthHeaders
+import dev.sanson.lightroom.sdk.getImageAuthHeaders
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.delay
@@ -38,7 +38,7 @@ suspend fun Lightroom.buildImageRequest(
     rendition: Rendition,
 ): ImageRequest {
     val imageUrl = assetId.asUrl(rendition)
-    val headers = getAuthHeaders().toHeaders()
+    val headers = getImageAuthHeaders().toHeaders()
 
     return ImageRequest.Builder(context)
         .data(imageUrl)
