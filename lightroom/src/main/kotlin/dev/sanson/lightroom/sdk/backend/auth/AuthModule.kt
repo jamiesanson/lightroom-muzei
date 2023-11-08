@@ -18,6 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.create
 import java.io.File
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Qualifier
 internal annotation class LoginHost
@@ -28,11 +29,13 @@ private const val ADOBE_LOGIN_HOST = "https://ims-na1.adobelogin.com"
 internal class AuthModule {
 
     @Provides
+    @Singleton
     fun provideCredentialStore(dataStore: DataStore<Credential?>): CredentialStore {
         return DefaultCredentialStore(dataStore)
     }
 
     @Provides
+    @Singleton
     fun provideCredentialDataStore(
         scope: CoroutineScope,
         context: Context,

@@ -8,7 +8,9 @@ import dev.sanson.lightroom.sdk.backend.LightroomModule
 import dev.sanson.lightroom.sdk.backend.ServiceModule
 import dev.sanson.lightroom.sdk.backend.auth.AuthModule
 import kotlinx.coroutines.CoroutineScope
+import javax.inject.Singleton
 
+@Singleton
 @Component(
     modules = [
         AuthModule::class,
