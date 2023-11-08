@@ -7,7 +7,7 @@ import retrofit2.create
 import javax.inject.Qualifier
 
 @Qualifier
-annotation class LightroomRetrofit
+internal annotation class LightroomRetrofit
 
 @Module
 internal class ServiceModule {

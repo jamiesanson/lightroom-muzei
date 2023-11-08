@@ -93,6 +93,21 @@ fun Lightroom(context: Context, coroutineScope: CoroutineScope): Lightroom {
         .lightroom()
 }
 
+/**
+ * Retrieve auth headers for making image requests in form of a map
+ *
+ * @return map of header name to value
+ */
+suspend fun Lightroom.getImageAuthHeaders(): Map<String, String> {
+    if (this !is DefaultLightroom) return emptyMap()
+
+    val apiKey = mapOf("X-Api-Key" to clientId)
+    val token = authManager.latestAccessToken.first()
+        ?: authManager.refreshTokens().accessToken
+
+    return apiKey + ("Authorization" to "Bearer $token")
+}
+
 internal class DefaultLightroom(
     internal val authManager: AuthManager,
     internal val clientId: String,
@@ -132,14 +147,4 @@ internal class DefaultLightroom(
         val catalogId = catalogRepository.getCatalog().id.id
         return "https://lr.adobe.io/v2/catalogs/$catalogId/assets/$id/renditions/${rendition.code}"
     }
-}
-
-suspend fun Lightroom.getImageAuthHeaders(): Map<String, String> {
-    if (this !is DefaultLightroom) return emptyMap()
-
-    val apiKey = mapOf("X-Api-Key" to clientId)
-    val token = authManager.latestAccessToken.first()
-        ?: authManager.refreshTokens().accessToken
-
-    return apiKey + ("Authorization" to "Bearer $token")
 }

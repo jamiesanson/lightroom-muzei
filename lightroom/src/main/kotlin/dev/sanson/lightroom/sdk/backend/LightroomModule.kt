@@ -32,7 +32,7 @@ import retrofit2.Retrofit
 import javax.inject.Qualifier
 
 @Qualifier
-annotation class LightroomClientId
+internal annotation class LightroomClientId
 
 private const val LIGHTROOM_CLIENT_ID = "4a1404eeb6b442278a96dab428ecbc43"
 

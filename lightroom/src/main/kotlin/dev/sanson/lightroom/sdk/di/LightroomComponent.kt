@@ -18,7 +18,7 @@ import javax.inject.Singleton
         ServiceModule::class,
     ],
 )
-interface LightroomComponent {
+internal interface LightroomComponent {
     fun lightroom(): Lightroom
 
     @Component.Builder
