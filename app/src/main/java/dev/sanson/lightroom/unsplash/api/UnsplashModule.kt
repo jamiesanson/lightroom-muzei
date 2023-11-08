@@ -20,11 +20,13 @@ private const val CONSUMER_KEY = "TeCwVYGHNALiUO_ZYQRsH1PsmLtvXcxUAEWtd27tkVo"
 @InstallIn(SingletonComponent::class)
 class UnsplashModule {
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
     @Provides
     @Singleton
-    fun provideUnsplashService(
-        json: Json,
-    ): UnsplashService {
+    fun provideUnsplashService(): UnsplashService {
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor())
             .addInterceptor { chain ->

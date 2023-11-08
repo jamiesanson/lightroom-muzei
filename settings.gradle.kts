@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":lightroom")
+
+
 pluginManagement {
     includeBuild("build-logic")
 
