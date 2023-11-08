@@ -44,4 +44,12 @@ val MuzeiTypography
             fontFamily = NotoSans,
             platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
+        headlineLarge = MaterialTheme.typography.headlineLarge.copy(
+            fontFamily = NotoSans,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
+        ),
+        displaySmall = MaterialTheme.typography.displaySmall.copy(
+            fontFamily = NotoSans,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
+        ),
     )

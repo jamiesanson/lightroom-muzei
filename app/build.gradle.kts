@@ -71,6 +71,8 @@ dependencies {
     implementation(libs.androidx.compose.google.fonts)
     implementation(libs.androidx.work)
 
+    implementation(libs.material)
+
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.datetime)

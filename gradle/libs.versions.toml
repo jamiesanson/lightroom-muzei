@@ -30,6 +30,8 @@ androidx-hilt-navigation-compose = "1.1.0"
 androidx-lifecycle = "2.6.2"
 androidx-work = "2.8.1"
 
+material = "1.10.0"
+
 muzei-api = "3.4.1"
 
 retrofit = "2.9.0"
@@ -74,6 +76,8 @@ dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidx-hilt-navigation-compose" }
+
+material = { module = "com.google.android.material:material", version.ref = "material" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx" }

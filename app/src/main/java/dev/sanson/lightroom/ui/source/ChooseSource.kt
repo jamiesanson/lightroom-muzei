@@ -1,11 +1,14 @@
 package dev.sanson.lightroom.ui.source
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,12 +26,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
@@ -50,9 +55,9 @@ fun ChooseSource(
         Box(Modifier.systemBarsPadding()) {
             Text(
                 text = "Where should we pull your wallpapers from?",
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.displaySmall,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(24.dp)
                     .padding(top = 64.dp)
                     .align(Alignment.TopCenter),
             )
@@ -69,7 +74,7 @@ fun ChooseSource(
                     onClick = { state.eventSink(OnChooseCatalog) },
                 )
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(16.dp))
 
                 SourceRow(
                     title = stringResource(R.string.album_source_title),
@@ -81,13 +86,18 @@ fun ChooseSource(
 
             Button(
                 onClick = { state.eventSink(OnConfirm) },
+                contentPadding = PaddingValues(vertical = 12.dp, horizontal = 24.dp),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(24.dp),
             ) {
                 Spacer(Modifier.size(8.dp))
 
-                Text("Continue")
+                Text(
+                    text = "Continue",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
 
                 Spacer(Modifier.size(16.dp))
 
@@ -110,12 +120,17 @@ private fun SourceRow(
         label = "Selection border width",
     )
     val borderAlpha by animateFloatAsState(
-        if (selected) 0.64f else 0.08f,
+        if (selected) 0.64f else 0.16f,
         label = "Selection border opacity",
+    )
+    val backgroundColor by animateColorAsState(
+        MaterialTheme.colorScheme.surfaceColorAtElevation(if (selected) 2.dp else 0.dp),
+        label = "Selection background color",
     )
 
     Box(
         modifier = modifier
+            .background(backgroundColor)
             .clip(RoundedCornerShape(12.dp))
             .border(
                 width = borderWidth,
