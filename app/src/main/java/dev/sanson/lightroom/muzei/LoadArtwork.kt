@@ -60,7 +60,7 @@ suspend fun Lightroom.loadArtwork(config: Config): List<Artwork> {
 
     val assets = when (config.source) {
         is Config.Source.Album ->
-            getAlbumAssets(config.source.id)
+            getAlbumAssets(config.source.requireId())
 
         is Config.Source.Catalog ->
             getCatalogAssets()

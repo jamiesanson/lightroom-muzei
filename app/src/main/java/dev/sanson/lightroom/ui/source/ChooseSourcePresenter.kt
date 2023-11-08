@@ -1,7 +1,12 @@
 package dev.sanson.lightroom.ui.source
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -9,12 +14,16 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.data.config.Config
 import dev.sanson.lightroom.data.config.ConfigRepository
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen
 import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseAlbum
 import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseCatalog
+import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnConfirm
 import dev.sanson.lightroom.ui.source.ChooseSourceScreen.State
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class ChooseSourcePresenter @AssistedInject constructor(
@@ -25,20 +34,35 @@ class ChooseSourcePresenter @AssistedInject constructor(
     override fun present(): State {
         val scope = rememberCoroutineScope()
 
-        return State(
-            eventSink = { event ->
-                when (event) {
-                    OnChooseAlbum ->
-                        navigator.goTo(ChooseAlbumScreen)
+        val persistedSource by produceState<Config.Source?>(initialValue = null) {
+            value = configRepository.config.map { it?.source }.first()
+                ?: Config.Source.Album.Uninitialized
+        }
 
-                    OnChooseCatalog ->
-                        scope.launch {
-                            configRepository.setUseCatalog()
-                            navigator.goTo(FilterAssetsScreen)
-                        }
+        var selectedSource by remember(persistedSource) { mutableStateOf(persistedSource) }
+
+        return State(
+            selectedSource = selectedSource,
+        ) { event ->
+            when (event) {
+                OnChooseAlbum ->
+                    selectedSource = Config.Source.Album.Uninitialized
+
+                OnChooseCatalog ->
+                    selectedSource = Config.Source.Catalog
+
+                OnConfirm -> scope.launch {
+                    val source = selectedSource ?: error("Selected source not set")
+                    configRepository.setImageSource(source)
+                    navigator.goTo(
+                        screen = when (source) {
+                            is Config.Source.Album -> ChooseAlbumScreen
+                            is Config.Source.Catalog -> FilterAssetsScreen
+                        },
+                    )
                 }
-            },
-        )
+            }
+        }
     }
 
     @CircuitInject(ChooseSourceScreen::class, SingletonComponent::class)

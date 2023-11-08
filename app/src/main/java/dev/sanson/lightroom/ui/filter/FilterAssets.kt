@@ -105,13 +105,13 @@ fun FilterAssets(
             )
         },
         modifier = modifier
-            .fillMaxSize()
-            .systemBarsPadding(),
+            .fillMaxSize(),
     ) { paddingValues ->
         Column(
             Modifier
                 .padding(horizontal = 16.dp)
                 .padding(paddingValues)
+                .systemBarsPadding()
                 .scrollable(rememberScrollState(), orientation = Orientation.Vertical)
                 .nestedScroll(topAppBarScrollBehaviour.nestedScrollConnection),
         ) {

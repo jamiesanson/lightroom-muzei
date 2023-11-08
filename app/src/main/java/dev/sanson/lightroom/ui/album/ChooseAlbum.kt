@@ -69,13 +69,13 @@ fun ChooseAlbum(
             )
         },
         modifier = modifier
-            .fillMaxSize()
-            .systemBarsPadding(),
+            .fillMaxSize(),
     ) { paddingValues ->
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .systemBarsPadding(),
         ) {
             when (state) {
                 is ChooseAlbumScreen.State.Loaded ->

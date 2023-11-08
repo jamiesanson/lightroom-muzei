@@ -27,7 +27,13 @@ data class Config(
 
     sealed interface Source {
         @Serializable
-        data class Album(val id: AlbumId) : Source
+        data class Album(val id: AlbumId?) : Source {
+            fun requireId(): AlbumId = requireNotNull(id)
+
+            companion object {
+                val Uninitialized = Album(id = null)
+            }
+        }
 
         @Serializable
         data object Catalog : Source

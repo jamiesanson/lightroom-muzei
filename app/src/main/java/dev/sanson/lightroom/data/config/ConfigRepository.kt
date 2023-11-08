@@ -14,7 +14,7 @@ interface ConfigRepository {
     suspend fun setRatingRange(start: Int, end: Int = start)
     suspend fun updateFlag(flag: Asset.Flag?)
     suspend fun setAlbum(albumId: AlbumId)
-    suspend fun setUseCatalog()
+    suspend fun setImageSource(imageSource: Config.Source)
 }
 
 class DefaultConfigRepository @Inject constructor(
@@ -53,11 +53,9 @@ class DefaultConfigRepository @Inject constructor(
         }
     }
 
-    override suspend fun setUseCatalog() {
+    override suspend fun setImageSource(imageSource: Config.Source) {
         configStore.updateData {
-            val source = Config.Source.Catalog
-
-            it?.copy(source = source) ?: Config(source = source)
+            it?.copy(source = imageSource) ?: Config(source = imageSource)
         }
     }
 }
