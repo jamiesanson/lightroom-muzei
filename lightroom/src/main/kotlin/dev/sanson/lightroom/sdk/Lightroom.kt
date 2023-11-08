@@ -3,11 +3,8 @@ package dev.sanson.lightroom.sdk
 import android.content.Context
 import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.android.EntryPointAccessors
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
-import dev.sanson.lightroom.sdk.di.LightroomComponent
+import dev.sanson.lightroom.sdk.di.DaggerLightroomComponent
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
@@ -19,6 +16,7 @@ import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Catalog
 import dev.sanson.lightroom.sdk.model.Rendition
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
@@ -80,15 +78,19 @@ interface Lightroom {
     suspend fun AssetId.asUrl(rendition: Rendition): String
 }
 
-
-@EntryPoint
-@InstallIn(LightroomComponent::class)
-internal interface LightroomEntryPoint {
-    val lightroom: Lightroom
-}
-
-fun Lightroom(context: Context): Lightroom {
-    return EntryPointAccessors.fromApplication<LightroomEntryPoint>(context).lightroom
+/**
+ * "Constructor" function for Lightroom instance. Should be called once and then cached to avoid
+ * expensive initialisation.
+ *
+ * @param context Context instance to use within SDK
+ * @param coroutineScope Coroutine scope to use for async operations
+ */
+fun Lightroom(context: Context, coroutineScope: CoroutineScope): Lightroom {
+    return DaggerLightroomComponent.builder()
+        .context(context)
+        .coroutineScope(coroutineScope)
+        .build()
+        .lightroom()
 }
 
 internal class DefaultLightroom(

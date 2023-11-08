@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.sdk.Lightroom
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
@@ -15,5 +16,8 @@ class LightroomModule {
 
     @Provides
     @Singleton
-    fun provideLightroom(@ApplicationContext context: Context): Lightroom = Lightroom(context)
+    fun provideLightroom(
+        @ApplicationContext context: Context,
+        @ApplicationScope scope: CoroutineScope,
+    ): Lightroom = Lightroom(context, scope)
 }

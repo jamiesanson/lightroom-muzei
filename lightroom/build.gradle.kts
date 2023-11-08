@@ -2,7 +2,6 @@
 plugins {
     alias(libs.plugins.ksp)
     id("dev.sanson.lightroom.android.library")
-    id("dev.sanson.lightroom.android.hilt")
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -18,6 +17,7 @@ android {
 dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.androidx.datastore)
+    implementation(libs.androidx.core)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization.converter)
@@ -31,6 +31,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.collections.immutable)
+
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
 
     testImplementation(libs.bundles.testing.unit)
 }

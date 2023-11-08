@@ -2,8 +2,6 @@ package dev.sanson.lightroom.sdk.backend
 
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dev.sanson.lightroom.sdk.di.LightroomComponent
 import retrofit2.Retrofit
 import retrofit2.create
 import javax.inject.Qualifier
@@ -12,7 +10,6 @@ import javax.inject.Qualifier
 annotation class LightroomRetrofit
 
 @Module
-@InstallIn(LightroomComponent::class)
 internal class ServiceModule {
 
     @Provides

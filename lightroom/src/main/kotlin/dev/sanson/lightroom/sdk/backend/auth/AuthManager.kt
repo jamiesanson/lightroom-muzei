@@ -5,8 +5,6 @@ import android.util.Base64
 import androidx.core.net.toUri
 import dev.sanson.lightroom.sdk.backend.LightroomClientId
 import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
-import dev.sanson.lightroom.sdk.di.LightroomScoped
-import dev.sanson.lightroom.sdk.di.SdkScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -18,9 +16,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.security.SecureRandom
 import javax.inject.Inject
 
-@LightroomScoped
 internal class AuthManager @Inject constructor(
-    @SdkScope
     private val applicationScope: CoroutineScope,
     private val credentialStore: CredentialStore,
     private val lightroomAuthService: LightroomAuthService,

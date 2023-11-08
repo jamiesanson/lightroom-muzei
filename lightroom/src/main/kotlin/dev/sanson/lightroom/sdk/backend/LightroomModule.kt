@@ -3,7 +3,6 @@ package dev.sanson.lightroom.sdk.backend
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.multibindings.IntoSet
 import dev.sanson.lightroom.sdk.BuildConfig
 import dev.sanson.lightroom.sdk.DefaultLightroom
@@ -16,8 +15,6 @@ import dev.sanson.lightroom.sdk.backend.interceptor.ClientIdInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.LightroomAuthenticator
 import dev.sanson.lightroom.sdk.backend.interceptor.RemoveBodyPrefixInterceptor
 import dev.sanson.lightroom.sdk.backend.serializer.LenientInstantSerializer
-import dev.sanson.lightroom.sdk.di.LightroomComponent
-import dev.sanson.lightroom.sdk.di.LightroomScoped
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
@@ -40,7 +37,6 @@ annotation class LightroomClientId
 private const val LIGHTROOM_CLIENT_ID = "4a1404eeb6b442278a96dab428ecbc43"
 
 @Module
-@InstallIn(LightroomComponent::class)
 internal class LightroomModule {
 
     @Provides
@@ -125,13 +121,11 @@ internal class LightroomModule {
     }
 
     @Provides
-    @LightroomScoped
     fun provideCatalogRepository(catalogService: CatalogService): CatalogRepository {
         return CatalogRepository(catalogService)
     }
 
     @Provides
-    @LightroomScoped
     fun provideLightroom(
         authManager: AuthManager,
         @LightroomClientId
@@ -141,7 +135,7 @@ internal class LightroomModule {
         retrieveCatalogAssets: GetCatalogAssetsUseCase,
         generateRendition: GenerateRenditionUseCase,
         catalogRepository: CatalogRepository,
-    ): DefaultLightroom {
+    ): Lightroom {
         return DefaultLightroom(
             authManager = authManager,
             clientId = clientId,
