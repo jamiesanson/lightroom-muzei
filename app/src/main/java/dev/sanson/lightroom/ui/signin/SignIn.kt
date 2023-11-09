@@ -41,7 +41,7 @@ import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
-import dev.sanson.lightroom.unsplash.RandomBackgroundImage
+import dev.sanson.unsplash.ui.RandomBackgroundImage
 
 @CircuitInject(SignInScreen::class, SingletonComponent::class)
 @Composable

@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.component
+package dev.sanson.unsplash.ui
 
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.runtime.Composable
@@ -69,10 +69,10 @@ fun HyperlinkText(
             annotatedString
                 .getStringAnnotations("URL", it, it)
                 .firstOrNull()?.let { stringAnnotation ->
-                runCatching {
-                    uriHandler.openUri(stringAnnotation.item)
+                    runCatching {
+                        uriHandler.openUri(stringAnnotation.item)
+                    }
                 }
-            }
         },
     )
 }

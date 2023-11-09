@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.material)
 
     implementation(projects.lib.lightroom)
+    implementation(projects.lib.unsplash)
 
     testImplementation(libs.bundles.testing.unit)
 }

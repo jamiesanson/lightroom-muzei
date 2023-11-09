@@ -47,6 +47,8 @@ kotest = "5.5.0"
 turbine = "1.0.0"
 
 coil = "2.4.0"
+androidx-junit = "1.1.5"
+espresso-core = "3.5.1"
 
 [libraries]
 androidx-appcompat = { module = " androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -119,6 +121,8 @@ android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", ve
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ktlint-gradle-plugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint-plugin" }
 ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }

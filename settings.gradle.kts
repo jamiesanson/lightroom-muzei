@@ -26,4 +26,5 @@ rootProject.name = "Muzei-Lightroom"
 include(
     ":app",
     ":lib:lightroom",
+    ":lib:unsplash",
 )

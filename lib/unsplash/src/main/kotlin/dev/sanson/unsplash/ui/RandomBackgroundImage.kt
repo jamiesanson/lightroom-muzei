@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.unsplash
+package dev.sanson.unsplash.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import dev.sanson.unsplash.rememberRandomImage
 
 @Composable
 fun RandomBackgroundImage(

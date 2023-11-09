@@ -1,5 +1,7 @@
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import dev.sanson.buildlogic.KotlinFeature
+import dev.sanson.buildlogic.Plugins
 import dev.sanson.buildlogic.configureAndroidCompose
 import dev.sanson.buildlogic.configureKotlin
 import org.gradle.api.Plugin
@@ -15,8 +17,14 @@ class ComposeConventionPlugin : Plugin<Project> {
         with(target) {
             configureKotlin(KotlinFeature.ImmutableCollections)
 
-            extensions.configure<CommonExtension<*, *, *, *, *>> {
-                configureAndroidCompose(this)
+            if (pluginManager.hasPlugin(Plugins.Application)) {
+                extensions.configure<ApplicationExtension> {
+                    configureAndroidCompose(this)
+                }
+            } else if (pluginManager.hasPlugin(Plugins.Library)) {
+                extensions.configure<LibraryExtension> {
+                    configureAndroidCompose(this)
+                }
             }
         }
     }
