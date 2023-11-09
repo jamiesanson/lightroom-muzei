@@ -13,6 +13,7 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.common.config.ConfigRepository
+import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
@@ -22,7 +23,6 @@ import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loaded
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loading
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 

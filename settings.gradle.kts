@@ -1,8 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":screens")
-
-
 pluginManagement {
     includeBuild("build-logic")
 
@@ -37,4 +34,5 @@ include(
     ":common:config",
     ":core:data",
     ":feature:source",
+    ":feature:filter",
 )

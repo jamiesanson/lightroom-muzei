@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.filter
+package dev.sanson.lightroom.feature.filter
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,11 +17,9 @@ import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.common.ui.component.Equality
+import dev.sanson.lightroom.screens.ConfirmationScreen
+import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.model.AlbumId
-import dev.sanson.lightroom.ui.confirmation.ConfirmationScreen
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateRating
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -54,9 +52,9 @@ private val Config.ratingEquality: Equality
 class FilterAssetsPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
     private val configRepository: ConfigRepository,
-) : Presenter<FilterAssetsScreen.State> {
+) : Presenter<FilterAssetsState> {
     @Composable
-    override fun present(): FilterAssetsScreen.State {
+    override fun present(): FilterAssetsState {
         val filter by produceState(Config(source = Config.Source.Album(id = AlbumId("")))) {
             configRepository.config.filterNotNull().collect { value = it }
         }
@@ -67,24 +65,24 @@ class FilterAssetsPresenter @AssistedInject constructor(
 
         val scope = rememberCoroutineScope()
 
-        return FilterAssetsScreen.State(
+        return FilterAssetsState(
             keywords = filter.keywords.toPersistentList(),
             rating = filter.starRating,
             equality = equality,
             flag = filter.review,
             eventSink = { event ->
                 when (event) {
-                    is AddKeyword ->
+                    is FilterAssetsEvent.AddKeyword ->
                         scope.launch {
                             configRepository.addKeyword(event.keyword)
                         }
 
-                    is RemoveKeyword ->
+                    is FilterAssetsEvent.RemoveKeyword ->
                         scope.launch {
                             configRepository.removeKeyword(event.keyword)
                         }
 
-                    is UpdateRating ->
+                    is FilterAssetsEvent.UpdateRating ->
                         scope.launch {
                             configRepository.setRatingRange(
                                 start = event.rating,
@@ -96,7 +94,7 @@ class FilterAssetsPresenter @AssistedInject constructor(
                             )
                         }
 
-                    is FilterAssetsScreen.Event.UpdateEquality ->
+                    is FilterAssetsEvent.UpdateEquality ->
                         scope.launch {
                             equality = event.equality
 
@@ -117,15 +115,15 @@ class FilterAssetsPresenter @AssistedInject constructor(
                             )
                         }
 
-                    is FilterAssetsScreen.Event.UpdateFlag ->
+                    is FilterAssetsEvent.UpdateFlag ->
                         scope.launch {
                             configRepository.updateFlag(event.flag)
                         }
 
-                    is FilterAssetsScreen.Event.PopBackToAlbumSelection ->
+                    is FilterAssetsEvent.PopBackToAlbumSelection ->
                         navigator.pop()
 
-                    is FilterAssetsScreen.Event.Confirm ->
+                    is FilterAssetsEvent.Confirm ->
                         navigator.goTo(ConfirmationScreen)
                 }
             },

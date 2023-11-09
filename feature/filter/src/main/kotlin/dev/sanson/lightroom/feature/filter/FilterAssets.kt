@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.filter
+package dev.sanson.lightroom.feature.filter
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.border
@@ -59,18 +59,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.R
 import dev.sanson.lightroom.common.ui.component.DarkModePreviews
 import dev.sanson.lightroom.common.ui.component.Equality
 import dev.sanson.lightroom.common.ui.component.EqualityToggle
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.model.Asset
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.PopBackToAlbumSelection
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateEquality
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateFlag
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.UpdateRating
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -78,7 +72,7 @@ import kotlinx.collections.immutable.persistentListOf
 @CircuitInject(FilterAssetsScreen::class, SingletonComponent::class)
 @Composable
 fun FilterAssets(
-    state: FilterAssetsScreen.State,
+    state: FilterAssetsState,
     modifier: Modifier = Modifier,
 ) {
     val topAppBarScrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -98,7 +92,7 @@ fun FilterAssets(
                         contentDescription = "Back",
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
-                            .clickable { state.eventSink(PopBackToAlbumSelection) },
+                            .clickable { state.eventSink(FilterAssetsEvent.PopBackToAlbumSelection) },
                     )
                 },
                 scrollBehavior = topAppBarScrollBehaviour,
@@ -126,8 +120,8 @@ fun FilterAssets(
 
             KeywordChipGroup(
                 keywords = state.keywords,
-                onAddKeyword = { state.eventSink(AddKeyword(it)) },
-                onRemoveKeyword = { state.eventSink(RemoveKeyword(it)) },
+                onAddKeyword = { state.eventSink(FilterAssetsEvent.AddKeyword(it)) },
+                onRemoveKeyword = { state.eventSink(FilterAssetsEvent.RemoveKeyword(it)) },
             )
 
             Divider(
@@ -142,8 +136,8 @@ fun FilterAssets(
             RatingRow(
                 rating = state.rating,
                 equality = state.equality,
-                onRatingChange = { state.eventSink(UpdateRating(it)) },
-                onEqualityChange = { state.eventSink(UpdateEquality(it)) },
+                onRatingChange = { state.eventSink(FilterAssetsEvent.UpdateRating(it)) },
+                onEqualityChange = { state.eventSink(FilterAssetsEvent.UpdateEquality(it)) },
                 modifier = Modifier.padding(top = 8.dp),
             )
 
@@ -158,7 +152,7 @@ fun FilterAssets(
 
             FlagRow(
                 flag = state.flag,
-                onFlagChange = { state.eventSink(UpdateFlag(it)) },
+                onFlagChange = { state.eventSink(FilterAssetsEvent.UpdateFlag(it)) },
                 modifier = Modifier.padding(top = 8.dp),
             )
         }
@@ -362,7 +356,7 @@ private fun FlagRow(
 fun FilterAssetsPreview() {
     MuzeiLightroomTheme {
         FilterAssets(
-            state = FilterAssetsScreen.State(
+            state = FilterAssetsState(
                 keywords = persistentListOf(
                     "wallpaper",
                     "wallpaper",
