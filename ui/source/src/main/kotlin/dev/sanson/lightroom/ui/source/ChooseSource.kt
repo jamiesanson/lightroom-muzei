@@ -40,6 +40,7 @@ import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.common.ui.component.DarkModePreviews
+import dev.sanson.lightroom.common.ui.component.StepHeader
 import dev.sanson.lightroom.feature.source.R
 import dev.sanson.lightroom.screens.ChooseSourceScreen
 
@@ -51,13 +52,13 @@ fun ChooseSource(
 ) {
     Surface(modifier.fillMaxSize()) {
         Box(Modifier.systemBarsPadding()) {
-            Text(
-                text = "Where should we pull your wallpapers from?",
-                style = MaterialTheme.typography.displaySmall,
+            StepHeader(
+                stepNumber = 1,
+                stepName = stringResource(R.string.choose_a_source),
                 modifier = Modifier
                     .padding(24.dp)
                     .padding(top = 64.dp)
-                    .align(Alignment.TopCenter),
+                    .align(Alignment.TopStart),
             )
 
             Column(
@@ -92,7 +93,7 @@ fun ChooseSource(
                 Spacer(Modifier.size(8.dp))
 
                 Text(
-                    text = "Continue",
+                    text = stringResource(R.string.button_continue),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onPrimary,
                 )
@@ -128,8 +129,8 @@ private fun SourceRow(
 
     Box(
         modifier = modifier
-            .background(backgroundColor)
             .clip(RoundedCornerShape(12.dp))
+            .background(backgroundColor)
             .border(
                 width = borderWidth,
                 color = MaterialTheme.colorScheme.primary.copy(alpha = borderAlpha),

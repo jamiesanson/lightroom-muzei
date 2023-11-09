@@ -22,6 +22,13 @@ private val NotoSans = FontFamily(
     ),
 )
 
+private val JosefinSans = FontFamily(
+    Font(
+        googleFont = GoogleFont("Josefin Sans"),
+        fontProvider = GoogleFontProvider,
+    ),
+)
+
 val MuzeiTypography
     @Composable get() = Typography(
         bodyLarge = MaterialTheme.typography.bodyLarge.copy(
@@ -49,7 +56,11 @@ val MuzeiTypography
             platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
         displaySmall = MaterialTheme.typography.displaySmall.copy(
-            fontFamily = NotoSans,
+            fontFamily = JosefinSans,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
+        ),
+        displayMedium = MaterialTheme.typography.displayMedium.copy(
+            fontFamily = JosefinSans,
             platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
     )

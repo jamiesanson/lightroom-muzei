@@ -4,4 +4,6 @@
     <string name="album_source_title">Album</string>
     <string name="catalog_source_title">Entire Catalog</string>
     <string name="catalog_source_description">Use every image in your Lightroom catalog</string>
+    <string name="choose_a_source">Choose a source</string>
+    <string name="button_continue">Continue</string>
 </resources>
