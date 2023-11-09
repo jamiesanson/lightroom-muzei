@@ -81,7 +81,7 @@ dependencies {
     implementation(libs.circuit)
     implementation(libs.circuit.codegen.annotations)
 
-    implementation(projects.lightroom)
+    implementation(projects.lib.lightroom)
 
     ksp(libs.circuit.codegen)
 

@@ -1,8 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":lightroom")
-
-
 pluginManagement {
     includeBuild("build-logic")
 
@@ -26,4 +23,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Muzei-Lightroom"
 
-include(":app")
+include(
+    ":app",
+    ":lib:lightroom",
+)

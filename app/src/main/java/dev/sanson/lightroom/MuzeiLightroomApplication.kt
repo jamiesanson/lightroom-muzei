@@ -17,7 +17,7 @@ import javax.inject.Inject
  *      * :core:data to lower config repo
  *      * :core:ui for theme, components
  *      * :core:di for qualifiers
- *      * :lib:lightroom - existing
+ *      * :lib:lightroom - existing ✓✓✓
  *      * :lib:unsplash - move hyperlink text into library to avoid core deps
  *      * :lib:muzei <-- lightroom, everything for LoadArtwork.kt. Integration module
  * * Form-factor support
