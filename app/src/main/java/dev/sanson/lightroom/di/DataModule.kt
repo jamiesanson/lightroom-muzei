@@ -8,6 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.core.di.ApplicationScope
 import dev.sanson.lightroom.data.JsonSerializer
 import dev.sanson.lightroom.data.config.Config
 import dev.sanson.lightroom.data.config.ConfigRepository

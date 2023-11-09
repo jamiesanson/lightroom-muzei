@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.core.di.ApplicationScope
 import dev.sanson.lightroom.sdk.Lightroom
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton

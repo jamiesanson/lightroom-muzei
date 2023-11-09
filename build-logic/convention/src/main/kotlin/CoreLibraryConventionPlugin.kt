@@ -23,6 +23,7 @@ class CoreLibraryConventionPlugin : Plugin<Project> {
             configureKotlin(
                 KotlinFeature.Serialization,
                 KotlinFeature.Parcelize,
+                KotlinFeature.Coroutines,
             )
 
             extensions.configure<LibraryExtension> {

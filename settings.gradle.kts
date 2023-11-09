@@ -27,4 +27,5 @@ include(
     ":app",
     ":lib:lightroom",
     ":lib:unsplash",
+    ":core:di",
 )

@@ -12,13 +12,13 @@ import javax.inject.Inject
  *   Build
  * ---------
  * * Modularise + revisit build-logic
- *      * Gradle - convention per library type ✓✓✓
+ *      * Gradle convention work - ✓✓✓
  *      * Features - per-screen + anything else there might be in there
  *      * :core:data to lower config repo
  *      * :core:ui for theme, components
  *      * :core:di for qualifiers
- *      * :lib:lightroom - existing ✓✓✓
- *      * :lib:unsplash - move hyperlink text into library to avoid core deps
+ *      * :lib:lightroom - ✓✓✓
+ *      * :lib:unsplash - ✓✓✓
  *      * :lib:muzei <-- lightroom, everything for LoadArtwork.kt. Integration module
  * * Library client IDs/keys as manifest placeholders
  * * Form-factor support
