@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.di
+package dev.sanson.lightroom.common.config.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -19,7 +19,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DataModule {
+class ConfigModule {
 
     @Provides
     @Singleton

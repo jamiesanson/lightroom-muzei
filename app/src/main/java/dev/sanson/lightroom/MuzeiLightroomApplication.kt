@@ -11,15 +11,6 @@ import javax.inject.Inject
  * ---------
  *   Build
  * ---------
- * * Modularise + revisit build-logic
- *      * Gradle convention work - ✓✓✓
- *      * Features - ✓✓✓
- *      * :core:data - ✓✓✓
- *      * :core:ui - ✓✓✓
- *      * :core:di - ✓✓✓
- *      * :lib:lightroom - ✓✓✓
- *      * :lib:unsplash - ✓✓✓
- *      * :lib:muzei <-- lightroom, everything for LoadArtwork.kt. Integration module
  * * Library client IDs/keys as manifest placeholders
  * * Screen transitions & UI polish
  * * Form-factor support
