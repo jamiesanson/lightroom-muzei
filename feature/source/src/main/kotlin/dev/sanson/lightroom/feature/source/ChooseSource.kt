@@ -37,9 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.core.config.Config
+import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
-import dev.sanson.lightroom.core.ui.component.DarkModePreviews
+import dev.sanson.lightroom.common.ui.component.DarkModePreviews
 import dev.sanson.lightroom.screens.ChooseSourceScreen
 
 @CircuitInject(ChooseSourceScreen::class, SingletonComponent::class)

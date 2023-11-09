@@ -44,8 +44,8 @@ class FeatureConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                "implementation"(project(":core:ui"))
-                "implementation"(project(":core:di"))
+                "implementation"(project(":common:ui"))
+                "implementation"(project(":common:di"))
                 "implementation"(project(":common:screens"))
             }
         }

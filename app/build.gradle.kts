@@ -66,10 +66,9 @@ dependencies {
     implementation(projects.lib.unsplash)
 
     implementation(projects.common.screens)
-
-    implementation(projects.core.di)
-    implementation(projects.core.ui)
-    implementation(projects.core.config)
+    implementation(projects.common.di)
+    implementation(projects.common.ui)
+    implementation(projects.common.config)
 
     testImplementation(libs.bundles.testing.unit)
 }

@@ -8,11 +8,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.core.config.Config
-import dev.sanson.lightroom.core.config.ConfigRepository
-import dev.sanson.lightroom.core.config.DefaultConfigRepository
+import dev.sanson.lightroom.common.config.Config
+import dev.sanson.lightroom.common.config.ConfigRepository
+import dev.sanson.lightroom.common.config.DefaultConfigRepository
+import dev.sanson.lightroom.common.di.ApplicationScope
 import dev.sanson.lightroom.core.config.serializer.JsonSerializer
-import dev.sanson.lightroom.core.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Singleton

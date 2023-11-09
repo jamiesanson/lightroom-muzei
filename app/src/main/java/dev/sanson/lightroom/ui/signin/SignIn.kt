@@ -34,9 +34,9 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
+import dev.sanson.lightroom.common.ui.component.DarkModePreviews
+import dev.sanson.lightroom.common.ui.component.LightroomCard
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
-import dev.sanson.lightroom.core.ui.component.DarkModePreviews
-import dev.sanson.lightroom.core.ui.component.LightroomCard
 import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn

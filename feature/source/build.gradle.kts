@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.config)
+    implementation(projects.common.config)
 }

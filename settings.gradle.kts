@@ -32,9 +32,9 @@ include(
     ":lib:lightroom-coil",
     ":lib:unsplash",
     ":common:screens",
-    ":core:di",
-    ":core:ui",
-    ":core:config",
+    ":common:di",
+    ":common:ui",
+    ":common:config",
     ":core:data",
     ":feature:source",
 )

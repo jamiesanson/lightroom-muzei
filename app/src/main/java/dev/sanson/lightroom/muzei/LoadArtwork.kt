@@ -2,8 +2,8 @@ package dev.sanson.lightroom.muzei
 
 import androidx.core.net.toUri
 import com.google.android.apps.muzei.api.provider.Artwork
-import dev.sanson.lightroom.core.config.Config
-import dev.sanson.lightroom.core.config.permitsAsset
+import dev.sanson.lightroom.common.config.Config
+import dev.sanson.lightroom.common.config.permitsAsset
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
