@@ -5,6 +5,12 @@ plugins {
     id("dev.sanson.android.application")
 }
 
+private val Project.unsplashConsumerKey
+    get() =
+        rootProject.file(".unsplash_consumer_key")
+            .takeIf { it.exists() }
+            ?.readText() ?: ""
+
 android {
     namespace = "dev.sanson.lightroom"
 
@@ -15,6 +21,8 @@ android {
 
         val authority = "dev.sanson.lightroom.authority"
         manifestPlaceholders += "lightroomAuthority" to authority
+        manifestPlaceholders += "unsplashConsumerKey" to unsplashConsumerKey
+
         buildConfigField("String", "LIGHTROOM_AUTHORITY", "\"$authority\"")
     }
 

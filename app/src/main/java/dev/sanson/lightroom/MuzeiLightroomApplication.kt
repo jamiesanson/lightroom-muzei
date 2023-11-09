@@ -11,7 +11,6 @@ import javax.inject.Inject
  * ---------
  *   Build
  * ---------
- * * Library client IDs/keys as manifest placeholders
  * * Screen transitions & UI polish
  * * Form-factor support
  *

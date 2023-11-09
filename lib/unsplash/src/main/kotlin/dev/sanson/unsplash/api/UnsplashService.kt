@@ -1,5 +1,8 @@
 package dev.sanson.unsplash.api
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.util.Log
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -19,20 +22,23 @@ internal interface UnsplashService {
     ): Photo
 
     companion object {
-        // TODO: Perhaps obscure this by removing references from source
-        private const val CONSUMER_KEY = "TeCwVYGHNALiUO_ZYQRsH1PsmLtvXcxUAEWtd27tkVo"
 
-        operator fun invoke(): UnsplashService {
+        operator fun invoke(context: Context): UnsplashService {
             val json = Json {
                 ignoreUnknownKeys = true
             }
+
+            val consumerKey = context.packageManager
+                .getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
+                .metaData
+                .getString("dev.sanson.unsplash.consumerkey", "")
 
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor())
                 .addInterceptor { chain ->
                     val request = chain.request()
                         .newBuilder()
-                        .addHeader("Authorization", "Client-ID $CONSUMER_KEY")
+                        .addHeader("Authorization", "Client-ID $consumerKey")
                         .build()
 
                     chain.proceed(request)
