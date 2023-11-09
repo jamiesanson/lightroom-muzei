@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.signin
+package dev.sanson.lightroom.feature.signin
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
@@ -33,24 +33,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.R
 import dev.sanson.lightroom.common.ui.component.DarkModePreviews
 import dev.sanson.lightroom.common.ui.component.LightroomCard
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
-import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
-import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
-import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn
+import dev.sanson.lightroom.feature.singin.R
+import dev.sanson.lightroom.screens.SignInScreen
 import dev.sanson.unsplash.ui.RandomBackgroundImage
 
 @CircuitInject(SignInScreen::class, SingletonComponent::class)
 @Composable
 fun SignIn(
-    viewState: SignInScreen.State,
+    viewState: SignInState,
     modifier: Modifier = Modifier,
 ) {
     SignInScreen(
-        isLoading = viewState is Loading,
-        onSignIn = { (viewState as? NotSignedIn)?.eventSink?.invoke(SignInWithLightroom) },
+        isLoading = viewState is SignInState.Loading,
+        onSignIn = { (viewState as? SignInState.NotSignedIn)?.eventSink?.invoke(SignInEvent.SignInWithLightroom) },
         modifier = modifier,
     )
 }

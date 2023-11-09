@@ -1,16 +1,13 @@
-package dev.sanson.lightroom.ui.confirmation
+package dev.sanson.lightroom.feature.confirm
 
 import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import com.google.android.apps.muzei.api.provider.Artwork
-import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderClient
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -18,39 +15,37 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.circuit.FinishActivityScreen
-import dev.sanson.lightroom.common.config.ConfigRepository
-import dev.sanson.lightroom.muzei.LightroomAlbumProvider
-import dev.sanson.lightroom.muzei.loadArtwork
+import dev.sanson.lightroom.screens.ConfirmationScreen
+import dev.sanson.lightroom.screens.FinishActivityScreen
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
-import dev.sanson.lightroom.ui.confirmation.ConfirmationScreen.State
-import kotlinx.coroutines.flow.firstOrNull
 import nz.sanson.lightroom.coil.LocalLightroomImageLoader
 
 class ConfirmationPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
-    private val configRepository: ConfigRepository,
+    //private val configRepository: ConfigRepository,
     private val lightroom: Lightroom,
-) : Presenter<State> {
+) : Presenter<ConfirmState> {
 
     @Composable
-    override fun present(): State {
-        val context = LocalContext.current
+    override fun present(): ConfirmState {
         val imageLoader = LocalLightroomImageLoader.current
 
-        val providerClient = remember { getProviderClient<LightroomAlbumProvider>(context) }
+        // TODO: Figure out what to do with muzei artwork loading
+        //val context = LocalContext.current
+        //val providerClient = remember { getProviderClient<LightroomAlbumProvider>(context) }
+        //val artwork by produceState<List<Artwork>?>(initialValue = null) {
+        //    val config = requireNotNull(configRepository.config.firstOrNull()) {
+        //        "Config is required on confirmation"
+        //    }
+        //
+        //    value = lightroom
+        //        .loadArtwork(config)
+        //        .also(providerClient::setArtwork)
+        //}
 
-        val artwork by produceState<List<Artwork>?>(initialValue = null) {
-            val config = requireNotNull(configRepository.config.firstOrNull()) {
-                "Config is required on confirmation"
-            }
-
-            value = lightroom
-                .loadArtwork(config)
-                .also(providerClient::setArtwork)
-        }
+        val artwork by remember { mutableStateOf<List<Artwork>?>(null) }
 
         var firstArtworkId by remember { mutableStateOf<AssetId?>(null) }
 
@@ -76,20 +71,20 @@ class ConfirmationPresenter @AssistedInject constructor(
 
         return when (val art = artwork) {
             null ->
-                State.LoadingArtwork
+                ConfirmState.LoadingArtwork
 
             else -> when (val firstImage = firstArtworkId) {
                 null ->
-                    State.LoadingFirstImage(art)
+                    ConfirmState.LoadingFirstImage(art)
 
                 else ->
-                    State.Loaded(
+                    ConfirmState.Loaded(
                         artwork = art,
                         firstWallpaperId = firstImage,
                         firstArtworkCaptureDate = requireNotNull(art.first().title),
                         eventSink = { event ->
                             when (event) {
-                                ConfirmationScreen.Event.OnFinish ->
+                                ConfirmEvent.OnFinish ->
                                     navigator.goTo(FinishActivityScreen(requestCode = Activity.RESULT_OK))
                             }
                         },

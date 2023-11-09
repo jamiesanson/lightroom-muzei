@@ -36,5 +36,6 @@ include(
     ":feature:album",
     ":feature:confirm",
     ":feature:filter",
+    ":feature:signin",
     ":feature:source",
 )

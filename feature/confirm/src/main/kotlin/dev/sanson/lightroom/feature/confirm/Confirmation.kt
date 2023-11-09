@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.confirmation
+package dev.sanson.lightroom.feature.confirm
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
@@ -31,13 +31,14 @@ import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.ui.component.DarkModePreviews
 import dev.sanson.lightroom.common.ui.component.LightroomCard
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.screens.ConfirmationScreen
 import dev.sanson.lightroom.sdk.model.AssetId
 import nz.sanson.lightroom.coil.rememberImageRequest
 
 @CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
 @Composable
 fun Confirmation(
-    state: ConfirmationScreen.State,
+    state: ConfirmState,
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor = if (isSystemInDarkTheme()) Color.Black else Color.DarkGray
@@ -47,7 +48,7 @@ fun Confirmation(
             .fillMaxSize()
             .background(backgroundColor),
     ) {
-        if (state is ConfirmationScreen.State.Loaded) {
+        if (state is ConfirmState.Loaded) {
             FirstImageBackground(assetId = state.firstWallpaperId)
         }
 
@@ -63,7 +64,7 @@ fun Confirmation(
 
 @Composable
 private fun ConfirmationDialog(
-    state: ConfirmationScreen.State,
+    state: ConfirmState,
     modifier: Modifier = Modifier,
 ) {
     LightroomCard(modifier) {
@@ -72,17 +73,17 @@ private fun ConfirmationDialog(
             label = "Loading state",
         ) { currentState ->
             when (currentState) {
-                is ConfirmationScreen.State.Loaded ->
+                is ConfirmState.Loaded ->
                     ImagesLoaded(
                         imageCount = remember(currentState) { currentState.artwork.size },
                         firstAssetDate = currentState.firstArtworkCaptureDate,
-                        onComplete = { currentState.eventSink(ConfirmationScreen.Event.OnFinish) },
+                        onComplete = { currentState.eventSink(ConfirmEvent.OnFinish) },
                     )
 
-                is ConfirmationScreen.State.LoadingArtwork ->
+                is ConfirmState.LoadingArtwork ->
                     LoadingArtwork()
 
-                is ConfirmationScreen.State.LoadingFirstImage ->
+                is ConfirmState.LoadingFirstImage ->
                     LoadingFirstImage(
                         imageCount = remember(currentState) { currentState.artwork.size },
                     )
@@ -202,7 +203,7 @@ private fun FirstImageBackground(
 fun ChooseSourcePreview() {
     MuzeiLightroomTheme {
         Confirmation(
-            state = ConfirmationScreen.State.Loaded(
+            state = ConfirmState.Loaded(
                 firstWallpaperId = AssetId("1"),
                 firstArtworkCaptureDate = "5 Dec 2023",
                 artwork = emptyList(),

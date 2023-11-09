@@ -73,6 +73,7 @@ dependencies {
     implementation(projects.feature.album)
     implementation(projects.feature.confirm)
     implementation(projects.feature.filter)
+    implementation(projects.feature.signin)
     implementation(projects.feature.source)
 
     testImplementation(libs.bundles.testing.unit)

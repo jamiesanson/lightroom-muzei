@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_description">To provide Muzei with images, the Muzei Lightroom source needs access to your Adobe account.</string>
+    <string name="sign_in">Sign in</string>
+    <string name="continue_with_adobe">Continue with Adobe</string>
+</resources>

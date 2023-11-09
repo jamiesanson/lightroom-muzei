@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.signin
+package dev.sanson.lightroom.feature.signin
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,18 +16,16 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.screens.ChooseSourceScreen
+import dev.sanson.lightroom.screens.SignInScreen
 import dev.sanson.lightroom.sdk.Lightroom
-import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
-import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
-import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn
 
 class SignInPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
     private val lightroom: Lightroom,
-) : Presenter<SignInScreen.State> {
+) : Presenter<SignInState> {
 
     @Composable
-    override fun present(): SignInScreen.State {
+    override fun present(): SignInState {
         val isSignedIn by lightroom.isSignedIn.collectAsState(initial = null)
         val context = LocalContext.current
 
@@ -41,12 +39,12 @@ class SignInPresenter @AssistedInject constructor(
         }
 
         return if (signInRequested || isSignedIn != false) {
-            Loading
+            SignInState.Loading
         } else {
-            NotSignedIn(
+            SignInState.NotSignedIn(
                 eventSink = { event ->
                     when (event) {
-                        SignInWithLightroom -> {
+                        SignInEvent.SignInWithLightroom -> {
                             signInRequested = true
                             lightroom.signIn(context)
                         }
