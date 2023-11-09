@@ -1,6 +1,6 @@
-package dev.sanson.lightroom.data.config
+package dev.sanson.lightroom.core.config
 
-import dev.sanson.lightroom.data.IntRangeSerializer
+import dev.sanson.lightroom.core.config.serializer.IntRangeSerializer
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
 import kotlinx.serialization.Serializable

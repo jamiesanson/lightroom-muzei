@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.data
+package dev.sanson.lightroom.core.config.serializer
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -13,7 +13,7 @@ import kotlinx.serialization.encoding.encodeStructure
 /**
  * Serializer for [IntRange]
  */
-object IntRangeSerializer : KSerializer<IntRange> {
+internal object IntRangeSerializer : KSerializer<IntRange> {
     override val descriptor: SerialDescriptor =
         buildClassSerialDescriptor("kotlin.ranges.IntRange") {
             element<Int>("start")

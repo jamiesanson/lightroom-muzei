@@ -15,11 +15,11 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.screens.ChooseSourceScreen
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn
-import dev.sanson.lightroom.ui.source.ChooseSourceScreen
 
 class SignInPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,

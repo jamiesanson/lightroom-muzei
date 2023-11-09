@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.source
+package dev.sanson.lightroom.feature.source
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -37,18 +37,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.R
+import dev.sanson.lightroom.core.config.Config
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.core.ui.component.DarkModePreviews
-import dev.sanson.lightroom.data.config.Config
-import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseAlbum
-import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseCatalog
-import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnConfirm
+import dev.sanson.lightroom.screens.ChooseSourceScreen
 
 @CircuitInject(ChooseSourceScreen::class, SingletonComponent::class)
 @Composable
 fun ChooseSource(
-    state: ChooseSourceScreen.State,
+    state: ChooseSourceState,
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier.fillMaxSize()) {
@@ -71,7 +68,7 @@ fun ChooseSource(
                     title = stringResource(R.string.catalog_source_title),
                     subtitle = stringResource(R.string.catalog_source_description),
                     selected = state.selectedSource is Config.Source.Catalog,
-                    onClick = { state.eventSink(OnChooseCatalog) },
+                    onClick = { state.eventSink(ChooseSourceEvent.OnChooseCatalog) },
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -80,12 +77,12 @@ fun ChooseSource(
                     title = stringResource(R.string.album_source_title),
                     subtitle = stringResource(R.string.album_source_description),
                     selected = state.selectedSource is Config.Source.Album,
-                    onClick = { state.eventSink(OnChooseAlbum) },
+                    onClick = { state.eventSink(ChooseSourceEvent.OnChooseAlbum) },
                 )
             }
 
             Button(
-                onClick = { state.eventSink(OnConfirm) },
+                onClick = { state.eventSink(ChooseSourceEvent.OnConfirm) },
                 contentPadding = PaddingValues(vertical = 12.dp, horizontal = 24.dp),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -179,6 +176,6 @@ private fun SourceRow(
 @Composable
 fun ChooseSourcePreview() {
     MuzeiLightroomTheme {
-        ChooseSource(state = ChooseSourceScreen.State(Config.Source.Catalog) {})
+        ChooseSource(state = ChooseSourceState(Config.Source.Catalog) {})
     }
 }

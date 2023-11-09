@@ -2,8 +2,8 @@ package dev.sanson.lightroom.muzei
 
 import androidx.core.net.toUri
 import com.google.android.apps.muzei.api.provider.Artwork
-import dev.sanson.lightroom.data.config.Config
-import dev.sanson.lightroom.data.config.permitsAsset
+import dev.sanson.lightroom.core.config.Config
+import dev.sanson.lightroom.core.config.permitsAsset
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
@@ -58,9 +58,9 @@ suspend fun Lightroom.loadArtwork(config: Config): List<Artwork> {
         )
     }
 
-    val assets = when (config.source) {
+    val assets = when (val source = config.source) {
         is Config.Source.Album ->
-            getAlbumAssets(config.source.requireId())
+            getAlbumAssets(source.requireId())
 
         is Config.Source.Catalog ->
             getCatalogAssets()

@@ -65,8 +65,11 @@ dependencies {
     implementation(projects.lib.lightroomCoil)
     implementation(projects.lib.unsplash)
 
+    implementation(projects.common.screens)
+
     implementation(projects.core.di)
     implementation(projects.core.ui)
+    implementation(projects.core.config)
 
     testImplementation(libs.bundles.testing.unit)
 }

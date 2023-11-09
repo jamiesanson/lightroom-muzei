@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":screens")
+
+
 pluginManagement {
     includeBuild("build-logic")
 
@@ -28,6 +31,10 @@ include(
     ":lib:lightroom",
     ":lib:lightroom-coil",
     ":lib:unsplash",
+    ":common:screens",
     ":core:di",
     ":core:ui",
+    ":core:config",
+    ":core:data",
+    ":feature:source",
 )

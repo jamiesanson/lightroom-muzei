@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="album_source_description">Use images from a specific album</string>
+    <string name="album_source_title">Album</string>
+    <string name="catalog_source_title">Entire Catalog</string>
+    <string name="catalog_source_description">Use every image in your Lightroom catalog</string>
+</resources>

@@ -23,6 +23,8 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
 
+    implementation(projects.core.data)
+
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)
 

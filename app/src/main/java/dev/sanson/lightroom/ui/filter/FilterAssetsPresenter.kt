@@ -14,9 +14,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.core.config.Config
+import dev.sanson.lightroom.core.config.ConfigRepository
 import dev.sanson.lightroom.core.ui.component.Equality
-import dev.sanson.lightroom.data.config.Config
-import dev.sanson.lightroom.data.config.ConfigRepository
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.ui.confirmation.ConfirmationScreen
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
@@ -27,20 +27,28 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 private val Config.starRating: Int
-    get() = when {
-        rating == null -> 0
-        rating.isEmpty() -> rating.first
-        rating.first == 0 -> rating.last
-        rating.last == 5 -> rating.first
-        else -> 0
+    get() {
+        val rating = rating
+
+        return when {
+            rating == null -> 0
+            rating.isEmpty() -> rating.first
+            rating.first == 0 -> rating.last
+            rating.last == 5 -> rating.first
+            else -> 0
+        }
     }
 
 private val Config.ratingEquality: Equality
-    get() = when {
-        rating == null || rating.isEmpty() -> Equality.EqualTo
-        rating.first == 0 -> Equality.LessThan
-        rating.last == 5 -> Equality.GreaterThan
-        else -> Equality.EqualTo
+    get() {
+        val rating = rating
+
+        return when {
+            rating == null || rating.isEmpty() -> Equality.EqualTo
+            rating.first == 0 -> Equality.LessThan
+            rating.last == 5 -> Equality.GreaterThan
+            else -> Equality.EqualTo
+        }
     }
 
 class FilterAssetsPresenter @AssistedInject constructor(

@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.sdk.backend.serializer
+package dev.sanson.lightroom.core.config.serializer
 
 import androidx.datastore.core.Serializer
 import kotlinx.serialization.KSerializer
@@ -11,7 +11,7 @@ import java.io.OutputStream
  * Convenience function for creating a [JsonSerializer] without having to manually
  * specify serializer
  */
-internal inline fun <reified T : Any> JsonSerializer(): JsonSerializer<T> {
+inline fun <reified T : Any> JsonSerializer(): JsonSerializer<T> {
     return JsonSerializer(serializer = serializer<T>())
 }
 
@@ -20,7 +20,7 @@ internal inline fun <reified T : Any> JsonSerializer(): JsonSerializer<T> {
  *
  * @param serializer [KSerializer] to use when saving and restoring Json text
  */
-internal class JsonSerializer<T : Any>(
+class JsonSerializer<T : Any>(
     private val serializer: KSerializer<T>,
 ) : Serializer<T?> {
 

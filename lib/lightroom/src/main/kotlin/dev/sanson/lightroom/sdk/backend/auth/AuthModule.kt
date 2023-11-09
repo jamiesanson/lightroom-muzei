@@ -6,9 +6,9 @@ import androidx.datastore.core.DataStoreFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
+import dev.sanson.lightroom.core.config.serializer.JsonSerializer
 import dev.sanson.lightroom.sdk.BuildConfig
 import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
-import dev.sanson.lightroom.sdk.backend.serializer.JsonSerializer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType

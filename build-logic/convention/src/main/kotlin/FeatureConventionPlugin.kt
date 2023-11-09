@@ -10,6 +10,7 @@ import dev.sanson.buildlogic.configureLinting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 
 /**
  * Feature libraries contain screens & feature-related code, and should be lightweight to spin up.
@@ -40,6 +41,12 @@ class FeatureConventionPlugin : Plugin<Project> {
                 configureAndroidCompose(this)
 
                 configureLinting(this)
+            }
+
+            dependencies {
+                "implementation"(project(":core:ui"))
+                "implementation"(project(":core:di"))
+                "implementation"(project(":common:screens"))
             }
         }
     }

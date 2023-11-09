@@ -1,10 +1,9 @@
-package dev.sanson.lightroom.data.config
+package dev.sanson.lightroom.core.config
 
 import androidx.datastore.core.DataStore
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 interface ConfigRepository {
     val config: Flow<Config?>
@@ -17,7 +16,7 @@ interface ConfigRepository {
     suspend fun setImageSource(imageSource: Config.Source)
 }
 
-class DefaultConfigRepository @Inject constructor(
+class DefaultConfigRepository(
     private val configStore: DataStore<Config?>,
 ) : ConfigRepository {
     override val config: Flow<Config?> get() = configStore.data

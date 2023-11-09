@@ -11,8 +11,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.data.config.Config
-import dev.sanson.lightroom.data.config.ConfigRepository
+import dev.sanson.lightroom.core.config.Config
+import dev.sanson.lightroom.core.config.ConfigRepository
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId

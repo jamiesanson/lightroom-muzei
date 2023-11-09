@@ -19,7 +19,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.circuit.FinishActivityScreen
-import dev.sanson.lightroom.data.config.ConfigRepository
+import dev.sanson.lightroom.core.config.ConfigRepository
 import dev.sanson.lightroom.muzei.LightroomAlbumProvider
 import dev.sanson.lightroom.muzei.loadArtwork
 import dev.sanson.lightroom.sdk.Lightroom

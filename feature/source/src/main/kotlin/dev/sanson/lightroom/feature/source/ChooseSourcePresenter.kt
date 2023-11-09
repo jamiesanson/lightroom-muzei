@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.source
+package dev.sanson.lightroom.feature.source
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,14 +14,11 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.data.config.Config
-import dev.sanson.lightroom.data.config.ConfigRepository
-import dev.sanson.lightroom.ui.album.ChooseAlbumScreen
-import dev.sanson.lightroom.ui.filter.FilterAssetsScreen
-import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseAlbum
-import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseCatalog
-import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnConfirm
-import dev.sanson.lightroom.ui.source.ChooseSourceScreen.State
+import dev.sanson.lightroom.core.config.Config
+import dev.sanson.lightroom.core.config.ConfigRepository
+import dev.sanson.lightroom.screens.ChooseAlbumScreen
+import dev.sanson.lightroom.screens.ChooseSourceScreen
+import dev.sanson.lightroom.screens.FilterAssetsScreen
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -29,9 +26,9 @@ import kotlinx.coroutines.launch
 class ChooseSourcePresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
     private val configRepository: ConfigRepository,
-) : Presenter<State> {
+) : Presenter<ChooseSourceState> {
     @Composable
-    override fun present(): State {
+    override fun present(): ChooseSourceState {
         val scope = rememberCoroutineScope()
 
         val persistedSource by produceState<Config.Source?>(initialValue = null) {
@@ -41,17 +38,17 @@ class ChooseSourcePresenter @AssistedInject constructor(
 
         var selectedSource by remember(persistedSource) { mutableStateOf(persistedSource) }
 
-        return State(
+        return ChooseSourceState(
             selectedSource = selectedSource,
         ) { event ->
             when (event) {
-                OnChooseAlbum ->
+                ChooseSourceEvent.OnChooseAlbum ->
                     selectedSource = Config.Source.Album.Uninitialized
 
-                OnChooseCatalog ->
+                ChooseSourceEvent.OnChooseCatalog ->
                     selectedSource = Config.Source.Catalog
 
-                OnConfirm -> scope.launch {
+                ChooseSourceEvent.OnConfirm -> scope.launch {
                     val source = selectedSource ?: error("Selected source not set")
                     configRepository.setImageSource(source)
                     navigator.goTo(

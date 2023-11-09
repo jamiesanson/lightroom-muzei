@@ -1,0 +1,18 @@
+package dev.sanson.lightroom.feature.source
+
+import com.slack.circuit.runtime.CircuitUiEvent
+import com.slack.circuit.runtime.CircuitUiState
+import dev.sanson.lightroom.core.config.Config
+
+data class ChooseSourceState(
+    val selectedSource: Config.Source?,
+    val eventSink: (ChooseSourceEvent) -> Unit,
+) : CircuitUiState
+
+sealed interface ChooseSourceEvent : CircuitUiEvent {
+    data object OnChooseCatalog : ChooseSourceEvent
+
+    data object OnChooseAlbum : ChooseSourceEvent
+
+    data object OnConfirm : ChooseSourceEvent
+}
