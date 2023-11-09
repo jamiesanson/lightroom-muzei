@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.coil
+package nz.sanson.lightroom.coil
 
 import android.content.Context
 import android.util.Log
@@ -8,31 +8,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStoreOwner
 import coil.imageLoader
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.request.SuccessResult
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.getImageAuthHeaders
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.delay
 import okhttp3.Headers.Companion.toHeaders
-import javax.inject.Inject
 
-@HiltViewModel
-internal class ImageRequestViewModel @Inject constructor(
-    val lightroom: Lightroom,
-) : ViewModel()
+val LocalLightroom = staticCompositionLocalOf<Lightroom> { error("Lightroom not supplied") }
 
-suspend fun Lightroom.buildImageRequest(
+internal suspend fun Lightroom.buildImageRequest(
     context: Context,
     assetId: AssetId,
     rendition: Rendition,
@@ -77,11 +70,11 @@ suspend fun Lightroom.awaitSuccessfulImageRequest(
 
 @Composable
 fun rememberImageRequest(
+    lightroom: Lightroom = LocalLightroom.current,
     assetId: AssetId,
     rendition: Rendition = Rendition.SixForty,
 ): ImageRequest? {
     if (LocalView.current.isInEditMode) {
-        // Avoid ViewModel fetching in previews
         return null
     }
 
@@ -89,6 +82,7 @@ fun rememberImageRequest(
         assetId = assetId,
         rendition = rendition,
         context = LocalContext.current,
+        lightroom = lightroom,
     )
 }
 
@@ -96,14 +90,14 @@ fun rememberImageRequest(
 private fun rememberImageRequest(
     assetId: AssetId,
     context: Context,
+    lightroom: Lightroom,
     rendition: Rendition = Rendition.SixForty,
-    viewModel: ImageRequestViewModel = hiltViewModel(context as ViewModelStoreOwner),
 ): ImageRequest? {
     var request by remember { mutableStateOf<ImageRequest?>(null) }
 
     LaunchedEffect(assetId, rendition) {
         request = null
-        request = viewModel.lightroom.awaitSuccessfulImageRequest(context, assetId, rendition)
+        request = lightroom.awaitSuccessfulImageRequest(context, assetId, rendition)
     }
 
     return request

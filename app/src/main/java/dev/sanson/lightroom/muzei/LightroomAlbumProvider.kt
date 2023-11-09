@@ -16,12 +16,12 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.coil.awaitSuccessfulImageRequest
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import nz.sanson.lightroom.coil.awaitSuccessfulImageRequest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream

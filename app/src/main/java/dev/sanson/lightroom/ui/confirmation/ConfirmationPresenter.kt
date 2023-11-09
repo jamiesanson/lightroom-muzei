@@ -19,7 +19,6 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.circuit.FinishActivityScreen
-import dev.sanson.lightroom.coil.awaitSuccessfulImageRequest
 import dev.sanson.lightroom.data.config.ConfigRepository
 import dev.sanson.lightroom.muzei.LightroomAlbumProvider
 import dev.sanson.lightroom.muzei.loadArtwork
@@ -28,6 +27,7 @@ import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import dev.sanson.lightroom.ui.confirmation.ConfirmationScreen.State
 import kotlinx.coroutines.flow.firstOrNull
+import nz.sanson.lightroom.coil.awaitSuccessfulImageRequest
 
 class ConfirmationPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,

@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.material)
 
     implementation(projects.lib.lightroom)
+    implementation(projects.lib.lightroomCoil)
     implementation(projects.lib.unsplash)
 
     implementation(projects.core.di)

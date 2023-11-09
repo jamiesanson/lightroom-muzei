@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
@@ -19,6 +21,7 @@ import dev.sanson.lightroom.circuit.FinishActivityScreen
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
+import nz.sanson.lightroom.coil.LocalLightroom
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,11 +55,13 @@ class LightroomSettingsActivity : ComponentActivity() {
             )
 
             MuzeiLightroomTheme {
-                CircuitCompositionLocals(circuit = circuit) {
-                    NavigableCircuitContent(
-                        navigator = navigator,
-                        backstack = backstack,
-                    )
+                MuzeiLightroomCompositionLocals {
+                    CircuitCompositionLocals(circuit = circuit) {
+                        NavigableCircuitContent(
+                            navigator = navigator,
+                            backstack = backstack,
+                        )
+                    }
                 }
             }
         }
@@ -65,5 +70,10 @@ class LightroomSettingsActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intent?.let(lightroom::handleSignInResponse)
+    }
+
+    @Composable
+    private fun MuzeiLightroomCompositionLocals(content: @Composable () -> Unit) {
+        CompositionLocalProvider(LocalLightroom provides lightroom, content = content)
     }
 }
