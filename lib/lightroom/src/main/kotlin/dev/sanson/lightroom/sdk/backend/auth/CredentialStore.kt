@@ -1,42 +1,14 @@
 package dev.sanson.lightroom.sdk.backend.auth
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.Serializer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.io.InputStream
-import java.io.OutputStream
 
 @Serializable
 internal data class Credential(
     val accessToken: String,
     val refreshToken: String,
-) {
-
-    companion object {
-        val Serializer = object : Serializer<Credential?> {
-            override val defaultValue: Credential? = null
-
-            override suspend fun readFrom(input: InputStream): Credential? {
-                return runCatching {
-                    Json.decodeFromString<Credential>(input.bufferedReader().readText())
-                }.getOrNull()
-            }
-
-            override suspend fun writeTo(t: Credential?, output: OutputStream) {
-                if (t != null) {
-                    runCatching {
-                        output.bufferedWriter().use {
-                            it.write(Json.encodeToString(t))
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+)
 
 internal interface CredentialStore {
     val credential: Flow<Credential?>

@@ -1,10 +1,8 @@
-import dev.sanson.lightroom.buildlogic.BuildType
+import dev.sanson.buildlogic.BuildType
 
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    alias(libs.plugins.ksp)
-    id("dev.sanson.lightroom.android.application")
-    id("dev.sanson.lightroom.android.hilt")
+    id("dev.sanson.android.application")
 }
 
 android {
@@ -29,7 +27,6 @@ android {
             applicationIdSuffix = BuildType.Debug.applicationIdSuffix
         }
 
-        @Suppress("UnstableApiUsage")
         release {
             isMinifyEnabled = true
             proguardFiles(
@@ -38,10 +35,6 @@ android {
             )
         }
     }
-}
-
-ksp {
-    arg("circuit.codegen.mode", "hilt")
 }
 
 dependencies {
@@ -57,7 +50,6 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization.converter)
-    implementation(libs.kotlinx.serialization.json)
 
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
@@ -65,31 +57,11 @@ dependencies {
 
     implementation(libs.coil)
 
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.google.fonts)
     implementation(libs.androidx.work)
 
     implementation(libs.material)
 
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.datetime)
-    implementation(libs.kotlinx.collections.immutable)
-
-    implementation(libs.circuit)
-    implementation(libs.circuit.codegen.annotations)
-
     implementation(projects.lib.lightroom)
 
-    ksp(libs.circuit.codegen)
-
-    implementation(libs.circuitx)
-    testImplementation(libs.circuit.test)
-
     testImplementation(libs.bundles.testing.unit)
-
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.tooling)
 }

@@ -1,6 +1,6 @@
 package dev.sanson.lightroom.sdk.domain
 
-import androidx.core.net.toUri
+import android.net.Uri
 import dev.sanson.lightroom.sdk.backend.AlbumService
 import dev.sanson.lightroom.sdk.backend.model.Href
 import dev.sanson.lightroom.sdk.model.AlbumId
@@ -8,6 +8,11 @@ import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import javax.inject.Inject
 import dev.sanson.lightroom.sdk.backend.model.Asset as BackendAsset
+
+/**
+ * Extension taken from androidx-core to avoid dependency on the entire library
+ */
+private fun String.toUri(): Uri = Uri.parse(this)
 
 /**
  * Pull the "captured_after" parameter out of an [Href]

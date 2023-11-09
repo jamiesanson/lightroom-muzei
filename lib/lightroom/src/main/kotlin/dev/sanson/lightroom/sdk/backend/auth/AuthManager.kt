@@ -2,7 +2,6 @@ package dev.sanson.lightroom.sdk.backend.auth
 
 import android.net.Uri
 import android.util.Base64
-import androidx.core.net.toUri
 import dev.sanson.lightroom.sdk.backend.LightroomClientId
 import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +14,11 @@ import kotlinx.coroutines.withContext
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.security.SecureRandom
 import javax.inject.Inject
+
+/**
+ * Extension taken from androidx-core to avoid dependency on the entire library
+ */
+private fun String.toUri(): Uri = Uri.parse(this)
 
 internal class AuthManager @Inject constructor(
     private val applicationScope: CoroutineScope,

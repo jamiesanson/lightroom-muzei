@@ -1,18 +1,18 @@
 import com.android.build.api.dsl.LibraryExtension
-import dev.sanson.buildlogic.configureLinting
-import dev.sanson.buildlogic.configureAndroid
-import dev.sanson.buildlogic.configureKotlin
 import dev.sanson.buildlogic.KotlinFeature
 import dev.sanson.buildlogic.Plugins
+import dev.sanson.buildlogic.configureAndroid
+import dev.sanson.buildlogic.configureKotlin
+import dev.sanson.buildlogic.configureLinting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 /**
- * Library modules are standalone Android libraries that contain significantly more logic than
- * core modules. These may act as SDKs, or even integration layers.
+ * Core libraries are barebones Android libraries, with the Android plugin, linting and basic
+ * Kotlin features enabled. Everything else is to be added on a case-by-case basis.
  */
-class LibraryConventionPlugin : Plugin<Project> {
+class CoreLibraryConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
@@ -23,8 +23,6 @@ class LibraryConventionPlugin : Plugin<Project> {
             configureKotlin(
                 KotlinFeature.Serialization,
                 KotlinFeature.Parcelize,
-                KotlinFeature.Coroutines,
-                KotlinFeature.DateTime,
             )
 
             extensions.configure<LibraryExtension> {
