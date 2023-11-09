@@ -11,9 +11,17 @@ import javax.inject.Inject
  * ---------
  *   Build
  * ---------
- * * Testing presenters
  * * Modularise + revisit build-logic
+ *      * Gradle - convention per library type
+ *      * Features - per-screen + anything else there might be in there
+ *      * :core:data to lower config repo
+ *      * :core:ui for theme, components
+ *      * :core:di for qualifiers
+ *      * :lib:lightroom - existing
+ *      * :lib:unsplash - move hyperlink text into library to avoid core deps
+ *      * :lib:muzei <-- lightroom, everything for LoadArtwork.kt. Integration module
  * * Form-factor support
+ * * Testing presenters
  * * Screen transitions & UI polish
  *
  * ---------------

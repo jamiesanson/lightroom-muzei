@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dagger.multibindings.Multibinds
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -22,15 +21,4 @@ class CircuitModule {
             .addUiFactories(uiFactories)
             .build()
     }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class CircuitBindingModule {
-
-    @Multibinds
-    abstract fun presenterFactories(): Set<Presenter.Factory>
-
-    @Multibinds
-    abstract fun viewFactories(): Set<Ui.Factory>
 }
