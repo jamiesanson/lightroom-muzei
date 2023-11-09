@@ -5,7 +5,7 @@ import dev.sanson.lightroom.sdk.backend.model.Resource
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
-import dev.sanson.lightroom.sdk.model.Asset
+import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CatalogId
 import dev.sanson.lightroom.sdk.model.CollectionSet
 import dev.sanson.lightroom.sdk.model.CollectionSetId
@@ -40,11 +40,11 @@ internal class GetAlbumsUseCase @Inject constructor(
             .awaitAll()
     }
 
-    private suspend fun loadAlbumAssets(catalogId: CatalogId, albumId: AlbumId): List<Asset> {
+    private suspend fun loadAlbumAssets(catalogId: CatalogId, albumId: AlbumId): List<AssetId> {
         return albumService
             .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id)
             .resources
-            .map { it.asset.toAsset(catalogId = catalogId) }
+            .map { AssetId(it.asset.id) }
     }
 
     /**
@@ -64,14 +64,16 @@ internal class GetAlbumsUseCase @Inject constructor(
                         "collection" ->
                             Album(
                                 id = AlbumId(id = resource.id),
+                                catalogId = catalogId,
                                 name = payload.name,
-                                cover = payload.cover?.toAsset(catalogId),
+                                cover = payload.cover?.id?.let(::AssetId),
                                 assets = emptyList(),
                             )
 
                         "collection_set" ->
                             CollectionSet(
                                 id = CollectionSetId(resource.id),
+                                catalogId = catalogId,
                                 name = payload.name,
                                 children = (this@findChildren - children.toSet())
                                     .findChildren(catalogId = catalogId, parentId = resource.id),
@@ -100,8 +102,8 @@ internal class GetAlbumsUseCase @Inject constructor(
 
                         it.copy(
                             assets = assets,
-                            cover = it.cover ?: assets.firstOrNull()?.also { asset ->
-                                generateRendition(assetId = asset.id, rendition = Rendition.Full)
+                            cover = it.cover ?: assets.firstOrNull()?.also { assetId ->
+                                generateRendition(assetId = assetId, rendition = Rendition.Full)
                             },
                         )
                     }

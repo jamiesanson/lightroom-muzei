@@ -6,6 +6,7 @@ package dev.sanson.lightroom.sdk.model
  */
 sealed interface AlbumTreeItem {
     val id: AlbumTreeItemId
+    val catalogId: CatalogId
     val name: String
 }
 

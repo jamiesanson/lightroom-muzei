@@ -9,11 +9,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalView
 import coil.request.ImageRequest
 import dev.sanson.lightroom.sdk.model.Asset
+import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.CatalogId
 import dev.sanson.lightroom.sdk.model.Rendition
 
 @Composable
 fun rememberImageRequest(
     asset: Asset,
+    rendition: Rendition = Rendition.SixForty,
+): ImageRequest? {
+    return rememberImageRequest(
+        assetId = asset.id,
+        catalogId = asset.catalogId,
+        rendition = rendition,
+    )
+}
+
+@Composable
+fun rememberImageRequest(
+    assetId: AssetId,
+    catalogId: CatalogId,
     rendition: Rendition = Rendition.SixForty,
 ): ImageRequest? {
     if (LocalView.current.isInEditMode) {
@@ -24,10 +39,10 @@ fun rememberImageRequest(
 
     var request by remember { mutableStateOf<ImageRequest?>(null) }
 
-    LaunchedEffect(asset, rendition) {
+    LaunchedEffect(assetId, catalogId, rendition) {
         request = null
         request = with(imageLoader) {
-            newRequest(asset.id, asset.catalogId, rendition).await()
+            newRequest(assetId, catalogId, rendition).await()
         }
     }
 

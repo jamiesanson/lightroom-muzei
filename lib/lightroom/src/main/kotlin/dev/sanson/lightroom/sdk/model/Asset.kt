@@ -36,4 +36,4 @@ fun Asset.asUrl(rendition: Rendition): String =
  * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Assets/operation/getAssetRendition
  */
 fun AssetId.asUrl(catalogId: CatalogId, rendition: Rendition): String =
-    "https://lr.adobe.io/v2/catalogs/$catalogId/assets/$id/renditions/${rendition.code}"
+    "https://lr.adobe.io/v2/catalogs/${catalogId.id}/assets/$id/renditions/${rendition.code}"

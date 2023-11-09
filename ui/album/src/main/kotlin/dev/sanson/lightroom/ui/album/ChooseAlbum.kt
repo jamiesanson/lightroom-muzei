@@ -18,10 +18,8 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,27 +29,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.ui.component.DarkModePreviews
+import dev.sanson.lightroom.common.ui.component.StepHeader
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.screens.ChooseAlbumScreen
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
-import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CatalogId
 import dev.sanson.lightroom.sdk.model.CollectionSet
 import dev.sanson.lightroom.sdk.model.CollectionSetId
 import dev.sanson.lightroom.sdk.model.Rendition
-import kotlinx.datetime.Instant
 import nz.sanson.lightroom.coil.rememberImageRequest
 
-@OptIn(ExperimentalMaterial3Api::class)
 @CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
 @Composable
 fun ChooseAlbum(
@@ -60,13 +57,12 @@ fun ChooseAlbum(
 ) {
     Scaffold(
         topBar = {
-            MediumTopAppBar(
-                title = {
-                    Text(
-                        text = "Choose an album",
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                },
+            StepHeader(
+                stepNumber = 2,
+                stepName = stringResource(R.string.choose_an_album),
+                modifier = Modifier
+                    .padding(24.dp)
+                    .padding(top = 64.dp),
             )
         },
         modifier = modifier
@@ -82,7 +78,7 @@ fun ChooseAlbum(
                 is ChooseAlbumState.Loaded ->
                     LazyColumn(
                         Modifier
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 16.dp),
                     ) {
                         collectionSet(
                             children = state.albumTree,
@@ -159,6 +155,7 @@ private fun LazyListScope.collectionSet(
                         onClick = { onAlbumClick(child.id) },
                         name = child.name,
                         coverAsset = child.cover,
+                        catalogId = child.catalogId,
                         modifier = Modifier
                             .padding(vertical = 4.dp)
                             .padding(start = inset + 8.dp, end = 8.dp),
@@ -184,7 +181,8 @@ private fun AlbumRow(
     isSelected: Boolean,
     onClick: () -> Unit,
     name: String,
-    coverAsset: Asset?,
+    coverAsset: AssetId?,
+    catalogId: CatalogId,
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor by animateColorAsState(
@@ -214,6 +212,7 @@ private fun AlbumRow(
             if (coverAsset != null) {
                 AssetThumbnail(
                     asset = coverAsset,
+                    catalogId = catalogId,
                     modifier = Modifier
                         .padding(8.dp)
                         .size(48.dp),
@@ -243,12 +242,14 @@ private fun AlbumRow(
 
 @Composable
 private fun AssetThumbnail(
-    asset: Asset,
+    asset: AssetId,
+    catalogId: CatalogId,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = rememberImageRequest(
-            asset = asset,
+            assetId = asset,
+            catalogId = catalogId,
             rendition = Rendition.Thumbnail,
         ),
         contentDescription = "Album cover photo",
@@ -261,44 +262,44 @@ private fun AssetThumbnail(
 @DarkModePreviews
 @Composable
 fun ChooseAlbumScreenPreview() {
-    val dummyAsset = Asset(
-        AssetId(""), CatalogId(""), Instant.DISTANT_PAST, "",
-        "", 1, "", "", "", emptyList(),
-    )
-
     MuzeiLightroomTheme {
         ChooseAlbum(
             state = ChooseAlbumState.Loaded(
                 albumTree = listOf(
                     CollectionSet(
                         id = CollectionSetId("0"),
+                        catalogId = CatalogId(""),
                         name = "Travel",
                         children = listOf(
                             Album(
                                 id = AlbumId("1"),
+                                catalogId = CatalogId(""),
                                 name = "Portugal",
                                 cover = null,
-                                assets = List(168) { dummyAsset },
+                                assets = List(168) { AssetId("") },
                             ),
                             Album(
                                 id = AlbumId("2"),
+                                catalogId = CatalogId(""),
                                 name = "Spain",
                                 cover = null,
-                                assets = List(340) { dummyAsset },
+                                assets = List(340) { AssetId("") },
                             ),
                             Album(
                                 id = AlbumId("3"),
+                                catalogId = CatalogId(""),
                                 name = "Morocco",
                                 cover = null,
-                                assets = List(210) { dummyAsset },
+                                assets = List(210) { AssetId("") },
                             ),
                         ),
                     ),
                     Album(
                         id = AlbumId("4"),
+                        catalogId = CatalogId(""),
                         name = "NZ Birdlife",
                         cover = null,
-                        assets = List(10) { dummyAsset },
+                        assets = List(10) { AssetId("") },
                     ),
                 ),
                 selectedAlbum = AlbumId("3"),

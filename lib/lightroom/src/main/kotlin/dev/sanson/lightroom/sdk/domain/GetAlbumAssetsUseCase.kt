@@ -29,7 +29,6 @@ internal val Href.capturedAfter: String
 internal fun BackendAsset.toAsset(catalogId: CatalogId): Asset {
     requireNotNull(payload) { "No asset metadata found: $this" }
 
-    // TODO: Some assets may not have focal length & aperture ratings. How does the API behave for these?
     return Asset(
         id = AssetId(id),
         captureDate = payload.captureDate,
