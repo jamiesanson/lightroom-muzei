@@ -1,11 +1,14 @@
 package dev.sanson.lightroom.ui.album
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +31,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -150,16 +158,34 @@ private fun LazyListScope.collectionSet(
         when (child) {
             is Album -> {
                 item {
-                    AlbumRow(
-                        isSelected = selectedAlbum == child.id,
-                        onClick = { onAlbumClick(child.id) },
-                        name = child.name,
-                        coverAsset = child.cover,
-                        catalogId = child.catalogId,
-                        modifier = Modifier
-                            .padding(vertical = 4.dp)
-                            .padding(start = inset + 8.dp, end = 8.dp),
-                    )
+                    Row(Modifier.padding(start = inset)) {
+                        // TODO: Apply this effect to nested collection sets, to avoid line breaks
+                        // when presenting nested folders
+                        val dashColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.16f)
+                        Canvas(
+                            modifier = Modifier
+                                .size(width = 2.dp, height = 74.dp),
+                        ) {
+                            drawLine(
+                                color = dashColor,
+                                start = Offset(0f, 0f),
+                                end = Offset(0f, size.height),
+                                strokeWidth = 4f,
+                                cap = StrokeCap.Round,
+                            )
+                        }
+
+                        AlbumRow(
+                            isSelected = selectedAlbum == child.id,
+                            onClick = { onAlbumClick(child.id) },
+                            name = child.name,
+                            coverAsset = child.cover,
+                            catalogId = child.catalogId,
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+                                .padding(start = 8.dp, end = 8.dp),
+                        )
+                    }
                 }
             }
 
