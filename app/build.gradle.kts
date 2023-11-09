@@ -12,6 +12,10 @@ android {
         applicationId = "dev.sanson.lightroom"
         versionCode = libs.versions.versioncode.get().toInt()
         versionName = libs.versions.app.get()
+
+        val authority = "dev.sanson.lightroom.authority"
+        manifestPlaceholders += "lightroomAuthority" to authority
+        buildConfigField("String", "LIGHTROOM_AUTHORITY", "\"$authority\"")
     }
 
     buildFeatures {
