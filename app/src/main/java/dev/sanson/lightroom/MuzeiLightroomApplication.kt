@@ -13,7 +13,7 @@ import javax.inject.Inject
  * ---------
  * * Modularise + revisit build-logic
  *      * Gradle convention work - ✓✓✓
- *      * Features - per-screen + anything else there might be in there
+ *      * Features - ✓✓✓
  *      * :core:data - ✓✓✓
  *      * :core:ui - ✓✓✓
  *      * :core:di - ✓✓✓

@@ -70,11 +70,11 @@ dependencies {
     implementation(projects.common.ui)
     implementation(projects.common.config)
 
-    implementation(projects.feature.album)
-    implementation(projects.feature.confirm)
-    implementation(projects.feature.filter)
-    implementation(projects.feature.signin)
-    implementation(projects.feature.source)
+    implementation(projects.ui.album)
+    implementation(projects.ui.confirm)
+    implementation(projects.ui.filter)
+    implementation(projects.ui.signin)
+    implementation(projects.ui.source)
 
     testImplementation(libs.bundles.testing.unit)
 }
