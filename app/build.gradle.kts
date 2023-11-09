@@ -71,6 +71,7 @@ dependencies {
     implementation(projects.common.config)
 
     implementation(projects.feature.album)
+    implementation(projects.feature.confirm)
     implementation(projects.feature.filter)
     implementation(projects.feature.source)
 

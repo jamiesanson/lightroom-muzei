@@ -9,4 +9,5 @@ android {
 
 dependencies {
     implementation(libs.circuit)
+    implementation(libs.circuitx)
 }

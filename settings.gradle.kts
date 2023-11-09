@@ -34,6 +34,7 @@ include(
     ":common:config",
     ":core:data",
     ":feature:album",
+    ":feature:confirm",
     ":feature:filter",
     ":feature:source",
 )
