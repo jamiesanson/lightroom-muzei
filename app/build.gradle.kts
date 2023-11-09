@@ -70,5 +70,9 @@ dependencies {
     implementation(projects.common.ui)
     implementation(projects.common.config)
 
+    implementation(projects.feature.album)
+    implementation(projects.feature.filter)
+    implementation(projects.feature.source)
+
     testImplementation(libs.bundles.testing.unit)
 }

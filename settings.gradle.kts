@@ -33,6 +33,7 @@ include(
     ":common:ui",
     ":common:config",
     ":core:data",
-    ":feature:source",
+    ":feature:album",
     ":feature:filter",
+    ":feature:source",
 )

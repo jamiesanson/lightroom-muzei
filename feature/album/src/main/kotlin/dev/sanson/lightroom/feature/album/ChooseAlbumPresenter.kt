@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.album
+package dev.sanson.lightroom.feature.album
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,16 +13,13 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.common.config.ConfigRepository
+import dev.sanson.lightroom.screens.ChooseAlbumScreen
 import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
 import dev.sanson.lightroom.sdk.model.CollectionSet
-import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm
-import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
-import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loaded
-import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.State.Loading
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -30,9 +27,9 @@ class ChooseAlbumPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
     private val lightroom: Lightroom,
     private val configRepository: ConfigRepository,
-) : Presenter<ChooseAlbumScreen.State> {
+) : Presenter<ChooseAlbumState> {
     @Composable
-    override fun present(): ChooseAlbumScreen.State {
+    override fun present(): ChooseAlbumState {
         val scope = rememberCoroutineScope()
 
         val albumState by produceState<List<AlbumTreeItem>?>(
@@ -56,19 +53,19 @@ class ChooseAlbumPresenter @AssistedInject constructor(
 
         return when (val albums = albumState) {
             null ->
-                Loading
+                ChooseAlbumState.Loading
 
-            else -> Loaded(
+            else -> ChooseAlbumState.Loaded(
                 albumTree = albums,
                 selectedAlbum = albumId,
                 eventSink = { event ->
                     when (event) {
-                        is SelectAlbum ->
+                        is ChooseAlbumEvent.SelectAlbum ->
                             scope.launch {
                                 configRepository.setAlbum(event.albumId)
                             }
 
-                        is Confirm ->
+                        is ChooseAlbumEvent.Confirm ->
                             navigator.goTo(FilterAssetsScreen)
                     }
                 },

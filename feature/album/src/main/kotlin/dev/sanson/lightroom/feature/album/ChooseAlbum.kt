@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.album
+package dev.sanson.lightroom.feature.album
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -36,9 +36,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.R
 import dev.sanson.lightroom.common.ui.component.DarkModePreviews
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.screens.ChooseAlbumScreen
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
@@ -46,15 +46,13 @@ import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CollectionSet
 import dev.sanson.lightroom.sdk.model.CollectionSetId
 import dev.sanson.lightroom.sdk.model.Rendition
-import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm
-import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
 import nz.sanson.lightroom.coil.rememberImageRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
 @Composable
 fun ChooseAlbum(
-    state: ChooseAlbumScreen.State,
+    state: ChooseAlbumState,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -78,7 +76,7 @@ fun ChooseAlbum(
                 .systemBarsPadding(),
         ) {
             when (state) {
-                is ChooseAlbumScreen.State.Loaded ->
+                is ChooseAlbumState.Loaded ->
                     LazyColumn(
                         Modifier
                             .padding(horizontal = 8.dp),
@@ -86,7 +84,7 @@ fun ChooseAlbum(
                         collectionSet(
                             children = state.albumTree,
                             selectedAlbum = state.selectedAlbum,
-                            onAlbumClick = { state.eventSink(SelectAlbum(it)) },
+                            onAlbumClick = { state.eventSink(ChooseAlbumEvent.SelectAlbum(it)) },
                         )
 
                         item {
@@ -103,9 +101,9 @@ fun ChooseAlbum(
                     }
             }
 
-            if (state is ChooseAlbumScreen.State.Loaded) {
+            if (state is ChooseAlbumState.Loaded) {
                 Button(
-                    onClick = { state.eventSink(Confirm) },
+                    onClick = { state.eventSink(ChooseAlbumEvent.Confirm) },
                     enabled = state.selectedAlbum != null,
                     modifier = Modifier
                         .padding(bottom = 24.dp)
@@ -262,7 +260,7 @@ private fun AssetThumbnail(
 fun ChooseAlbumScreenPreview() {
     MuzeiLightroomTheme {
         ChooseAlbum(
-            state = ChooseAlbumScreen.State.Loaded(
+            state = ChooseAlbumState.Loaded(
                 albumTree = listOf(
                     CollectionSet(
                         id = CollectionSetId("0"),
