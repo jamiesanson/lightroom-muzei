@@ -5,7 +5,7 @@ import dev.sanson.lightroom.sdk.backend.model.Resource
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
-import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.CatalogId
 import dev.sanson.lightroom.sdk.model.CollectionSet
 import dev.sanson.lightroom.sdk.model.CollectionSetId
@@ -33,24 +33,27 @@ internal class GetAlbumsUseCase @Inject constructor(
             // Clear out these oddballs
             .filter { it.payload != null }
             // For resources into tree-based representation
-            .findChildren(parentId = null)
+            .findChildren(catalogId = catalog.id, parentId = null)
             // Load assets for albums
             .withAssets(catalogId = catalog.id)
             // Await all album loads
             .awaitAll()
     }
 
-    private suspend fun loadAlbumAssets(catalogId: CatalogId, albumId: AlbumId): List<AssetId> {
+    private suspend fun loadAlbumAssets(catalogId: CatalogId, albumId: AlbumId): List<Asset> {
         return albumService
             .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id)
             .resources
-            .map { AssetId(it.asset.id) }
+            .map { it.asset.toAsset(catalogId = catalogId) }
     }
 
     /**
      * Recurse to populate a tree of [AlbumTreeItem]s
      */
-    private fun List<Resource<BackendAlbum>>.findChildren(parentId: String?): List<AlbumTreeItem> {
+    private fun List<Resource<BackendAlbum>>.findChildren(
+        catalogId: CatalogId,
+        parentId: String?,
+    ): List<AlbumTreeItem> {
         return buildList {
             val children = this@findChildren.filter { it.payload?.parent?.id == parentId }
 
@@ -62,7 +65,7 @@ internal class GetAlbumsUseCase @Inject constructor(
                             Album(
                                 id = AlbumId(id = resource.id),
                                 name = payload.name,
-                                cover = payload.cover?.id?.let(::AssetId),
+                                cover = payload.cover?.toAsset(catalogId),
                                 assets = emptyList(),
                             )
 
@@ -71,7 +74,7 @@ internal class GetAlbumsUseCase @Inject constructor(
                                 id = CollectionSetId(resource.id),
                                 name = payload.name,
                                 children = (this@findChildren - children.toSet())
-                                    .findChildren(parentId = resource.id),
+                                    .findChildren(catalogId = catalogId, parentId = resource.id),
                             )
 
                         else ->
@@ -97,8 +100,8 @@ internal class GetAlbumsUseCase @Inject constructor(
 
                         it.copy(
                             assets = assets,
-                            cover = it.cover ?: assets.firstOrNull()?.also { id ->
-                                generateRendition(assetId = id, rendition = Rendition.Full)
+                            cover = it.cover ?: assets.firstOrNull()?.also { asset ->
+                                generateRendition(assetId = asset.id, rendition = Rendition.Full)
                             },
                         )
                     }

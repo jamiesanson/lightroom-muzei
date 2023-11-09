@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="name">Lightroom CC</string>
+    <string name="description">Photos from your Lightroom CC catalog</string>
+</resources>

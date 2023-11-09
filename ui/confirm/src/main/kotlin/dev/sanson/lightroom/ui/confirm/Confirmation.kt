@@ -32,7 +32,10 @@ import dev.sanson.lightroom.common.ui.component.DarkModePreviews
 import dev.sanson.lightroom.common.ui.component.LightroomCard
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.screens.ConfirmationScreen
+import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.CatalogId
+import kotlinx.datetime.Instant
 import nz.sanson.lightroom.coil.rememberImageRequest
 
 @CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
@@ -49,7 +52,7 @@ fun Confirmation(
             .background(backgroundColor),
     ) {
         if (state is ConfirmState.Loaded) {
-            FirstImageBackground(assetId = state.firstWallpaperId)
+            FirstImageBackground(asset = state.firstWallpaper)
         }
 
         ConfirmationDialog(
@@ -136,7 +139,7 @@ private fun LoadingFirstImage(
 @Composable
 private fun ImagesLoaded(
     imageCount: Int,
-    firstAssetDate: String,
+    firstAssetDate: Instant,
     onComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -176,10 +179,10 @@ private fun ImagesLoaded(
 
 @Composable
 private fun FirstImageBackground(
-    assetId: AssetId,
+    asset: Asset,
     modifier: Modifier = Modifier,
 ) {
-    val lightroomImageRequest = rememberImageRequest(assetId = assetId)
+    val lightroomImageRequest = rememberImageRequest(asset = asset)
     val context = LocalContext.current
 
     AsyncImage(
@@ -201,11 +204,16 @@ private fun FirstImageBackground(
 @DarkModePreviews
 @Composable
 fun ChooseSourcePreview() {
+    val dummyAsset = Asset(
+        AssetId(""), CatalogId(""), Instant.DISTANT_PAST, "",
+        "", 1, "", "", "", emptyList(),
+    )
+
     MuzeiLightroomTheme {
         Confirmation(
             state = ConfirmState.Loaded(
-                firstWallpaperId = AssetId("1"),
-                firstArtworkCaptureDate = "5 Dec 2023",
+                firstWallpaper = dummyAsset,
+                firstArtworkCaptureDate = Instant.DISTANT_PAST,
                 artwork = emptyList(),
                 eventSink = {},
             ),

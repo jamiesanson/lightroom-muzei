@@ -69,13 +69,6 @@ interface Lightroom {
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Assets/operation/generateRenditions
      */
     suspend fun generateRendition(asset: AssetId, rendition: Rendition)
-
-    /**
-     * Convert an [AssetId] into a URL to be loaded
-     *
-     * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Assets/operation/getAssetRendition
-     */
-    suspend fun AssetId.asUrl(rendition: Rendition): String
 }
 
 /**
@@ -142,9 +135,4 @@ internal class DefaultLightroom(
 
     override suspend fun generateRendition(asset: AssetId, rendition: Rendition) =
         generateRenditions(asset, rendition)
-
-    override suspend fun AssetId.asUrl(rendition: Rendition): String {
-        val catalogId = catalogRepository.getCatalog().id.id
-        return "https://lr.adobe.io/v2/catalogs/$catalogId/assets/$id/renditions/${rendition.code}"
-    }
 }

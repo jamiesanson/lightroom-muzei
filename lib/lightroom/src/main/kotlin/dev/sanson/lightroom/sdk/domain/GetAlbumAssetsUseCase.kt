@@ -6,6 +6,7 @@ import dev.sanson.lightroom.sdk.backend.model.Href
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.CatalogId
 import javax.inject.Inject
 import dev.sanson.lightroom.sdk.backend.model.Asset as BackendAsset
 
@@ -25,7 +26,7 @@ internal val Href.capturedAfter: String
         .getQueryParameter("captured_after")
         ?: throw IllegalStateException("No captured_after parameter on next href")
 
-internal fun BackendAsset.toAsset(): Asset {
+internal fun BackendAsset.toAsset(catalogId: CatalogId): Asset {
     requireNotNull(payload) { "No asset metadata found: $this" }
 
     // TODO: Some assets may not have focal length & aperture ratings. How does the API behave for these?
@@ -53,6 +54,7 @@ internal fun BackendAsset.toAsset(): Asset {
             null -> null
         },
         keywords = payload.xmp.dc?.subjects ?: emptyList(),
+        catalogId = catalogId,
     )
 }
 
@@ -89,6 +91,6 @@ internal class GetAlbumAssetsUseCase @Inject constructor(
             }
         }
 
-        return albumAssets.map { it.asset.toAsset() }
+        return albumAssets.map { it.asset.toAsset(catalogId) }
     }
 }

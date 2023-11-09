@@ -53,5 +53,10 @@ gradlePlugin {
             id = "dev.sanson.android.compose"
             implementationClass = "ComposeConventionPlugin"
         }
+
+        register("androidHilt") {
+            id = "dev.sanson.android.hilt"
+            implementationClass = "HiltConventionPlugin"
+        }
     }
 }

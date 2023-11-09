@@ -11,7 +11,9 @@ import coil.request.SuccessResult
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.getImageAuthHeaders
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.CatalogId
 import dev.sanson.lightroom.sdk.model.Rendition
+import dev.sanson.lightroom.sdk.model.asUrl
 import kotlinx.coroutines.delay
 import okhttp3.Headers.Companion.toHeaders
 
@@ -33,9 +35,14 @@ interface ImageLoader {
      * Create a new Coil [ImageRequest]
      *
      * @param assetId the asset to use in the image request
+     * @param catalogId the ID of the catalog the asset resides in
      * @param rendition the scale of the rendition to be requested
      */
-    suspend fun newRequest(assetId: AssetId, rendition: Rendition): ImageRequest
+    suspend fun newRequest(
+        assetId: AssetId,
+        catalogId: CatalogId,
+        rendition: Rendition,
+    ): ImageRequest
 
     /**
      * Await an image request
@@ -74,8 +81,12 @@ internal class DefaultImageLoader(
         return result.request
     }
 
-    override suspend fun newRequest(assetId: AssetId, rendition: Rendition): ImageRequest {
-        val imageUrl = with(lightroom) { assetId.asUrl(rendition) }
+    override suspend fun newRequest(
+        assetId: AssetId,
+        catalogId: CatalogId,
+        rendition: Rendition,
+    ): ImageRequest {
+        val imageUrl = assetId.asUrl(catalogId, rendition)
         val headers = lightroom.getImageAuthHeaders().toHeaders()
 
         return ImageRequest.Builder(context)

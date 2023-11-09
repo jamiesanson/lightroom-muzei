@@ -12,10 +12,6 @@ android {
         applicationId = "dev.sanson.lightroom"
         versionCode = libs.versions.versioncode.get().toInt()
         versionName = libs.versions.app.get()
-
-        val authority = "dev.sanson.lightroom.authority"
-        manifestPlaceholders += "lightroomAuthority" to authority
-        buildConfigField("String", "LIGHTROOM_AUTHORITY", "\"$authority\"")
     }
 
     buildFeatures {
@@ -48,13 +44,6 @@ dependencies {
 
     implementation(libs.muzei.api)
 
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.kotlinx.serialization.converter)
-
-    implementation(platform(libs.okhttp.bom))
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-
     implementation(libs.coil)
 
     implementation(libs.androidx.work)
@@ -63,6 +52,7 @@ dependencies {
 
     implementation(projects.lib.lightroom)
     implementation(projects.lib.lightroomCoil)
+    implementation(projects.lib.muzei)
     implementation(projects.lib.unsplash)
 
     implementation(projects.common.screens)

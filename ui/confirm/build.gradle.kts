@@ -12,6 +12,7 @@ dependencies {
 
     implementation(projects.lib.lightroom)
     implementation(projects.lib.lightroomCoil)
+    implementation(projects.lib.muzei)
 
     implementation(libs.coil)
     implementation(libs.muzei.api)

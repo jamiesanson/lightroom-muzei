@@ -32,6 +32,6 @@ internal class GetCatalogAssetsUseCase @Inject constructor(
             }
         }
 
-        return catalogAssets.map { it.asset.toAsset() }
+        return catalogAssets.map { it.asset.toAsset(catalogId) }
     }
 }

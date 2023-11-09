@@ -7,7 +7,6 @@ import dev.sanson.buildlogic.configureCircuit
 import dev.sanson.buildlogic.configureHilt
 import dev.sanson.buildlogic.configureKotlin
 import dev.sanson.buildlogic.configureLinting
-import dev.sanson.buildlogic.get
 import dev.sanson.buildlogic.versionCatalog
 import org.gradle.api.Plugin
 import org.gradle.api.Project

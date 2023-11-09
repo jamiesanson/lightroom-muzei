@@ -42,10 +42,13 @@ import dev.sanson.lightroom.screens.ChooseAlbumScreen
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
+import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.CatalogId
 import dev.sanson.lightroom.sdk.model.CollectionSet
 import dev.sanson.lightroom.sdk.model.CollectionSetId
 import dev.sanson.lightroom.sdk.model.Rendition
+import kotlinx.datetime.Instant
 import nz.sanson.lightroom.coil.rememberImageRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -181,7 +184,7 @@ private fun AlbumRow(
     isSelected: Boolean,
     onClick: () -> Unit,
     name: String,
-    coverAsset: AssetId?,
+    coverAsset: Asset?,
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor by animateColorAsState(
@@ -210,7 +213,7 @@ private fun AlbumRow(
         ) {
             if (coverAsset != null) {
                 AssetThumbnail(
-                    id = coverAsset,
+                    asset = coverAsset,
                     modifier = Modifier
                         .padding(8.dp)
                         .size(48.dp),
@@ -240,12 +243,12 @@ private fun AlbumRow(
 
 @Composable
 private fun AssetThumbnail(
-    id: AssetId,
+    asset: Asset,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = rememberImageRequest(
-            assetId = id,
+            asset = asset,
             rendition = Rendition.Thumbnail,
         ),
         contentDescription = "Album cover photo",
@@ -258,6 +261,11 @@ private fun AssetThumbnail(
 @DarkModePreviews
 @Composable
 fun ChooseAlbumScreenPreview() {
+    val dummyAsset = Asset(
+        AssetId(""), CatalogId(""), Instant.DISTANT_PAST, "",
+        "", 1, "", "", "", emptyList(),
+    )
+
     MuzeiLightroomTheme {
         ChooseAlbum(
             state = ChooseAlbumState.Loaded(
@@ -270,19 +278,19 @@ fun ChooseAlbumScreenPreview() {
                                 id = AlbumId("1"),
                                 name = "Portugal",
                                 cover = null,
-                                assets = List(168) { AssetId("") },
+                                assets = List(168) { dummyAsset },
                             ),
                             Album(
                                 id = AlbumId("2"),
                                 name = "Spain",
                                 cover = null,
-                                assets = List(340) { AssetId("") },
+                                assets = List(340) { dummyAsset },
                             ),
                             Album(
                                 id = AlbumId("3"),
                                 name = "Morocco",
                                 cover = null,
-                                assets = List(210) { AssetId("") },
+                                assets = List(210) { dummyAsset },
                             ),
                         ),
                     ),
@@ -290,7 +298,7 @@ fun ChooseAlbumScreenPreview() {
                         id = AlbumId("4"),
                         name = "NZ Birdlife",
                         cover = null,
-                        assets = List(10) { AssetId("") },
+                        assets = List(10) { dummyAsset },
                     ),
                 ),
                 selectedAlbum = AlbumId("3"),

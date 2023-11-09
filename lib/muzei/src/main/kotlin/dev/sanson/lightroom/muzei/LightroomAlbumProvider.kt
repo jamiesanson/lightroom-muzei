@@ -72,6 +72,8 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
             val assetId =
                 AssetId(requireNotNull(artwork.token) { "No token found for artwork $artwork" })
 
+            val catalogId = lightroom.getCatalog().id
+
             // Generate rendition for image
             lightroom.generateRendition(
                 asset = assetId,
@@ -80,7 +82,11 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
 
             // Await rendition download
             val request = with(imageLoader) {
-                newRequest(assetId = assetId, rendition = Rendition.Full).await()
+                newRequest(
+                    assetId = assetId,
+                    catalogId = catalogId,
+                    rendition = Rendition.Full,
+                ).await()
             }
 
             val result = Coil.imageLoader(context).execute(request)

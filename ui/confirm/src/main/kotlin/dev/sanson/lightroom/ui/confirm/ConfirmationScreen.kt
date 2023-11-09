@@ -1,21 +1,22 @@
 package dev.sanson.lightroom.ui.confirm
 
-import com.google.android.apps.muzei.api.provider.Artwork
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
+import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
+import kotlinx.datetime.Instant
 
 sealed interface ConfirmState : CircuitUiState {
     data object LoadingArtwork : ConfirmState
 
     data class LoadingFirstImage(
-        val artwork: List<Artwork>,
+        val artwork: List<Asset>,
     ) : ConfirmState
 
     data class Loaded(
-        val firstWallpaperId: AssetId,
-        val firstArtworkCaptureDate: String,
-        val artwork: List<Artwork>,
+        val firstWallpaper: Asset,
+        val firstArtworkCaptureDate: Instant,
+        val artwork: List<Asset>,
         val eventSink: (ConfirmEvent) -> Unit,
     ) : ConfirmState
 }

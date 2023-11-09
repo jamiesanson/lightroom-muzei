@@ -1,10 +1,12 @@
 package dev.sanson.lightroom.muzei
 
+import android.content.ContentResolver
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.google.android.apps.muzei.api.provider.Artwork
 import com.google.android.apps.muzei.api.provider.ProviderClient
 import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderClient
 import dagger.assisted.Assisted
@@ -33,7 +35,8 @@ class LoadAlbumWorker @AssistedInject constructor(
             contentResolver = applicationContext.contentResolver,
         ).mapNotNull { it.token }
 
-        val artworks = lightroom.loadArtwork(config)
+        val artworks = lightroom.loadAssets(config)
+            .map { it.toArtwork() }
             .filterNot { albumAsset ->
                 albumAsset.token in previouslyAddedAssets
             }
@@ -43,3 +46,22 @@ class LoadAlbumWorker @AssistedInject constructor(
         return Result.success()
     }
 }
+
+/**
+ * Query [ProviderClient] using [contentResolver] for all existing artwork
+ */
+private fun ProviderClient.getArtwork(contentResolver: ContentResolver): List<Artwork> {
+    return contentResolver.query(contentUri, null, null, null, null)
+        ?.use { cursor ->
+            cursor.moveToFirst()
+
+            buildList {
+                while (!cursor.isAfterLast) {
+                    add(Artwork.fromCursor(cursor))
+
+                    cursor.moveToNext()
+                }
+            }
+        } ?: emptyList()
+}
+

@@ -1,0 +1,25 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <provider
+            android:name="dev.sanson.lightroom.muzei.LightroomAlbumProvider"
+            android:authorities="${lightroomAuthority}"
+            android:description="@string/description"
+            android:exported="true"
+            android:label="@string/name"
+            android:permission="com.google.android.apps.muzei.api.ACCESS_PROVIDER">
+            <intent-filter>
+                <action android:name="com.google.android.apps.muzei.api.MuzeiArtProvider" />
+            </intent-filter>
+
+            <meta-data
+                android:name="setupActivity"
+                android:value="dev.sanson.lightroom.LightroomSetupActivity" />
+
+            <meta-data
+                android:name="settingsActivity"
+                android:value="dev.sanson.lightroom.LightroomSettingActivity" />
+        </provider>
+
+    </application>
+</manifest>

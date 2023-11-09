@@ -2,6 +2,7 @@ package dev.sanson.lightroom.common.config
 
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
+import dev.sanson.lightroom.sdk.model.CatalogId
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
@@ -19,6 +20,7 @@ class ConfigTest {
      */
     private val untaggedAsset = Asset(
         id = AssetId("2"),
+        catalogId = CatalogId("1"),
         captureDate = Instant.DISTANT_FUTURE,
         cameraBody = "Fujifilm X-T3",
         lens = "XF 18mm f/1.4",

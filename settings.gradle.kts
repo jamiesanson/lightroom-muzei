@@ -28,6 +28,7 @@ include(
     ":lib:lightroom",
     ":lib:lightroom-coil",
     ":lib:unsplash",
+    ":lib:muzei",
     ":common:screens",
     ":common:di",
     ":common:ui",
