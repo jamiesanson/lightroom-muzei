@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.persistentMapOf
 
 private const val UNSPLASH_REFERRAL = "utm_source=Lightroom%20for%20Muzei&utm_medium=referral"
-private fun unsplash(path: String) = "https://unsplash.com$path$UNSPLASH_REFERRAL"
+private fun unsplash(path: String) = "https://unsplash.com$path?$UNSPLASH_REFERRAL"
 
 @Composable
 fun AttributionChip(

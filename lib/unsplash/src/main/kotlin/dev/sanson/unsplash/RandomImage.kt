@@ -1,6 +1,5 @@
 package dev.sanson.unsplash
 
-import android.app.Application
 import android.os.Parcelable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -10,7 +9,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.sanson.unsplash.api.UnsplashService
@@ -48,10 +47,9 @@ data class RandomImage(
     ) : Parcelable
 }
 
-internal class RandomImageViewModel(application: Application) : AndroidViewModel(application),
-    Unsplash {
+internal class RandomImageViewModel : ViewModel(), Unsplash {
 
-    private val unsplashService by lazy { UnsplashService(application.applicationContext) }
+    private val unsplashService by lazy { UnsplashService() }
 
     private var cachedPhoto: RandomImage? = null
 
