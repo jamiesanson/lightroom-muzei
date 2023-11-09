@@ -27,7 +27,7 @@ import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import dev.sanson.lightroom.ui.confirmation.ConfirmationScreen.State
 import kotlinx.coroutines.flow.firstOrNull
-import nz.sanson.lightroom.coil.awaitSuccessfulImageRequest
+import nz.sanson.lightroom.coil.LocalLightroomImageLoader
 
 class ConfirmationPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,
@@ -38,6 +38,8 @@ class ConfirmationPresenter @AssistedInject constructor(
     @Composable
     override fun present(): State {
         val context = LocalContext.current
+        val imageLoader = LocalLightroomImageLoader.current
+
         val providerClient = remember { getProviderClient<LightroomAlbumProvider>(context) }
 
         val artwork by produceState<List<Artwork>?>(initialValue = null) {
@@ -65,11 +67,9 @@ class ConfirmationPresenter @AssistedInject constructor(
                 rendition = Rendition.Full,
             )
 
-            lightroom.awaitSuccessfulImageRequest(
-                context = context,
-                assetId = assetId,
-                rendition = Rendition.Full,
-            )
+            with(imageLoader) {
+                newRequest(assetId = assetId, rendition = Rendition.Full).await()
+            }
 
             firstArtworkId = assetId
         }

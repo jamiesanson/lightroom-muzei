@@ -21,7 +21,7 @@ import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import nz.sanson.lightroom.coil.awaitSuccessfulImageRequest
+import nz.sanson.lightroom.coil.createImageLoader
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -66,6 +66,8 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
             .fromApplication<EntryPointAccessor>(context)
             .lightroom
 
+        val imageLoader = lightroom.createImageLoader(context)
+
         return runBlocking(Dispatchers.IO) {
             val assetId =
                 AssetId(requireNotNull(artwork.token) { "No token found for artwork $artwork" })
@@ -77,11 +79,9 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
             )
 
             // Await rendition download
-            val request = lightroom.awaitSuccessfulImageRequest(
-                context = context,
-                assetId = assetId,
-                rendition = Rendition.Full,
-            )
+            val request = with(imageLoader) {
+                newRequest(assetId = assetId, rendition = Rendition.Full).await()
+            }
 
             val result = Coil.imageLoader(context).execute(request)
 

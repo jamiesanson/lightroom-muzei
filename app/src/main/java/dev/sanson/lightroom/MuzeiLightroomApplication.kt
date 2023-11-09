@@ -16,7 +16,7 @@ import javax.inject.Inject
  *      * Features - per-screen + anything else there might be in there
  *      * :core:data to lower config repo
  *      * :core:ui for theme, components
- *      * :core:di for qualifiers
+ *      * :core:di - ✓✓✓
  *      * :lib:lightroom - ✓✓✓
  *      * :lib:unsplash - ✓✓✓
  *      * :lib:muzei <-- lightroom, everything for LoadArtwork.kt. Integration module

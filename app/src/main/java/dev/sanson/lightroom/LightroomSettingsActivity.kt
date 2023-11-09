@@ -21,7 +21,8 @@ import dev.sanson.lightroom.circuit.FinishActivityScreen
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen
 import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
-import nz.sanson.lightroom.coil.LocalLightroom
+import nz.sanson.lightroom.coil.LocalLightroomImageLoader
+import nz.sanson.lightroom.coil.createImageLoader
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,6 +33,8 @@ class LightroomSettingsActivity : ComponentActivity() {
 
     @Inject
     lateinit var circuit: Circuit
+
+    private val imageLoader by lazy { lightroom.createImageLoader(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +77,6 @@ class LightroomSettingsActivity : ComponentActivity() {
 
     @Composable
     private fun MuzeiLightroomCompositionLocals(content: @Composable () -> Unit) {
-        CompositionLocalProvider(LocalLightroom provides lightroom, content = content)
+        CompositionLocalProvider(LocalLightroomImageLoader provides imageLoader, content = content)
     }
 }
