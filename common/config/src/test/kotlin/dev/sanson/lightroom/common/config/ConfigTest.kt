@@ -1,7 +1,5 @@
-package dev.sanson.lightroom.data.filter
+package dev.sanson.lightroom.common.config
 
-import dev.sanson.lightroom.data.config.Config
-import dev.sanson.lightroom.data.config.permitsAsset
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import io.kotest.matchers.shouldBe

@@ -21,15 +21,15 @@ import javax.inject.Inject
  *      * :lib:unsplash - ✓✓✓
  *      * :lib:muzei <-- lightroom, everything for LoadArtwork.kt. Integration module
  * * Library client IDs/keys as manifest placeholders
- * * Form-factor support
- * * Testing presenters
  * * Screen transitions & UI polish
+ * * Form-factor support
  *
  * ---------------
  *   Open source
  * ---------------
  * * UI testing
  * * Snapshot testing
+ * * Testing presenters
  * * CI - run suite on commits
  * * Move secrets out of source
  * * Documentation & licensing
