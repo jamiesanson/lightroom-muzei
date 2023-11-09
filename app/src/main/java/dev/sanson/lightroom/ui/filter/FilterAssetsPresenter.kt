@@ -14,10 +14,10 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.core.ui.component.Equality
 import dev.sanson.lightroom.data.config.Config
 import dev.sanson.lightroom.data.config.ConfigRepository
 import dev.sanson.lightroom.sdk.model.AlbumId
-import dev.sanson.lightroom.ui.component.Equality
 import dev.sanson.lightroom.ui.confirmation.ConfirmationScreen
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.AddKeyword
 import dev.sanson.lightroom.ui.filter.FilterAssetsScreen.Event.RemoveKeyword

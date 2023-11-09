@@ -37,6 +37,8 @@ import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
+import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.core.ui.component.DarkModePreviews
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
@@ -46,8 +48,6 @@ import dev.sanson.lightroom.sdk.model.CollectionSetId
 import dev.sanson.lightroom.sdk.model.Rendition
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.Confirm
 import dev.sanson.lightroom.ui.album.ChooseAlbumScreen.Event.SelectAlbum
-import dev.sanson.lightroom.ui.component.DarkModePreviews
-import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import nz.sanson.lightroom.coil.rememberImageRequest
 
 @OptIn(ExperimentalMaterial3Api::class)

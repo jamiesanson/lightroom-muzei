@@ -38,12 +38,12 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
+import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.core.ui.component.DarkModePreviews
 import dev.sanson.lightroom.data.config.Config
-import dev.sanson.lightroom.ui.component.DarkModePreviews
 import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseAlbum
 import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnChooseCatalog
 import dev.sanson.lightroom.ui.source.ChooseSourceScreen.Event.OnConfirm
-import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 
 @CircuitInject(ChooseSourceScreen::class, SingletonComponent::class)
 @Composable

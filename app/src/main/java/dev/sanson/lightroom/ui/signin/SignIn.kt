@@ -1,6 +1,5 @@
 package dev.sanson.lightroom.ui.signin
 
-import android.content.res.Configuration
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,16 +30,16 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.R
-import dev.sanson.lightroom.ui.component.LightroomCard
+import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.core.ui.component.DarkModePreviews
+import dev.sanson.lightroom.core.ui.component.LightroomCard
 import dev.sanson.lightroom.ui.signin.SignInScreen.Event.SignInWithLightroom
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.Loading
 import dev.sanson.lightroom.ui.signin.SignInScreen.State.NotSignedIn
-import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import dev.sanson.unsplash.ui.RandomBackgroundImage
 
 @CircuitInject(SignInScreen::class, SingletonComponent::class)
@@ -157,7 +156,7 @@ private fun SignInButton(
     )
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@DarkModePreviews
 @Composable
 fun SignInScreenPreview() {
     MuzeiLightroomTheme {

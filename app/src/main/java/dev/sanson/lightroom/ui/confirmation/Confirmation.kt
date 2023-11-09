@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.core.ui.component.DarkModePreviews
+import dev.sanson.lightroom.core.ui.component.LightroomCard
 import dev.sanson.lightroom.sdk.model.AssetId
-import dev.sanson.lightroom.ui.component.DarkModePreviews
-import dev.sanson.lightroom.ui.component.LightroomCard
-import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
 import nz.sanson.lightroom.coil.rememberImageRequest
 
 @CircuitInject(ConfirmationScreen::class, SingletonComponent::class)

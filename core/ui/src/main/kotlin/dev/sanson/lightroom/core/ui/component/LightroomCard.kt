@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.component
+package dev.sanson.lightroom.core.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.sanson.lightroom.ui.theme.MuzeiLightroomTheme
+import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 
 @Composable
 fun LightroomCard(

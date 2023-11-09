@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.component
+package dev.sanson.lightroom.core.ui.component
 
 import android.content.res.Configuration
 import androidx.compose.ui.tooling.preview.Preview

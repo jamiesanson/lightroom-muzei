@@ -66,6 +66,7 @@ dependencies {
     implementation(projects.lib.unsplash)
 
     implementation(projects.core.di)
+    implementation(projects.core.ui)
 
     testImplementation(libs.bundles.testing.unit)
 }

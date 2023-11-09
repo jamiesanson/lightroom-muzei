@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.theme
+package dev.sanson.lightroom.core.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
@@ -7,7 +7,7 @@ import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
-import dev.sanson.lightroom.R
+import dev.sanson.lightroom.core.ui.R
 
 private val GoogleFontProvider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",

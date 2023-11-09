@@ -29,4 +29,5 @@ include(
     ":lib:lightroom-coil",
     ":lib:unsplash",
     ":core:di",
+    ":core:ui",
 )

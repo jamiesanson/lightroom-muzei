@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.ui.theme
+package dev.sanson.lightroom.core.ui
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import dev.sanson.lightroom.core.ui.theme.MuzeiTypography
 
 @Composable
 fun MuzeiLightroomTheme(
