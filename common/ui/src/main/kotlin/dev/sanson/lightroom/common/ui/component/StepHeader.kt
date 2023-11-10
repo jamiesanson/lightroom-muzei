@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.common.ui.R
-import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 
 @Composable
 fun StepHeader(

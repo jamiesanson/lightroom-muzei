@@ -26,7 +26,6 @@ fun AttributionChip(
     name: String,
     username: String,
     modifier: Modifier = Modifier,
-    somethingelsereallyLong: String = "nah no good",
 ) {
     val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 

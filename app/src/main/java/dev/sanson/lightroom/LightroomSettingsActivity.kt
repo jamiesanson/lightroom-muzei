@@ -16,7 +16,7 @@ import com.slack.circuitx.android.AndroidScreenStarter
 import com.slack.circuitx.android.IntentScreen
 import com.slack.circuitx.android.rememberAndroidScreenAwareNavigator
 import dagger.hilt.android.AndroidEntryPoint
-import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.screens.FinishActivityScreen
 import dev.sanson.lightroom.screens.SignInScreen
 import dev.sanson.lightroom.sdk.Lightroom

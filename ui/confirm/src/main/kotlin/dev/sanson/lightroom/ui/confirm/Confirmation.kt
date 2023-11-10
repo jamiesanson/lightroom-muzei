@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.common.ui.component.LightroomCard
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
-import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.screens.ConfirmationScreen
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId

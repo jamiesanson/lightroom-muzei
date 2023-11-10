@@ -34,17 +34,32 @@ class ChooseAlbumPresenter
         override fun present(): ChooseAlbumState {
             val scope = rememberCoroutineScope()
 
+            fun CollectionSet.sortChildren(): CollectionSet =
+                copy(
+                    children =
+                        children
+                            .sortedBy {
+                                when (it) {
+                                    is Album -> 1
+                                    is CollectionSet -> 0
+                                }
+                            }
+                            .map { if (it is CollectionSet) it.sortChildren() else it },
+                )
+
             val albumState by produceState<List<AlbumTreeItem>?>(
                 initialValue = null,
                 lightroom,
             ) {
                 value =
-                    lightroom.getAlbums().sortedBy {
-                        when (it) {
-                            is Album -> 1
-                            is CollectionSet -> 0
+                    lightroom.getAlbums()
+                        .sortedBy {
+                            when (it) {
+                                is Album -> 1
+                                is CollectionSet -> 0
+                            }
                         }
-                    }
+                        .map { if (it is CollectionSet) it.sortChildren() else it }
             }
 
             val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {

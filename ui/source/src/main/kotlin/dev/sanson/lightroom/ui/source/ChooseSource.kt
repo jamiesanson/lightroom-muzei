@@ -38,9 +38,9 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.Config
+import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.common.ui.component.StepHeader
-import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.feature.source.R
 import dev.sanson.lightroom.screens.ChooseSourceScreen
 

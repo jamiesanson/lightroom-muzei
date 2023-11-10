@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 
 @Composable
 fun LightroomCard(

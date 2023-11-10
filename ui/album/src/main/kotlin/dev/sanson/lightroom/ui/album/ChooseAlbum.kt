@@ -1,7 +1,6 @@
 package dev.sanson.lightroom.ui.album
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,11 +8,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,22 +22,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.common.ui.component.StepHeader
-import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.screens.ChooseAlbumScreen
 import dev.sanson.lightroom.sdk.model.Album
 import dev.sanson.lightroom.sdk.model.AlbumId
@@ -76,8 +75,7 @@ fun ChooseAlbum(
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .systemBarsPadding(),
+                .padding(paddingValues),
         ) {
             when (state) {
                 is ChooseAlbumState.Loaded ->
@@ -90,10 +88,6 @@ fun ChooseAlbum(
                             selectedAlbum = state.selectedAlbum,
                             onAlbumClick = { state.eventSink(ChooseAlbumEvent.SelectAlbum(it)) },
                         )
-
-                        item {
-                            Spacer(Modifier.height(96.dp))
-                        }
                     }
 
                 else ->
@@ -128,18 +122,40 @@ private fun LazyListScope.collectionSet(
     selectedAlbum: AlbumId?,
     onAlbumClick: (AlbumId) -> Unit,
     name: String? = null,
-    inset: Dp = 0.dp,
+    depth: Int = 0,
 ) {
+    fun Modifier.drawIndentLine(color: Color): Modifier =
+        drawBehind {
+            drawLine(
+                color = color,
+                start = Offset(0f, 0f),
+                end = Offset(0f, size.height),
+                strokeWidth = 8f,
+                cap = StrokeCap.Round,
+            )
+        }
+
     if (name != null) {
         item {
+            val lineColor = MaterialTheme.colorScheme.inverseOnSurface
+            val insetMultiplier = (depth - 1).coerceAtLeast(0)
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
+                        .padding(start = (insetMultiplier * 16).dp)
+                        .let {
+                            if (depth > 1) {
+                                it.drawIndentLine(lineColor)
+                            } else {
+                                it
+                            }
+                        }
                         .padding(top = 16.dp, bottom = 8.dp)
-                        .padding(start = inset - 8.dp),
+                        .padding(start = (4 + (insetMultiplier * 8)).dp),
             ) {
                 Icon(
                     painterResource(id = R.drawable.ic_folder),
@@ -157,24 +173,20 @@ private fun LazyListScope.collectionSet(
         when (child) {
             is Album -> {
                 item {
-                    Row(Modifier.padding(start = inset)) {
-                        // TODO: Apply this effect to nested collection sets, to avoid line breaks
-                        // when presenting nested folders
-                        val dashColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.16f)
-                        Canvas(
-                            modifier =
-                                Modifier
-                                    .size(width = 2.dp, height = 74.dp),
-                        ) {
-                            drawLine(
-                                color = dashColor,
-                                start = Offset(0f, 0f),
-                                end = Offset(0f, size.height),
-                                strokeWidth = 4f,
-                                cap = StrokeCap.Round,
-                            )
+                    val lineColor = MaterialTheme.colorScheme.inverseOnSurface
+
+                    val depthModifier =
+                        remember(depth) {
+                            List(depth) { Modifier }
+                                .fold(Modifier as Modifier) { it, _ ->
+                                    it
+                                        .padding(start = 16.dp)
+                                        .drawIndentLine(lineColor)
+                                        .padding(start = 8.dp)
+                                }
                         }
 
+                    Row {
                         AlbumRow(
                             isSelected = selectedAlbum == child.id,
                             onClick = { onAlbumClick(child.id) },
@@ -183,8 +195,9 @@ private fun LazyListScope.collectionSet(
                             catalogId = child.catalogId,
                             modifier =
                                 Modifier
-                                    .padding(vertical = 4.dp)
-                                    .padding(start = 8.dp, end = 8.dp),
+                                    .then(depthModifier)
+                                    .padding(start = 8.dp, end = 8.dp)
+                                    .padding(vertical = 4.dp),
                         )
                     }
                 }
@@ -196,7 +209,7 @@ private fun LazyListScope.collectionSet(
                     children = child.children,
                     selectedAlbum = selectedAlbum,
                     onAlbumClick = onAlbumClick,
-                    inset = inset + 16.dp,
+                    depth = depth + 1,
                 )
             }
         }
@@ -238,25 +251,21 @@ private fun AlbumRow(
                 .heightIn(min = 56.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (coverAsset != null) {
-                AssetThumbnail(
-                    asset = coverAsset,
-                    catalogId = catalogId,
-                    modifier =
-                        Modifier
-                            .padding(8.dp)
-                            .size(48.dp),
-                )
-            } else {
-                Box(
-                    Modifier
-                        .padding(8.dp)
-                        .size(48.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.32f),
-                            shape = RoundedCornerShape(6.dp),
-                        ),
-                )
+            Box(
+                Modifier
+                    .padding(8.dp)
+                    .size(48.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                        shape = RoundedCornerShape(6.dp),
+                    ),
+            ) {
+                if (coverAsset != null) {
+                    AssetThumbnail(
+                        asset = coverAsset,
+                        catalogId = catalogId,
+                    )
+                }
             }
 
             Spacer(Modifier.size(12.dp))
@@ -306,19 +315,27 @@ private fun ChooseAlbumScreenPreview() {
                                 name = "Travel",
                                 children =
                                     listOf(
-                                        Album(
-                                            id = AlbumId("1"),
+                                        CollectionSet(
+                                            id = CollectionSetId("0"),
                                             catalogId = CatalogId(""),
-                                            name = "Portugal",
-                                            cover = null,
-                                            assets = List(168) { AssetId("") },
-                                        ),
-                                        Album(
-                                            id = AlbumId("2"),
-                                            catalogId = CatalogId(""),
-                                            name = "Spain",
-                                            cover = null,
-                                            assets = List(340) { AssetId("") },
+                                            name = "Europe",
+                                            children =
+                                                listOf(
+                                                    Album(
+                                                        id = AlbumId("1"),
+                                                        catalogId = CatalogId(""),
+                                                        name = "Portugal",
+                                                        cover = null,
+                                                        assets = List(168) { AssetId("") },
+                                                    ),
+                                                    Album(
+                                                        id = AlbumId("2"),
+                                                        catalogId = CatalogId(""),
+                                                        name = "Spain",
+                                                        cover = null,
+                                                        assets = List(340) { AssetId("") },
+                                                    ),
+                                                ),
                                         ),
                                         Album(
                                             id = AlbumId("3"),
@@ -337,7 +354,7 @@ private fun ChooseAlbumScreenPreview() {
                                 assets = List(10) { AssetId("") },
                             ),
                         ),
-                    selectedAlbum = AlbumId("3"),
+                    selectedAlbum = AlbumId("1"),
                     eventSink = {},
                 ),
         )

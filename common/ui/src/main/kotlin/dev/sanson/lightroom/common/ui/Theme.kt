@@ -1,4 +1,4 @@
-package dev.sanson.lightroom.core.ui
+package dev.sanson.lightroom.common.ui
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

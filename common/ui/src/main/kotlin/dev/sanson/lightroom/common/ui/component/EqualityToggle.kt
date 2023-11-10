@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.unit.dp
-import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 
 enum class Equality { GreaterThan, EqualTo, LessThan }
 
