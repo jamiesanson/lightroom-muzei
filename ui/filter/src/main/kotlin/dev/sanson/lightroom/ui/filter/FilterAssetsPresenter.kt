@@ -57,21 +57,22 @@ class FilterAssetsPresenter
     ) : Presenter<FilterAssetsState> {
         @Composable
         override fun present(): FilterAssetsState {
-            val filter by produceState(Config(source = Config.Source.Album(id = AlbumId("")))) {
+            val config by produceState(Config(source = Config.Source.Album(id = AlbumId("")))) {
                 configRepository.config.filterNotNull().collect { value = it }
             }
 
             var equality by remember {
-                mutableStateOf(filter.ratingEquality)
+                mutableStateOf(config.ratingEquality)
             }
 
             val scope = rememberCoroutineScope()
 
             return FilterAssetsState(
-                keywords = filter.keywords.toPersistentList(),
-                rating = filter.starRating,
+                stepNumber = if (config.source is Config.Source.Album) 3 else 2,
+                keywords = config.keywords.toPersistentList(),
+                rating = config.starRating,
                 equality = equality,
-                flag = filter.review,
+                flag = config.review,
                 eventSink = { event ->
                     when (event) {
                         is FilterAssetsEvent.AddKeyword ->
@@ -89,7 +90,7 @@ class FilterAssetsPresenter
                                 configRepository.setRatingRange(
                                     start = event.rating,
                                     end =
-                                        when (filter.ratingEquality) {
+                                        when (config.ratingEquality) {
                                             Equality.GreaterThan -> 5
                                             Equality.EqualTo -> event.rating
                                             Equality.LessThan -> 0
@@ -103,19 +104,19 @@ class FilterAssetsPresenter
 
                                 configRepository.setRatingRange(
                                     start =
-                                        when (filter.ratingEquality) {
+                                        when (config.ratingEquality) {
                                             Equality.GreaterThan,
                                             Equality.EqualTo,
-                                            -> filter.starRating
+                                            -> config.starRating
 
                                             Equality.LessThan -> 0
                                         },
                                     end =
-                                        when (filter.ratingEquality) {
+                                        when (config.ratingEquality) {
                                             Equality.GreaterThan -> 5
                                             Equality.EqualTo,
                                             Equality.LessThan,
-                                            -> filter.starRating
+                                            -> config.starRating
                                         },
                                 )
                             }

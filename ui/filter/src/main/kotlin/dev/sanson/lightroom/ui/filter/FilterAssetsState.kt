@@ -7,6 +7,7 @@ import dev.sanson.lightroom.sdk.model.Asset
 import kotlinx.collections.immutable.ImmutableList
 
 data class FilterAssetsState(
+    val stepNumber: Int,
     val keywords: ImmutableList<String>,
     val rating: Int,
     val equality: Equality,
