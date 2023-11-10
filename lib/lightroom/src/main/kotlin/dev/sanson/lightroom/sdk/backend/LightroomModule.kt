@@ -38,23 +38,22 @@ private const val LIGHTROOM_CLIENT_ID = "4a1404eeb6b442278a96dab428ecbc43"
 
 @Module
 internal class LightroomModule {
-
     @Provides
     @LightroomClientId
     fun provideLightroomClientId() = LIGHTROOM_CLIENT_ID
 
     @Provides
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-        serializersModule = SerializersModule {
-            contextual(LenientInstantSerializer)
+    fun provideJson(): Json =
+        Json {
+            ignoreUnknownKeys = true
+            serializersModule =
+                SerializersModule {
+                    contextual(LenientInstantSerializer)
+                }
         }
-    }
 
     @Provides
-    fun provideLightroomAuthenticator(
-        authManager: AuthManager,
-    ): Authenticator {
+    fun provideLightroomAuthenticator(authManager: AuthManager): Authenticator {
         return LightroomAuthenticator(authManager)
     }
 
@@ -68,19 +67,19 @@ internal class LightroomModule {
 
     @Provides
     @IntoSet
-    fun provideLoggingInterceptor(): Interceptor = HttpLoggingInterceptor().apply {
-        level = if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor.Level.BODY
-        } else {
-            HttpLoggingInterceptor.Level.NONE
+    fun provideLoggingInterceptor(): Interceptor =
+        HttpLoggingInterceptor().apply {
+            level =
+                if (BuildConfig.DEBUG) {
+                    HttpLoggingInterceptor.Level.BODY
+                } else {
+                    HttpLoggingInterceptor.Level.NONE
+                }
         }
-    }
 
     @Provides
     @IntoSet
-    fun provideAuthInterceptor(
-        credentialStore: CredentialStore,
-    ): Interceptor {
+    fun provideAuthInterceptor(credentialStore: CredentialStore): Interceptor {
         return AuthInterceptor(credentialStore)
     }
 

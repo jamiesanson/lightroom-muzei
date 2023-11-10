@@ -19,12 +19,13 @@ fun MuzeiLightroomTheme(
     val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     MaterialTheme(
-        colorScheme = when {
-            dynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
-            dynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
-            darkTheme -> darkColorScheme()
-            else -> lightColorScheme()
-        },
+        colorScheme =
+            when {
+                dynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
+                dynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
+                darkTheme -> darkColorScheme()
+                else -> lightColorScheme()
+            },
         typography = MuzeiTypography,
         content = content,
     )

@@ -9,10 +9,18 @@ interface ConfigRepository {
     val config: Flow<Config?>
 
     suspend fun addKeyword(keyword: String)
+
     suspend fun removeKeyword(keyword: String)
-    suspend fun setRatingRange(start: Int, end: Int = start)
+
+    suspend fun setRatingRange(
+        start: Int,
+        end: Int = start,
+    )
+
     suspend fun updateFlag(flag: Asset.Flag?)
+
     suspend fun setAlbum(albumId: AlbumId)
+
     suspend fun setImageSource(imageSource: Config.Source)
 }
 
@@ -29,13 +37,17 @@ class DefaultConfigRepository(
         configStore.updateData { it?.copy(keywords = it.keywords - keyword) }
     }
 
-    override suspend fun setRatingRange(start: Int, end: Int) {
+    override suspend fun setRatingRange(
+        start: Int,
+        end: Int,
+    ) {
         configStore.updateData {
             it?.copy(
-                rating = IntRange(
-                    start = start,
-                    endInclusive = end,
-                ),
+                rating =
+                    IntRange(
+                        start = start,
+                        endInclusive = end,
+                    ),
             )
         }
     }

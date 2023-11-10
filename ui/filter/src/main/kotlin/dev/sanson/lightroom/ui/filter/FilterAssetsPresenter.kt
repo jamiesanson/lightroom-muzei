@@ -49,90 +49,95 @@ private val Config.ratingEquality: Equality
         }
     }
 
-class FilterAssetsPresenter @AssistedInject constructor(
-    @Assisted private val navigator: Navigator,
-    private val configRepository: ConfigRepository,
-) : Presenter<FilterAssetsState> {
-    @Composable
-    override fun present(): FilterAssetsState {
-        val filter by produceState(Config(source = Config.Source.Album(id = AlbumId("")))) {
-            configRepository.config.filterNotNull().collect { value = it }
+class FilterAssetsPresenter
+    @AssistedInject
+    constructor(
+        @Assisted private val navigator: Navigator,
+        private val configRepository: ConfigRepository,
+    ) : Presenter<FilterAssetsState> {
+        @Composable
+        override fun present(): FilterAssetsState {
+            val filter by produceState(Config(source = Config.Source.Album(id = AlbumId("")))) {
+                configRepository.config.filterNotNull().collect { value = it }
+            }
+
+            var equality by remember {
+                mutableStateOf(filter.ratingEquality)
+            }
+
+            val scope = rememberCoroutineScope()
+
+            return FilterAssetsState(
+                keywords = filter.keywords.toPersistentList(),
+                rating = filter.starRating,
+                equality = equality,
+                flag = filter.review,
+                eventSink = { event ->
+                    when (event) {
+                        is FilterAssetsEvent.AddKeyword ->
+                            scope.launch {
+                                configRepository.addKeyword(event.keyword)
+                            }
+
+                        is FilterAssetsEvent.RemoveKeyword ->
+                            scope.launch {
+                                configRepository.removeKeyword(event.keyword)
+                            }
+
+                        is FilterAssetsEvent.UpdateRating ->
+                            scope.launch {
+                                configRepository.setRatingRange(
+                                    start = event.rating,
+                                    end =
+                                        when (filter.ratingEquality) {
+                                            Equality.GreaterThan -> 5
+                                            Equality.EqualTo -> event.rating
+                                            Equality.LessThan -> 0
+                                        },
+                                )
+                            }
+
+                        is FilterAssetsEvent.UpdateEquality ->
+                            scope.launch {
+                                equality = event.equality
+
+                                configRepository.setRatingRange(
+                                    start =
+                                        when (filter.ratingEquality) {
+                                            Equality.GreaterThan,
+                                            Equality.EqualTo,
+                                            -> filter.starRating
+
+                                            Equality.LessThan -> 0
+                                        },
+                                    end =
+                                        when (filter.ratingEquality) {
+                                            Equality.GreaterThan -> 5
+                                            Equality.EqualTo,
+                                            Equality.LessThan,
+                                            -> filter.starRating
+                                        },
+                                )
+                            }
+
+                        is FilterAssetsEvent.UpdateFlag ->
+                            scope.launch {
+                                configRepository.updateFlag(event.flag)
+                            }
+
+                        is FilterAssetsEvent.PopBackToAlbumSelection ->
+                            navigator.pop()
+
+                        is FilterAssetsEvent.Confirm ->
+                            navigator.goTo(ConfirmationScreen)
+                    }
+                },
+            )
         }
 
-        var equality by remember {
-            mutableStateOf(filter.ratingEquality)
+        @CircuitInject(FilterAssetsScreen::class, SingletonComponent::class)
+        @AssistedFactory
+        interface Factory {
+            fun create(navigator: Navigator): FilterAssetsPresenter
         }
-
-        val scope = rememberCoroutineScope()
-
-        return FilterAssetsState(
-            keywords = filter.keywords.toPersistentList(),
-            rating = filter.starRating,
-            equality = equality,
-            flag = filter.review,
-            eventSink = { event ->
-                when (event) {
-                    is FilterAssetsEvent.AddKeyword ->
-                        scope.launch {
-                            configRepository.addKeyword(event.keyword)
-                        }
-
-                    is FilterAssetsEvent.RemoveKeyword ->
-                        scope.launch {
-                            configRepository.removeKeyword(event.keyword)
-                        }
-
-                    is FilterAssetsEvent.UpdateRating ->
-                        scope.launch {
-                            configRepository.setRatingRange(
-                                start = event.rating,
-                                end = when (filter.ratingEquality) {
-                                    Equality.GreaterThan -> 5
-                                    Equality.EqualTo -> event.rating
-                                    Equality.LessThan -> 0
-                                },
-                            )
-                        }
-
-                    is FilterAssetsEvent.UpdateEquality ->
-                        scope.launch {
-                            equality = event.equality
-
-                            configRepository.setRatingRange(
-                                start = when (filter.ratingEquality) {
-                                    Equality.GreaterThan,
-                                    Equality.EqualTo,
-                                    -> filter.starRating
-
-                                    Equality.LessThan -> 0
-                                },
-                                end = when (filter.ratingEquality) {
-                                    Equality.GreaterThan -> 5
-                                    Equality.EqualTo,
-                                    Equality.LessThan,
-                                    -> filter.starRating
-                                },
-                            )
-                        }
-
-                    is FilterAssetsEvent.UpdateFlag ->
-                        scope.launch {
-                            configRepository.updateFlag(event.flag)
-                        }
-
-                    is FilterAssetsEvent.PopBackToAlbumSelection ->
-                        navigator.pop()
-
-                    is FilterAssetsEvent.Confirm ->
-                        navigator.goTo(ConfirmationScreen)
-                }
-            },
-        )
     }
-
-    @CircuitInject(FilterAssetsScreen::class, SingletonComponent::class)
-    @AssistedFactory
-    interface Factory {
-        fun create(navigator: Navigator): FilterAssetsPresenter
-    }
-}

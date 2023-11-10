@@ -6,7 +6,7 @@ import androidx.datastore.core.DataStoreFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
-import dev.sanson.lightroom.core.config.serializer.JsonSerializer
+import dev.sanson.lightroom.core.data.JsonSerializer
 import dev.sanson.lightroom.sdk.BuildConfig
 import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +27,6 @@ private const val ADOBE_LOGIN_HOST = "https://ims-na1.adobelogin.com"
 
 @Module
 internal class AuthModule {
-
     @Provides
     @Singleton
     fun provideCredentialStore(dataStore: DataStore<Credential?>): CredentialStore {
@@ -61,11 +60,12 @@ internal class AuthModule {
         return Retrofit.Builder().client(
             OkHttpClient.Builder().addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    level = if (BuildConfig.DEBUG) {
-                        HttpLoggingInterceptor.Level.BODY
-                    } else {
-                        HttpLoggingInterceptor.Level.NONE
-                    }
+                    level =
+                        if (BuildConfig.DEBUG) {
+                            HttpLoggingInterceptor.Level.BODY
+                        } else {
+                            HttpLoggingInterceptor.Level.NONE
+                        }
                 },
             ).build(),
         ).baseUrl(loginHost)

@@ -20,32 +20,35 @@ import kotlinx.coroutines.flow.first
  * the Muzei [ProviderClient].
  */
 @HiltWorker
-class LoadAlbumWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted params: WorkerParameters,
-    private val lightroom: Lightroom,
-    private val configStore: DataStore<Config?>,
-) : CoroutineWorker(context, params) {
+class LoadAlbumWorker
+    @AssistedInject
+    constructor(
+        @Assisted context: Context,
+        @Assisted params: WorkerParameters,
+        private val lightroom: Lightroom,
+        private val configStore: DataStore<Config?>,
+    ) : CoroutineWorker(context, params) {
+        override suspend fun doWork(): Result {
+            val config = configStore.data.first() ?: return Result.failure()
+            val albumProvider = getProviderClient<LightroomAlbumProvider>(context = applicationContext)
 
-    override suspend fun doWork(): Result {
-        val config = configStore.data.first() ?: return Result.failure()
-        val albumProvider = getProviderClient<LightroomAlbumProvider>(context = applicationContext)
+            val previouslyAddedAssets =
+                albumProvider.getArtwork(
+                    contentResolver = applicationContext.contentResolver,
+                ).mapNotNull { it.token }
 
-        val previouslyAddedAssets = albumProvider.getArtwork(
-            contentResolver = applicationContext.contentResolver,
-        ).mapNotNull { it.token }
+            val artworks =
+                lightroom.loadAssets(config)
+                    .map { it.toArtwork() }
+                    .filterNot { albumAsset ->
+                        albumAsset.token in previouslyAddedAssets
+                    }
 
-        val artworks = lightroom.loadAssets(config)
-            .map { it.toArtwork() }
-            .filterNot { albumAsset ->
-                albumAsset.token in previouslyAddedAssets
-            }
+            albumProvider.addArtwork(artworks)
 
-        albumProvider.addArtwork(artworks)
-
-        return Result.success()
+            return Result.success()
+        }
     }
-}
 
 /**
  * Query [ProviderClient] using [contentResolver] for all existing artwork
@@ -64,4 +67,3 @@ private fun ProviderClient.getArtwork(contentResolver: ContentResolver): List<Ar
             }
         } ?: emptyList()
 }
-

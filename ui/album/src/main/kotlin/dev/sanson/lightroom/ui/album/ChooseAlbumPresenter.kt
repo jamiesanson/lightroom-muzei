@@ -23,59 +23,63 @@ import dev.sanson.lightroom.sdk.model.CollectionSet
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class ChooseAlbumPresenter @AssistedInject constructor(
-    @Assisted private val navigator: Navigator,
-    private val lightroom: Lightroom,
-    private val configRepository: ConfigRepository,
-) : Presenter<ChooseAlbumState> {
-    @Composable
-    override fun present(): ChooseAlbumState {
-        val scope = rememberCoroutineScope()
+class ChooseAlbumPresenter
+    @AssistedInject
+    constructor(
+        @Assisted private val navigator: Navigator,
+        private val lightroom: Lightroom,
+        private val configRepository: ConfigRepository,
+    ) : Presenter<ChooseAlbumState> {
+        @Composable
+        override fun present(): ChooseAlbumState {
+            val scope = rememberCoroutineScope()
 
-        val albumState by produceState<List<AlbumTreeItem>?>(
-            initialValue = null,
-            lightroom,
-        ) {
-            value = lightroom.getAlbums().sortedBy {
-                when (it) {
-                    is Album -> 1
-                    is CollectionSet -> 0
-                }
+            val albumState by produceState<List<AlbumTreeItem>?>(
+                initialValue = null,
+                lightroom,
+            ) {
+                value =
+                    lightroom.getAlbums().sortedBy {
+                        when (it) {
+                            is Album -> 1
+                            is CollectionSet -> 0
+                        }
+                    }
+            }
+
+            val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {
+                configRepository.config
+                    .map { it?.source as? Config.Source.Album }
+                    .map { it?.id }
+                    .collect { value = it }
+            }
+
+            return when (val albums = albumState) {
+                null ->
+                    ChooseAlbumState.Loading
+
+                else ->
+                    ChooseAlbumState.Loaded(
+                        albumTree = albums,
+                        selectedAlbum = albumId,
+                        eventSink = { event ->
+                            when (event) {
+                                is ChooseAlbumEvent.SelectAlbum ->
+                                    scope.launch {
+                                        configRepository.setAlbum(event.albumId)
+                                    }
+
+                                is ChooseAlbumEvent.Confirm ->
+                                    navigator.goTo(FilterAssetsScreen)
+                            }
+                        },
+                    )
             }
         }
 
-        val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {
-            configRepository.config
-                .map { it?.source as? Config.Source.Album }
-                .map { it?.id }
-                .collect { value = it }
-        }
-
-        return when (val albums = albumState) {
-            null ->
-                ChooseAlbumState.Loading
-
-            else -> ChooseAlbumState.Loaded(
-                albumTree = albums,
-                selectedAlbum = albumId,
-                eventSink = { event ->
-                    when (event) {
-                        is ChooseAlbumEvent.SelectAlbum ->
-                            scope.launch {
-                                configRepository.setAlbum(event.albumId)
-                            }
-
-                        is ChooseAlbumEvent.Confirm ->
-                            navigator.goTo(FilterAssetsScreen)
-                    }
-                },
-            )
+        @CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
+        @AssistedFactory
+        interface Factory {
+            fun create(navigator: Navigator): ChooseAlbumPresenter
         }
     }
-
-    @CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
-    @AssistedFactory
-    interface Factory {
-        fun create(navigator: Navigator): ChooseAlbumPresenter
-    }
-}

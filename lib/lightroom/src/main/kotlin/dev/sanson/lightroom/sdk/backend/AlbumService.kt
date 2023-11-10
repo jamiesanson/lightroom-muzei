@@ -8,12 +8,13 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 internal interface AlbumService {
-
     /**
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Albums/operation/getAlbums
      */
     @GET("/v2/catalogs/{catalog_id}/albums")
-    suspend fun getAlbums(@Path("catalog_id") catalogId: String): Resources<Album>
+    suspend fun getAlbums(
+        @Path("catalog_id") catalogId: String,
+    ): Resources<Album>
 
     /**
      * Note: The API requires negative times for capturedAfter & capturedBefore to support fetching

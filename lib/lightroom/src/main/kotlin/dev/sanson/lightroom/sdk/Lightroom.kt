@@ -68,7 +68,10 @@ interface Lightroom {
      *
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Assets/operation/generateRenditions
      */
-    suspend fun generateRendition(asset: AssetId, rendition: Rendition)
+    suspend fun generateRendition(
+        asset: AssetId,
+        rendition: Rendition,
+    )
 }
 
 /**
@@ -78,7 +81,10 @@ interface Lightroom {
  * @param context Context instance to use within SDK
  * @param coroutineScope Coroutine scope to use for async operations
  */
-fun Lightroom(context: Context, coroutineScope: CoroutineScope): Lightroom {
+fun Lightroom(
+    context: Context,
+    coroutineScope: CoroutineScope,
+): Lightroom {
     return DaggerLightroomComponent.builder()
         .context(context)
         .coroutineScope(coroutineScope)
@@ -95,8 +101,9 @@ suspend fun Lightroom.getImageAuthHeaders(): Map<String, String> {
     if (this !is DefaultLightroom) return emptyMap()
 
     val apiKey = mapOf("X-Api-Key" to clientId)
-    val token = authManager.latestAccessToken.first()
-        ?: authManager.refreshTokens().accessToken
+    val token =
+        authManager.latestAccessToken.first()
+            ?: authManager.refreshTokens().accessToken
 
     return apiKey + ("Authorization" to "Bearer $token")
 }
@@ -110,7 +117,6 @@ internal class DefaultLightroom(
     private val generateRenditions: GenerateRenditionUseCase,
     private val catalogRepository: CatalogRepository,
 ) : Lightroom {
-
     override val isSignedIn = authManager.isSignedIn
 
     override fun signIn(context: Context) {
@@ -130,9 +136,10 @@ internal class DefaultLightroom(
 
     override suspend fun getCatalogAssets(): List<Asset> = retrieveCatalogAssets()
 
-    override suspend fun getAlbumAssets(albumId: AlbumId): List<Asset> =
-        retrieveAlbumAssets(albumId = albumId)
+    override suspend fun getAlbumAssets(albumId: AlbumId): List<Asset> = retrieveAlbumAssets(albumId = albumId)
 
-    override suspend fun generateRendition(asset: AssetId, rendition: Rendition) =
-        generateRenditions(asset, rendition)
+    override suspend fun generateRendition(
+        asset: AssetId,
+        rendition: Rendition,
+    ) = generateRenditions(asset, rendition)
 }

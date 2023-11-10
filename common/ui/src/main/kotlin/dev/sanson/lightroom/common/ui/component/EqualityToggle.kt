@@ -86,11 +86,11 @@ fun EqualityToggle(
         modifier
             .size(36.dp)
             .clip(RoundedCornerShape(50))
-            .clickable { onEqualityChange(equality.next()) }
             .background(
                 MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 shape = RoundedCornerShape(50),
-            ),
+            )
+            .clickable { onEqualityChange(equality.next()) },
     ) {
         // The following draws two canvas elements - the bottom line of the lteq, gteq and eq symbol,
         // and a path which draws the top element of the symbol, allowing animation from line to
@@ -100,18 +100,20 @@ fun EqualityToggle(
             // Less than/greater than path
             rotate(topPathRotation.value, pivot = Offset(widthPx / 2f, equalityHeight.value / 2f)) {
                 drawPath(
-                    path = Path().apply {
-                        moveTo(0f, 0f)
+                    path =
+                        Path().apply {
+                            moveTo(0f, 0f)
 
-                        lineTo(x = widthPx, y = equalityHeight.value / 2f)
-                        lineTo(x = 0f, y = equalityHeight.value)
-                    },
+                            lineTo(x = widthPx, y = equalityHeight.value / 2f)
+                            lineTo(x = 0f, y = equalityHeight.value)
+                        },
                     color = lineColor,
-                    style = Stroke(
-                        width = 5f,
-                        cap = StrokeCap.Round,
-                        join = StrokeJoin.Round,
-                    ),
+                    style =
+                        Stroke(
+                            width = 5f,
+                            cap = StrokeCap.Round,
+                            join = StrokeJoin.Round,
+                        ),
                 )
             }
 
@@ -127,9 +129,9 @@ fun EqualityToggle(
     }
 }
 
-@DarkModePreviews
+@PreviewLightDark
 @Composable
-fun EqualityTogglePreview() {
+private fun EqualityTogglePreview() {
     MuzeiLightroomTheme {
         var equality by remember { mutableStateOf(Equality.EqualTo) }
 

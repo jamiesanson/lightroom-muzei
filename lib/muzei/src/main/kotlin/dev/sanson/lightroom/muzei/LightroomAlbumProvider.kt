@@ -28,7 +28,6 @@ import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
 class LightroomAlbumProvider : MuzeiArtProvider() {
-
     @EntryPoint
     @InstallIn(SingletonComponent::class)
     interface EntryPointAccessor {
@@ -38,22 +37,23 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
     override fun onLoadRequested(initial: Boolean) {
         val workManager = WorkManager.getInstance(requireNotNull(context))
 
-        val request = OneTimeWorkRequestBuilder<LoadAlbumWorker>()
-            .setConstraints(
-                Constraints(
-                    requiredNetworkType = NetworkType.CONNECTED,
-                    requiresStorageNotLow = true,
-                ),
-            )
-            .setBackoffCriteria(
-                backoffPolicy = BackoffPolicy.LINEAR,
-                backoffDelay = 10L,
-                timeUnit = TimeUnit.MINUTES,
-            )
-            .setExpedited(
-                policy = OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST,
-            )
-            .build()
+        val request =
+            OneTimeWorkRequestBuilder<LoadAlbumWorker>()
+                .setConstraints(
+                    Constraints(
+                        requiredNetworkType = NetworkType.CONNECTED,
+                        requiresStorageNotLow = true,
+                    ),
+                )
+                .setBackoffCriteria(
+                    backoffPolicy = BackoffPolicy.LINEAR,
+                    backoffDelay = 10L,
+                    timeUnit = TimeUnit.MINUTES,
+                )
+                .setExpedited(
+                    policy = OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST,
+                )
+                .build()
 
         workManager
             .enqueueUniqueWork("load_album", ExistingWorkPolicy.REPLACE, request)
@@ -62,9 +62,10 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
     override fun openFile(artwork: Artwork): InputStream {
         val context = requireNotNull(context)
 
-        val lightroom = EntryPointAccessors
-            .fromApplication<EntryPointAccessor>(context)
-            .lightroom
+        val lightroom =
+            EntryPointAccessors
+                .fromApplication<EntryPointAccessor>(context)
+                .lightroom
 
         val imageLoader = lightroom.createImageLoader(context)
 
@@ -81,13 +82,14 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
             )
 
             // Await rendition download
-            val request = with(imageLoader) {
-                newRequest(
-                    assetId = assetId,
-                    catalogId = catalogId,
-                    rendition = Rendition.Full,
-                ).await()
-            }
+            val request =
+                with(imageLoader) {
+                    newRequest(
+                        assetId = assetId,
+                        catalogId = catalogId,
+                        rendition = Rendition.Full,
+                    ).await()
+                }
 
             val result = Coil.imageLoader(context).execute(request)
 

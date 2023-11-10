@@ -32,7 +32,10 @@ internal object LenientInstantSerializer : KSerializer<Instant> {
             }
     }
 
-    override fun serialize(encoder: Encoder, value: Instant) {
+    override fun serialize(
+        encoder: Encoder,
+        value: Instant,
+    ) {
         encoder.encodeString(value.toString())
     }
 }

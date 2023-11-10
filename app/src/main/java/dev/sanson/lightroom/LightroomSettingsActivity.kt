@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import com.slack.circuit.backstack.rememberSaveableBackStack
@@ -27,7 +26,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LightroomSettingsActivity : ComponentActivity() {
-
     @Inject
     lateinit var lightroom: Lightroom
 
@@ -42,23 +40,25 @@ class LightroomSettingsActivity : ComponentActivity() {
 
         setContent {
             val backstack = rememberSaveableBackStack { push(SignInScreen) }
-            val navigator = rememberAndroidScreenAwareNavigator(
-                delegate = rememberCircuitNavigator(backstack),
-                starter = remember {
-                    AndroidScreenStarter { screen ->
-                        when (screen) {
-                            is IntentScreen ->
-                                screen.startWith(context = this)
+            val navigator =
+                rememberAndroidScreenAwareNavigator(
+                    delegate = rememberCircuitNavigator(backstack),
+                    starter =
+                        remember {
+                            AndroidScreenStarter { screen ->
+                                when (screen) {
+                                    is IntentScreen ->
+                                        screen.startWith(context = this)
 
-                            is FinishActivityScreen ->
-                                finishActivity(screen.requestCode)
-                        }
-                    }
-                },
-            )
+                                    is FinishActivityScreen ->
+                                        finishActivity(screen.requestCode)
+                                }
+                            }
+                        },
+                )
 
             MuzeiLightroomTheme {
-                MuzeiLightroomCompositionLocals {
+                CompositionLocalProvider(LocalLightroomImageLoader provides imageLoader) {
                     CircuitCompositionLocals(circuit = circuit) {
                         NavigableCircuitContent(
                             navigator = navigator,
@@ -73,10 +73,5 @@ class LightroomSettingsActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intent?.let(lightroom::handleSignInResponse)
-    }
-
-    @Composable
-    private fun MuzeiLightroomCompositionLocals(content: @Composable () -> Unit) {
-        CompositionLocalProvider(LocalLightroomImageLoader provides imageLoader, content = content)
     }
 }

@@ -29,80 +29,84 @@ import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.firstOrNull
 import nz.sanson.lightroom.coil.LocalLightroomImageLoader
 
-class ConfirmationPresenter @AssistedInject constructor(
-    @Assisted private val navigator: Navigator,
-    private val configRepository: ConfigRepository,
-    private val lightroom: Lightroom,
-) : Presenter<ConfirmState> {
+class ConfirmationPresenter
+    @AssistedInject
+    constructor(
+        @Assisted private val navigator: Navigator,
+        private val configRepository: ConfigRepository,
+        private val lightroom: Lightroom,
+    ) : Presenter<ConfirmState> {
+        @Composable
+        override fun present(): ConfirmState {
+            val imageLoader = LocalLightroomImageLoader.current
 
-    @Composable
-    override fun present(): ConfirmState {
-        val imageLoader = LocalLightroomImageLoader.current
+            val context = LocalContext.current
+            val providerClient = remember { getProviderClient<LightroomAlbumProvider>(context) }
+            val artwork by produceState<List<Asset>?>(initialValue = null) {
+                val config =
+                    requireNotNull(configRepository.config.firstOrNull()) {
+                        "Config is required on confirmation"
+                    }
 
-        val context = LocalContext.current
-        val providerClient = remember { getProviderClient<LightroomAlbumProvider>(context) }
-        val artwork by produceState<List<Asset>?>(initialValue = null) {
-            val config = requireNotNull(configRepository.config.firstOrNull()) {
-                "Config is required on confirmation"
+                value =
+                    lightroom
+                        .loadAssets(config)
+                        .also { assets ->
+                            providerClient.setArtwork(assets.map { it.toArtwork() })
+                        }
             }
 
-            value = lightroom
-                .loadAssets(config)
-                .also { assets ->
-                    providerClient.setArtwork(assets.map { it.toArtwork() })
-                }
-        }
+            var firstArtwork by remember { mutableStateOf<Asset?>(null) }
 
-        var firstArtwork by remember { mutableStateOf<Asset?>(null) }
+            LaunchedEffect(artwork) {
+                val art = artwork ?: return@LaunchedEffect
 
-        LaunchedEffect(artwork) {
-            val art = artwork ?: return@LaunchedEffect
+                val firstAsset = art.first()
 
-            val firstAsset = art.first()
-
-            lightroom.generateRendition(
-                asset = firstAsset.id,
-                rendition = Rendition.Full,
-            )
-
-            with(imageLoader) {
-                newRequest(
-                    assetId = firstAsset.id,
-                    catalogId = firstAsset.catalogId,
+                lightroom.generateRendition(
+                    asset = firstAsset.id,
                     rendition = Rendition.Full,
-                ).await()
+                )
+
+                with(imageLoader) {
+                    newRequest(
+                        assetId = firstAsset.id,
+                        catalogId = firstAsset.catalogId,
+                        rendition = Rendition.Full,
+                    ).await()
+                }
+
+                firstArtwork = firstAsset
             }
 
-            firstArtwork = firstAsset
-        }
-
-        return when (val art = artwork) {
-            null ->
-                ConfirmState.LoadingArtwork
-
-            else -> when (val firstImage = firstArtwork) {
+            return when (val art = artwork) {
                 null ->
-                    ConfirmState.LoadingFirstImage(art)
+                    ConfirmState.LoadingArtwork
 
                 else ->
-                    ConfirmState.Loaded(
-                        artwork = art,
-                        firstWallpaper = firstImage,
-                        firstArtworkCaptureDate = requireNotNull(art.first().captureDate),
-                        eventSink = { event ->
-                            when (event) {
-                                ConfirmEvent.OnFinish ->
-                                    navigator.goTo(FinishActivityScreen(requestCode = Activity.RESULT_OK))
-                            }
-                        },
-                    )
+                    when (val firstImage = firstArtwork) {
+                        null ->
+                            ConfirmState.LoadingFirstImage(art)
+
+                        else ->
+                            ConfirmState.Loaded(
+                                artwork = art,
+                                firstWallpaper = firstImage,
+                                firstArtworkCaptureDate = requireNotNull(art.first().captureDate),
+                                eventSink = { event ->
+                                    when (event) {
+                                        ConfirmEvent.OnFinish ->
+                                            navigator.goTo(FinishActivityScreen(requestCode = Activity.RESULT_OK))
+                                    }
+                                },
+                            )
+                    }
             }
         }
-    }
 
-    @CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
-    @AssistedFactory
-    interface Factory {
-        fun create(navigator: Navigator): ConfirmationPresenter
+        @CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
+        @AssistedFactory
+        interface Factory {
+            fun create(navigator: Navigator): ConfirmationPresenter
+        }
     }
-}

@@ -26,19 +26,20 @@ fun LightroomCard(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .wrapContentHeight()
-            .clip(RoundedCornerShape(2.dp))
-            .shadow(elevation = 8.dp, shape = RoundedCornerShape(2.dp))
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-            .padding(24.dp),
+        modifier =
+            modifier
+                .wrapContentHeight()
+                .clip(RoundedCornerShape(2.dp))
+                .shadow(elevation = 8.dp, shape = RoundedCornerShape(2.dp))
+                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+                .padding(24.dp),
         content = content,
     )
 }
 
-@DarkModePreviews
+@PreviewLightDark
 @Composable
-fun LightroomCardPreview() {
+private fun LightroomCardPreview() {
     MuzeiLightroomTheme {
         Surface {
             LightroomCard(Modifier.padding(24.dp)) {

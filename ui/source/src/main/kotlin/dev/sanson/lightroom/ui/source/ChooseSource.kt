@@ -38,9 +38,9 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.Config
-import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
-import dev.sanson.lightroom.common.ui.component.DarkModePreviews
+import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.common.ui.component.StepHeader
+import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.feature.source.R
 import dev.sanson.lightroom.screens.ChooseSourceScreen
 
@@ -55,10 +55,11 @@ fun ChooseSource(
             StepHeader(
                 stepNumber = 1,
                 stepName = stringResource(R.string.choose_a_source),
-                modifier = Modifier
-                    .padding(24.dp)
-                    .padding(top = 64.dp)
-                    .align(Alignment.TopStart),
+                modifier =
+                    Modifier
+                        .padding(24.dp)
+                        .padding(top = 64.dp)
+                        .align(Alignment.TopStart),
             )
 
             Column(
@@ -86,9 +87,10 @@ fun ChooseSource(
             Button(
                 onClick = { state.eventSink(ChooseSourceEvent.OnConfirm) },
                 contentPadding = PaddingValues(vertical = 12.dp, horizontal = 24.dp),
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(24.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(24.dp),
             ) {
                 Spacer(Modifier.size(8.dp))
 
@@ -128,21 +130,23 @@ private fun SourceRow(
     )
 
     Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(backgroundColor)
-            .border(
-                width = borderWidth,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = borderAlpha),
-                shape = RoundedCornerShape(12.dp),
-            )
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(backgroundColor)
+                .border(
+                    width = borderWidth,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = borderAlpha),
+                    shape = RoundedCornerShape(12.dp),
+                )
+                .clickable(onClick = onClick),
     ) {
         Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .padding(vertical = 16.dp)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .padding(8.dp)
+                    .padding(vertical = 16.dp)
+                    .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
@@ -174,9 +178,9 @@ private fun SourceRow(
     }
 }
 
-@DarkModePreviews
+@PreviewLightDark
 @Composable
-fun ChooseSourcePreview() {
+private fun ChooseSourcePreview() {
     MuzeiLightroomTheme {
         ChooseSource(state = ChooseSourceState(Config.Source.Catalog) {})
     }

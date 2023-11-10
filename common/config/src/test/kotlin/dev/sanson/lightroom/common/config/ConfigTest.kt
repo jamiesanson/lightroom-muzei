@@ -14,34 +14,35 @@ import kotlinx.datetime.Instant
 import org.junit.Test
 
 class ConfigTest {
-
     /**
      * An asset with no user-defined tags, such as rating, keywords or flags
      */
-    private val untaggedAsset = Asset(
-        id = AssetId("2"),
-        catalogId = CatalogId("1"),
-        captureDate = Instant.DISTANT_FUTURE,
-        cameraBody = "Fujifilm X-T3",
-        lens = "XF 18mm f/1.4",
-        iso = 80,
-        shutterSpeed = "1/500",
-        aperture = "f/3.2",
-        focalLength = "18mm",
-        keywords = emptyList(),
-    )
+    private val untaggedAsset =
+        Asset(
+            id = AssetId("2"),
+            catalogId = CatalogId("1"),
+            captureDate = Instant.DISTANT_FUTURE,
+            cameraBody = "Fujifilm X-T3",
+            lens = "XF 18mm f/1.4",
+            iso = 80,
+            shutterSpeed = "1/500",
+            aperture = "f/3.2",
+            focalLength = "18mm",
+            keywords = emptyList(),
+        )
 
     private val pickedAsset = untaggedAsset.copy(review = Asset.Flag.Picked)
     private val rejectedAsset = untaggedAsset.copy(review = Asset.Flag.Rejected)
 
     @Test
-    fun `Empty Config permits all assets`() = runTest {
-        val config = Config(source = Config.Source.Catalog)
+    fun `Empty Config permits all assets`() =
+        runTest {
+            val config = Config(source = Config.Source.Catalog)
 
-        forAll(listOf(untaggedAsset, pickedAsset, rejectedAsset).exhaustive()) {
-            config.permitsAsset(it)
+            forAll(listOf(untaggedAsset, pickedAsset, rejectedAsset).exhaustive()) {
+                config.permitsAsset(it)
+            }
         }
-    }
 
     @Test
     fun `Config with picked condition rejects all other asset`() {
@@ -54,24 +55,26 @@ class ConfigTest {
     }
 
     @Test
-    fun `Config with rating specification rejects outlying assets`() = runTest {
-        val config = Config(source = Config.Source.Catalog, rating = 3..5)
+    fun `Config with rating specification rejects outlying assets`() =
+        runTest {
+            val config = Config(source = Config.Source.Catalog, rating = 3..5)
 
-        forAll(Arb.int(min = 0, max = 5)) { rating ->
-            val accepted = config.permitsAsset(untaggedAsset.copy(rating = rating))
+            forAll(Arb.int(min = 0, max = 5)) { rating ->
+                val accepted = config.permitsAsset(untaggedAsset.copy(rating = rating))
 
-            accepted == (rating >= 3)
+                accepted == (rating >= 3)
+            }
         }
-    }
 
     @Test
-    fun `Config with keywords rejects unmatching assets`() = runTest {
-        val config = Config(source = Config.Source.Catalog, keywords = setOf("wallpaper"))
+    fun `Config with keywords rejects unmatching assets`() =
+        runTest {
+            val config = Config(source = Config.Source.Catalog, keywords = setOf("wallpaper"))
 
-        forAll(Arb.string()) { keyword ->
-            val accepted = config.permitsAsset(untaggedAsset.copy(keywords = listOf(keyword)))
+            forAll(Arb.string()) { keyword ->
+                val accepted = config.permitsAsset(untaggedAsset.copy(keywords = listOf(keyword)))
 
-            accepted == (keyword == "wallpaper")
+                accepted == (keyword == "wallpaper")
+            }
         }
-    }
 }

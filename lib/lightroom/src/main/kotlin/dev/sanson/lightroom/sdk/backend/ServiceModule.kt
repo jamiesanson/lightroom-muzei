@@ -11,19 +11,23 @@ internal annotation class LightroomRetrofit
 
 @Module
 internal class ServiceModule {
+    @Provides
+    fun provideAccountService(
+        @LightroomRetrofit retrofit: Retrofit,
+    ): AccountService = retrofit.create()
 
     @Provides
-    fun provideAccountService(@LightroomRetrofit retrofit: Retrofit): AccountService =
-        retrofit.create()
+    fun provideAlbumService(
+        @LightroomRetrofit retrofit: Retrofit,
+    ): AlbumService = retrofit.create()
 
     @Provides
-    fun provideAlbumService(@LightroomRetrofit retrofit: Retrofit): AlbumService = retrofit.create()
+    fun provideAssetsService(
+        @LightroomRetrofit retrofit: Retrofit,
+    ): AssetsService = retrofit.create()
 
     @Provides
-    fun provideAssetsService(@LightroomRetrofit retrofit: Retrofit): AssetsService =
-        retrofit.create()
-
-    @Provides
-    fun provideCatalogService(@LightroomRetrofit retrofit: Retrofit): CatalogService =
-        retrofit.create()
+    fun provideCatalogService(
+        @LightroomRetrofit retrofit: Retrofit,
+    ): CatalogService = retrofit.create()
 }

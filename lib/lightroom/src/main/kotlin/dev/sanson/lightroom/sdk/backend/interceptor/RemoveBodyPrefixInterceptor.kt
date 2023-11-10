@@ -17,16 +17,16 @@ private const val MITIGATION_PREFIX = "while (1) {}\n"
  * For more information on this ridiculous design choice, see https://github.com/AdobeDocs/lightroom-partner-apis/issues/93
  */
 internal class RemoveBodyPrefixInterceptor : Interceptor {
-
     override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
 
         if (response.body == null) return response
 
-        val newBody = response.body
-            ?.string()
-            ?.removePrefix(MITIGATION_PREFIX)
-            ?.toResponseBody()
+        val newBody =
+            response.body
+                ?.string()
+                ?.removePrefix(MITIGATION_PREFIX)
+                ?.toResponseBody()
 
         return response.newBuilder()
             .body(newBody)

@@ -16,9 +16,13 @@ data class FilterAssetsState(
 
 sealed interface FilterAssetsEvent : CircuitUiEvent {
     data class AddKeyword(val keyword: String) : FilterAssetsEvent
+
     data class RemoveKeyword(val keyword: String) : FilterAssetsEvent
+
     data class UpdateRating(val rating: Int) : FilterAssetsEvent
+
     data class UpdateEquality(val equality: Equality) : FilterAssetsEvent
+
     data class UpdateFlag(val flag: Asset.Flag?) : FilterAssetsEvent
 
     data object PopBackToAlbumSelection : FilterAssetsEvent

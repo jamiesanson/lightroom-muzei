@@ -13,16 +13,21 @@ internal data class Credential(
 internal interface CredentialStore {
     val credential: Flow<Credential?>
 
-    suspend fun updateTokens(accessToken: String, refreshToken: String)
+    suspend fun updateTokens(
+        accessToken: String,
+        refreshToken: String,
+    )
 }
 
 internal class DefaultCredentialStore(
     private val dataStore: DataStore<Credential?>,
 ) : CredentialStore {
-
     override val credential: Flow<Credential?> = dataStore.data
 
-    override suspend fun updateTokens(accessToken: String, refreshToken: String) {
+    override suspend fun updateTokens(
+        accessToken: String,
+        refreshToken: String,
+    ) {
         dataStore.updateData {
             Credential(accessToken = accessToken, refreshToken = refreshToken)
         }

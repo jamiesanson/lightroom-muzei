@@ -20,9 +20,7 @@ interface Unsplash {
 }
 
 @Composable
-fun rememberRandomImage(
-    unsplash: Unsplash = rememberUnsplash(),
-): RandomImage? {
+fun rememberRandomImage(unsplash: Unsplash = rememberUnsplash()): RandomImage? {
     var image by rememberSaveable { mutableStateOf<RandomImage?>(null) }
 
     LaunchedEffect(true) {
@@ -39,7 +37,6 @@ data class RandomImage(
     val url: String,
     val attribution: Attribution,
 ) : Parcelable {
-
     @Parcelize
     data class Attribution(
         val name: String,
@@ -48,24 +45,25 @@ data class RandomImage(
 }
 
 internal class RandomImageViewModel : ViewModel(), Unsplash {
-
     private val unsplashService by lazy { UnsplashService() }
 
     private var cachedPhoto: RandomImage? = null
 
     override suspend fun getRandomImage(): RandomImage? {
         if (cachedPhoto == null) {
-            cachedPhoto = runCatching { unsplashService.getRandomPhoto() }
-                .map {
-                    RandomImage(
-                        url = it.urls.regular,
-                        attribution = RandomImage.Attribution(
-                            name = it.user.name,
-                            username = it.user.username,
-                        ),
-                    )
-                }
-                .getOrNull()
+            cachedPhoto =
+                runCatching { unsplashService.getRandomPhoto() }
+                    .map {
+                        RandomImage(
+                            url = it.urls.regular,
+                            attribution =
+                                RandomImage.Attribution(
+                                    name = it.user.name,
+                                    username = it.user.username,
+                                ),
+                        )
+                    }
+                    .getOrNull()
         }
 
         return cachedPhoto

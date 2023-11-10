@@ -27,37 +27,40 @@ fun HyperlinkText(
     linkTextDecoration: TextDecoration = TextDecoration.None,
     fontSize: TextUnit = TextUnit.Unspecified,
 ) {
-    val annotatedString = buildAnnotatedString {
-        append(fullText)
+    val annotatedString =
+        buildAnnotatedString {
+            append(fullText)
 
-        for ((key, value) in hyperLinks) {
-            val startIndex = fullText.indexOf(key)
-            val endIndex = startIndex + key.length
+            for ((key, value) in hyperLinks) {
+                val startIndex = fullText.indexOf(key)
+                val endIndex = startIndex + key.length
+                addStyle(
+                    style =
+                        SpanStyle(
+                            color = linkTextColor,
+                            fontSize = fontSize,
+                            fontWeight = linkTextFontWeight,
+                            textDecoration = linkTextDecoration,
+                        ),
+                    start = startIndex,
+                    end = endIndex,
+                )
+                addStringAnnotation(
+                    tag = "URL",
+                    annotation = value,
+                    start = startIndex,
+                    end = endIndex,
+                )
+            }
             addStyle(
-                style = SpanStyle(
-                    color = linkTextColor,
-                    fontSize = fontSize,
-                    fontWeight = linkTextFontWeight,
-                    textDecoration = linkTextDecoration,
-                ),
-                start = startIndex,
-                end = endIndex,
-            )
-            addStringAnnotation(
-                tag = "URL",
-                annotation = value,
-                start = startIndex,
-                end = endIndex,
+                style =
+                    SpanStyle(
+                        fontSize = fontSize,
+                    ),
+                start = 0,
+                end = fullText.length,
             )
         }
-        addStyle(
-            style = SpanStyle(
-                fontSize = fontSize,
-            ),
-            start = 0,
-            end = fullText.length,
-        )
-    }
 
     val uriHandler = LocalUriHandler.current
 

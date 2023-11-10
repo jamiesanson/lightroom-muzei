@@ -12,7 +12,7 @@ import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.common.config.DefaultConfigRepository
 import dev.sanson.lightroom.common.di.ApplicationScope
-import dev.sanson.lightroom.core.config.serializer.JsonSerializer
+import dev.sanson.lightroom.core.data.JsonSerializer
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Singleton
@@ -20,7 +20,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class ConfigModule {
-
     @Provides
     @Singleton
     fun provideConfigStore(
@@ -38,7 +37,5 @@ class ConfigModule {
 
     @Provides
     @Singleton
-    fun provideConfigRepository(
-        store: DataStore<Config?>,
-    ): ConfigRepository = DefaultConfigRepository(store)
+    fun provideConfigRepository(store: DataStore<Config?>): ConfigRepository = DefaultConfigRepository(store)
 }

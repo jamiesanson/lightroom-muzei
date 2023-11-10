@@ -20,84 +20,94 @@ import javax.inject.Inject
  */
 private fun String.toUri(): Uri = Uri.parse(this)
 
-internal class AuthManager @Inject constructor(
-    private val applicationScope: CoroutineScope,
-    private val credentialStore: CredentialStore,
-    private val lightroomAuthService: LightroomAuthService,
-    @LoginHost
-    private val loginHost: String,
-    @LightroomClientId
-    private val clientId: String,
-) {
-    private var previousChallenge: String? = null
+internal class AuthManager
+    @Inject
+    constructor(
+        private val applicationScope: CoroutineScope,
+        private val credentialStore: CredentialStore,
+        private val lightroomAuthService: LightroomAuthService,
+        @LoginHost
+        private val loginHost: String,
+        @LightroomClientId
+        private val clientId: String,
+    ) {
+        private var previousChallenge: String? = null
 
-    val isSignedIn = credentialStore.credential.map { it != null }
+        val isSignedIn = credentialStore.credential.map { it != null }
 
-    val latestAccessToken = credentialStore.credential.map { it?.accessToken }
+        val latestAccessToken = credentialStore.credential.map { it?.accessToken }
 
-    fun buildAuthUri(): Uri {
-        val challengeBytes = ByteArray(64)
+        fun buildAuthUri(): Uri {
+            val challengeBytes = ByteArray(64)
 
-        SecureRandom().nextBytes(challengeBytes)
+            SecureRandom().nextBytes(challengeBytes)
 
-        val challenge = Base64.encodeToString(
-            challengeBytes,
-            Base64.NO_WRAP or Base64.NO_PADDING or Base64.URL_SAFE,
-        )
+            val challenge =
+                Base64.encodeToString(
+                    challengeBytes,
+                    Base64.NO_WRAP or Base64.NO_PADDING or Base64.URL_SAFE,
+                )
 
-        previousChallenge = challenge
+            previousChallenge = challenge
 
-        val authUrl = "$loginHost/ims/authorize/v2"
+            val authUrl = "$loginHost/ims/authorize/v2"
 
-        val params = mapOf(
-            "scope" to "openid,lr_partner_apis,lr_partner_rendition_apis,offline_access",
-            "client_id" to clientId,
-            "response_type" to "code",
-            "redirect_uri" to "dev.sanson.lightroom://callback",
-            "code_challenge" to challenge,
-        )
+            val params =
+                mapOf(
+                    "scope" to "openid,lr_partner_apis,lr_partner_rendition_apis,offline_access",
+                    "client_id" to clientId,
+                    "response_type" to "code",
+                    "redirect_uri" to "dev.sanson.lightroom://callback",
+                    "code_challenge" to challenge,
+                )
 
-        return params
-            .entries
-            .fold(authUrl.toUri().buildUpon()) { builder, (key, value) ->
-                builder.appendQueryParameter(key, value)
+            return params
+                .entries
+                .fold(authUrl.toUri().buildUpon()) { builder, (key, value) ->
+                    builder.appendQueryParameter(key, value)
+                }
+                .build()
+        }
+
+        fun onAuthorized(code: String) {
+            applicationScope.launch(Dispatchers.IO) {
+                val authorization =
+                    "code=$code&grant_type=authorization_code&code_verifier=$previousChallenge".toRequestBody()
+
+                val response =
+                    lightroomAuthService.fetchToken(
+                        body = authorization,
+                        clientId = clientId,
+                    )
+
+                credentialStore.updateTokens(
+                    accessToken = response.accessToken,
+                    refreshToken = response.refreshToken,
+                )
             }
-            .build()
-    }
-
-    fun onAuthorized(code: String) {
-        applicationScope.launch(Dispatchers.IO) {
-            val authorization = "code=$code&grant_type=authorization_code&code_verifier=$previousChallenge".toRequestBody()
-
-            val response = lightroomAuthService.fetchToken(
-                body = authorization,
-                clientId = clientId,
-            )
-
-            credentialStore.updateTokens(
-                accessToken = response.accessToken,
-                refreshToken = response.refreshToken,
-            )
-        }
-    }
-
-    suspend fun refreshTokens(): Credential = withContext(Dispatchers.IO) {
-        val existingCredential = requireNotNull(credentialStore.credential.firstOrNull()) {
-            "No existing credentials found"
         }
 
-        val authorization = "grant_type=refresh_token&refresh_token=${existingCredential.refreshToken}".toRequestBody()
+        suspend fun refreshTokens(): Credential =
+            withContext(Dispatchers.IO) {
+                val existingCredential =
+                    requireNotNull(credentialStore.credential.firstOrNull()) {
+                        "No existing credentials found"
+                    }
 
-        val response = lightroomAuthService.fetchToken(
-            body = authorization,
-            clientId = clientId,
-        )
+                val authorization =
+                    "grant_type=refresh_token&refresh_token=${existingCredential.refreshToken}".toRequestBody()
 
-        credentialStore.updateTokens(
-            accessToken = response.accessToken,
-            refreshToken = response.refreshToken,
-        )
+                val response =
+                    lightroomAuthService.fetchToken(
+                        body = authorization,
+                        clientId = clientId,
+                    )
 
-        return@withContext requireNotNull(credentialStore.credential.first())
+                credentialStore.updateTokens(
+                    accessToken = response.accessToken,
+                    refreshToken = response.refreshToken,
+                )
+
+                return@withContext requireNotNull(credentialStore.credential.first())
+            }
     }
-}

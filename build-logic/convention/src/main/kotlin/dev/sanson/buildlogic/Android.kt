@@ -27,6 +27,12 @@ internal fun Project.configureAndroid(
             targetCompatibility = JavaVersion.VERSION_17
             isCoreLibraryDesugaringEnabled = true
         }
+
+        sourceSets {
+            getAt("main").java.srcDirs("src/main/kotlin")
+            getAt("test").java.srcDirs("src/test/kotlin")
+            getAt("androidTest").java.srcDirs("src/androidTest/kotlin")
+        }
     }
 
     dependencies {

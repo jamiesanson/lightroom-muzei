@@ -17,5 +17,6 @@ sealed interface ChooseAlbumState : CircuitUiState {
 
 sealed interface ChooseAlbumEvent : CircuitUiEvent {
     data class SelectAlbum(val albumId: AlbumId) : ChooseAlbumEvent
+
     data object Confirm : ChooseAlbumEvent
 }

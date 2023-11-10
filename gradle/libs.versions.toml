@@ -15,8 +15,8 @@ kotlinx = "1.7.3"
 kotlinx-collections-immutable = "0.3.6"
 kotlinx-serialization-json = "1.5.1"
 kotlinx-datetime = "0.4.0"
-ktlint-plugin = "11.3.2"
-ktlint-compose-rules = "0.1.2"
+ktlint-plugin = "11.6.1"
+ktlint-compose-rules = "0.3.3"
 
 ksp = "1.9.20-1.0.14"
 
@@ -121,8 +121,6 @@ android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", ve
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ktlint-gradle-plugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint-plugin" }
 ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }

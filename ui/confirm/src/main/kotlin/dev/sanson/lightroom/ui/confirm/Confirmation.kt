@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.common.ui.component.DarkModePreviews
 import dev.sanson.lightroom.common.ui.component.LightroomCard
+import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.screens.ConfirmationScreen
 import dev.sanson.lightroom.sdk.model.Asset
@@ -57,10 +57,11 @@ fun Confirmation(
 
         ConfirmationDialog(
             state = state,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
-                .align(Alignment.Center),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)
+                    .align(Alignment.Center),
         )
     }
 }
@@ -96,9 +97,7 @@ private fun ConfirmationDialog(
 }
 
 @Composable
-private fun LoadingArtwork(
-    modifier: Modifier = Modifier,
-) {
+private fun LoadingArtwork(modifier: Modifier = Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         CircularProgressIndicator(
             color = MaterialTheme.colorScheme.onSurface,
@@ -162,9 +161,10 @@ private fun ImagesLoaded(
 
         OutlinedButton(
             onClick = onComplete,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth(),
         ) {
             Text(
                 text = "Complete setup",
@@ -186,14 +186,15 @@ private fun FirstImageBackground(
     val context = LocalContext.current
 
     AsyncImage(
-        model = remember(lightroomImageRequest) {
-            val request = lightroomImageRequest ?: return@remember null
+        model =
+            remember(lightroomImageRequest) {
+                val request = lightroomImageRequest ?: return@remember null
 
-            request
-                .newBuilder(context)
-                .crossfade(300)
-                .build()
-        },
+                request
+                    .newBuilder(context)
+                    .crossfade(300)
+                    .build()
+            },
         placeholder = ColorPainter(Color.Transparent),
         contentScale = ContentScale.Crop,
         contentDescription = "First wallpaper image",
@@ -201,22 +202,24 @@ private fun FirstImageBackground(
     )
 }
 
-@DarkModePreviews
+@PreviewLightDark
 @Composable
-fun ChooseSourcePreview() {
-    val dummyAsset = Asset(
-        AssetId(""), CatalogId(""), Instant.DISTANT_PAST, "",
-        "", 1, "", "", "", emptyList(),
-    )
+private fun ChooseSourcePreview() {
+    val dummyAsset =
+        Asset(
+            AssetId(""), CatalogId(""), Instant.DISTANT_PAST, "",
+            "", 1, "", "", "", emptyList(),
+        )
 
     MuzeiLightroomTheme {
         Confirmation(
-            state = ConfirmState.Loaded(
-                firstWallpaper = dummyAsset,
-                firstArtworkCaptureDate = Instant.DISTANT_PAST,
-                artwork = emptyList(),
-                eventSink = {},
-            ),
+            state =
+                ConfirmState.Loaded(
+                    firstWallpaper = dummyAsset,
+                    firstArtworkCaptureDate = Instant.DISTANT_PAST,
+                    artwork = emptyList(),
+                    eventSink = {},
+                ),
         )
     }
 }

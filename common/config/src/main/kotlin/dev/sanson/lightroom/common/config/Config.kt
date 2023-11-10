@@ -24,7 +24,6 @@ data class Config(
     val review: Asset.Flag? = null,
     val serialVersion: Int = 1,
 ) {
-
     sealed interface Source {
         @Serializable
         data class Album(val id: AlbumId?) : Source {

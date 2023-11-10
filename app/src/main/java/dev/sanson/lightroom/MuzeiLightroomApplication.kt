@@ -46,7 +46,6 @@ import javax.inject.Inject
  */
 @HiltAndroidApp
 class MuzeiLightroomApplication : Application(), Configuration.Provider {
-
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 

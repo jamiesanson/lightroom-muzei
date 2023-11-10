@@ -34,7 +34,7 @@ fun StepHeader(
     }
 }
 
-@DarkModePreviews
+@PreviewLightDark
 @Composable
 private fun StepHeaderPreview() {
     MuzeiLightroomTheme {

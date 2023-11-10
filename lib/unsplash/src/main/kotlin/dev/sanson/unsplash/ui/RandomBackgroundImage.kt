@@ -34,27 +34,30 @@ fun RandomBackgroundImage(
         Box(modifier) {
             var showAttribution by rememberSaveable { mutableStateOf(false) }
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(backgroundImage.url)
-                    .crossfade(300)
-                    .build(),
+                model =
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(backgroundImage.url)
+                        .crossfade(300)
+                        .build(),
                 contentDescription = "",
                 placeholder = ColorPainter(backgroundColor),
                 onSuccess = {
                     showAttribution = true
                 },
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .fillMaxSize(),
             )
 
             AnimatedVisibility(
                 visible = showAttribution,
                 enter = fadeIn(),
                 exit = fadeOut(),
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .systemBarsPadding(),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .systemBarsPadding(),
             ) {
                 AttributionChip(
                     name = backgroundImage.attribution.name,
@@ -64,9 +67,10 @@ fun RandomBackgroundImage(
             }
 
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.12f)),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.12f)),
             )
         }
     }

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.persistentMapOf
 
 private const val UNSPLASH_REFERRAL = "utm_source=Lightroom%20for%20Muzei&utm_medium=referral"
+
 private fun unsplash(path: String) = "https://unsplash.com$path?$UNSPLASH_REFERRAL"
 
 @Composable
@@ -25,16 +26,18 @@ fun AttributionChip(
     name: String,
     username: String,
     modifier: Modifier = Modifier,
+    somethingelsereallyLong: String = "nah no good",
 ) {
     val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     // Always use dark theme for contrast against most backgrounds
     MaterialTheme(
-        colorScheme = if (dynamicColor) {
-            dynamicDarkColorScheme(LocalContext.current)
-        } else {
-            darkColorScheme()
-        },
+        colorScheme =
+            if (dynamicColor) {
+                dynamicDarkColorScheme(LocalContext.current)
+            } else {
+                darkColorScheme()
+            },
     ) {
         Box(
             modifier
@@ -45,18 +48,21 @@ fun AttributionChip(
         ) {
             HyperlinkText(
                 fullText = "Photo by $name on Unsplash",
-                hyperLinks = persistentMapOf(
-                    name to unsplash("/@$username"),
-                    "Unsplash" to unsplash("/"),
-                ),
-                textStyle = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onSurface,
-                ),
+                hyperLinks =
+                    persistentMapOf(
+                        name to unsplash("/@$username"),
+                        "Unsplash" to unsplash("/"),
+                    ),
+                textStyle =
+                    MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    ),
                 linkTextColor = MaterialTheme.colorScheme.secondary,
                 linkTextDecoration = TextDecoration.Underline,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
             )
         }
     }
@@ -64,8 +70,8 @@ fun AttributionChip(
 
 @Preview
 @Composable
-fun AttributionTextPreview() {
+private fun AttributionTextPreview() {
     MaterialTheme {
-        AttributionChip(modifier = Modifier, name = "Jamie Sanson", username = "jamiesanson")
+        AttributionChip(name = "Jamie Sanson", username = "jamiesanson")
     }
 }

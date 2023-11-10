@@ -10,7 +10,8 @@ internal fun Project.configureLinting(androidExtension: CommonExtension<*, *, *,
     pluginManager.apply(Plugins.KtLint)
 
     extensions.configure<KtlintExtension> {
-        version.set("0.48.2")
+        version.set("1.0.1")
+        outputToConsole.set(true)
     }
 
     androidExtension.lint {

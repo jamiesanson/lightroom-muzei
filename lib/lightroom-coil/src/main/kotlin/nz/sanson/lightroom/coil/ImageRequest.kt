@@ -41,9 +41,10 @@ fun rememberImageRequest(
 
     LaunchedEffect(assetId, catalogId, rendition) {
         request = null
-        request = with(imageLoader) {
-            newRequest(assetId, catalogId, rendition).await()
-        }
+        request =
+            with(imageLoader) {
+                newRequest(assetId, catalogId, rendition).await()
+            }
     }
 
     return request

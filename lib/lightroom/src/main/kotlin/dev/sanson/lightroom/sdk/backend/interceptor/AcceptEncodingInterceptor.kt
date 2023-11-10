@@ -13,11 +13,11 @@ import okhttp3.Response
  * * https://github.com/square/okio/issues/299
  */
 internal class AcceptEncodingInterceptor : Interceptor {
-
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request().newBuilder()
-            .addHeader("Accept-Encoding", "identity")
-            .build()
+        val request =
+            chain.request().newBuilder()
+                .addHeader("Accept-Encoding", "identity")
+                .build()
 
         return chain.proceed(request)
     }

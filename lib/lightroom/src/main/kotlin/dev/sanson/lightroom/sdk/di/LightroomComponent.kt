@@ -23,9 +23,14 @@ internal interface LightroomComponent {
 
     @Component.Builder
     interface Builder {
-        fun context(@BindsInstance context: Context): Builder
-        fun coroutineScope(@BindsInstance scope: CoroutineScope): Builder
+        fun context(
+            @BindsInstance context: Context,
+        ): Builder
+
+        fun coroutineScope(
+            @BindsInstance scope: CoroutineScope,
+        ): Builder
+
         fun build(): LightroomComponent
     }
 }
-

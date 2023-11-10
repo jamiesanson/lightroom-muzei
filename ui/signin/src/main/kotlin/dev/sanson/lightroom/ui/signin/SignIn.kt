@@ -33,8 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.common.ui.component.DarkModePreviews
 import dev.sanson.lightroom.common.ui.component.LightroomCard
+import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.screens.SignInScreen
 import dev.sanson.unsplash.ui.RandomBackgroundImage
@@ -74,13 +74,14 @@ private fun SignInScreen(
         ) { isLoading ->
             if (isLoading) {
                 Box(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .padding(horizontal = 24.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(2.dp))
-                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(2.dp))
-                        .background(MaterialTheme.colorScheme.surface),
+                    modifier =
+                        Modifier
+                            .wrapContentHeight()
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(2.dp))
+                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(2.dp))
+                            .background(MaterialTheme.colorScheme.surface),
                 ) {
                     SignInCard(onSignIn = {}, modifier = Modifier.alpha(0f))
 
@@ -122,9 +123,10 @@ private fun SignInCard(
 
         SignInButton(
             onClick = onSignIn,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth(),
         )
 
         Spacer(Modifier.size(2.dp))
@@ -139,23 +141,25 @@ private fun SignInButton(
     Image(
         painter = painterResource(id = R.drawable.sign_in_with_adobe_id),
         contentDescription = "Adobe",
-        modifier = modifier
-            .scale(1.1f)
-            .wrapContentWidth()
-            .clip(RoundedCornerShape(50))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(color = MaterialTheme.colorScheme.primary),
-                onClick = onClick,
-            ),
-        colorFilter = ColorFilter
-            .tint(MaterialTheme.colorScheme.onSurface),
+        modifier =
+            modifier
+                .scale(1.1f)
+                .wrapContentWidth()
+                .clip(RoundedCornerShape(50))
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(color = MaterialTheme.colorScheme.primary),
+                    onClick = onClick,
+                ),
+        colorFilter =
+            ColorFilter
+                .tint(MaterialTheme.colorScheme.onSurface),
     )
 }
 
-@DarkModePreviews
+@PreviewLightDark
 @Composable
-fun SignInScreenPreview() {
+private fun SignInScreenPreview() {
     MuzeiLightroomTheme {
         SignInScreen(isLoading = false, onSignIn = {})
     }

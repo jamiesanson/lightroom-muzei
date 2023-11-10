@@ -59,9 +59,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.common.ui.component.DarkModePreviews
 import dev.sanson.lightroom.common.ui.component.Equality
 import dev.sanson.lightroom.common.ui.component.EqualityToggle
+import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.core.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.model.Asset
@@ -90,16 +90,18 @@ fun FilterAssets(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .clickable { state.eventSink(FilterAssetsEvent.PopBackToAlbumSelection) },
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 8.dp)
+                                .clickable { state.eventSink(FilterAssetsEvent.PopBackToAlbumSelection) },
                     )
                 },
                 scrollBehavior = topAppBarScrollBehaviour,
             )
         },
-        modifier = modifier
-            .fillMaxSize(),
+        modifier =
+            modifier
+                .fillMaxSize(),
     ) { paddingValues ->
         Column(
             Modifier
@@ -168,15 +170,16 @@ private fun KeywordChipGroup(
     modifier: Modifier = Modifier,
 ) {
     FlowRow(
-        modifier = modifier
-            .fillMaxWidth(1f)
-            .wrapContentHeight(align = Alignment.Top)
-            .border(
-                width = 1.dp,
-                shape = RoundedCornerShape(4.dp),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-            )
-            .padding(8.dp),
+        modifier =
+            modifier
+                .fillMaxWidth(1f)
+                .wrapContentHeight(align = Alignment.Top)
+                .border(
+                    width = 1.dp,
+                    shape = RoundedCornerShape(4.dp),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                )
+                .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -209,19 +212,22 @@ private fun KeywordTextField(
         singleLine = true,
         textStyle = MaterialTheme.typography.labelLarge.copy(color = textColor),
         cursorBrush = SolidColor(textColor),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                onAddKeyword(keywordText)
-                keywordText = ""
-            },
-        ),
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Done,
-        ),
-        modifier = modifier
-            .requiredHeightIn(min = InputChipDefaults.Height)
-            .requiredWidthIn(min = 48.dp)
-            .fillMaxWidth(),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    onAddKeyword(keywordText)
+                    keywordText = ""
+                },
+            ),
+        keyboardOptions =
+            KeyboardOptions(
+                imeAction = ImeAction.Done,
+            ),
+        modifier =
+            modifier
+                .requiredHeightIn(min = InputChipDefaults.Height)
+                .requiredWidthIn(min = 48.dp)
+                .fillMaxWidth(),
     )
 }
 
@@ -240,12 +246,14 @@ private fun RatingRow(
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = "",
-                        tint = MaterialTheme.colorScheme.onSurface
-                            .copy(alpha = if (index < rating) 1f else 0.32f),
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(28.dp)
-                            .clickable { onRatingChange(index + 1) },
+                        tint =
+                            MaterialTheme.colorScheme.onSurface
+                                .copy(alpha = if (index < rating) 1f else 0.32f),
+                        modifier =
+                            Modifier
+                                .padding(4.dp)
+                                .size(28.dp)
+                                .clickable { onRatingChange(index + 1) },
                     )
                 }
             }
@@ -281,24 +289,27 @@ private fun KeywordChip(
                     style = MaterialTheme.typography.labelLarge,
                 )
             },
-            colors = InputChipDefaults.inputChipColors(
-                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-            ),
+            colors =
+                InputChipDefaults.inputChipColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                ),
             leadingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_tag),
                     contentDescription = "tag",
-                    modifier = Modifier
-                        .size(14.dp),
+                    modifier =
+                        Modifier
+                            .size(14.dp),
                 )
             },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Remove $keyword filter",
-                    modifier = Modifier
-                        .size(InputChipDefaults.IconSize)
-                        .clickable { onRemoveKeyword() },
+                    modifier =
+                        Modifier
+                            .size(InputChipDefaults.IconSize)
+                            .clickable { onRemoveKeyword() },
                 )
             },
             modifier = modifier,
@@ -322,56 +333,64 @@ private fun FlagRow(
             Icon(
                 imageVector = Icons.Default.ThumbUp,
                 contentDescription = "Picked",
-                tint = MaterialTheme.colorScheme.onSurface
-                    .copy(alpha = if (flag == Asset.Flag.Picked) 1f else 0.32f),
-                modifier = Modifier
-                    .clickable { onFlagChange(Asset.Flag.Picked) },
+                tint =
+                    MaterialTheme.colorScheme.onSurface
+                        .copy(alpha = if (flag == Asset.Flag.Picked) 1f else 0.32f),
+                modifier =
+                    Modifier
+                        .clickable { onFlagChange(Asset.Flag.Picked) },
             )
 
             Icon(
                 imageVector = Icons.Default.ThumbUp,
                 contentDescription = "Any",
-                tint = MaterialTheme.colorScheme.onSurface
-                    .copy(alpha = if (flag == null) 1f else 0.32f),
-                modifier = Modifier
-                    .rotate(90f)
-                    .clickable { onFlagChange(null) },
+                tint =
+                    MaterialTheme.colorScheme.onSurface
+                        .copy(alpha = if (flag == null) 1f else 0.32f),
+                modifier =
+                    Modifier
+                        .rotate(90f)
+                        .clickable { onFlagChange(null) },
             )
 
             Icon(
                 imageVector = Icons.Default.ThumbUp,
                 contentDescription = "Rejected",
-                tint = MaterialTheme.colorScheme.onSurface
-                    .copy(alpha = if (flag == Asset.Flag.Rejected) 1f else 0.32f),
-                modifier = Modifier
-                    .rotate(180f)
-                    .clickable { onFlagChange(Asset.Flag.Rejected) },
+                tint =
+                    MaterialTheme.colorScheme.onSurface
+                        .copy(alpha = if (flag == Asset.Flag.Rejected) 1f else 0.32f),
+                modifier =
+                    Modifier
+                        .rotate(180f)
+                        .clickable { onFlagChange(Asset.Flag.Rejected) },
             )
         }
     }
 }
 
-@DarkModePreviews
+@PreviewLightDark
 @Composable
-fun FilterAssetsPreview() {
+private fun FilterAssetsPreview() {
     MuzeiLightroomTheme {
         FilterAssets(
-            state = FilterAssetsState(
-                keywords = persistentListOf(
-                    "wallpaper",
-                    "wallpaper",
-                    "walper",
-                    "wadfllpaper",
-                    "wallpgsdaper",
-                    "wallpaper",
-                    "wallpgsdfgsdfgaper",
-                    "wallpaper",
+            state =
+                FilterAssetsState(
+                    keywords =
+                        persistentListOf(
+                            "wallpaper",
+                            "wallpaper",
+                            "walper",
+                            "wadfllpaper",
+                            "wallpgsdaper",
+                            "wallpaper",
+                            "wallpgsdfgsdfgaper",
+                            "wallpaper",
+                        ),
+                    rating = 3,
+                    equality = Equality.GreaterThan,
+                    flag = Asset.Flag.Picked,
+                    eventSink = {},
                 ),
-                rating = 3,
-                equality = Equality.GreaterThan,
-                flag = Asset.Flag.Picked,
-                eventSink = {},
-            ),
         )
     }
 }

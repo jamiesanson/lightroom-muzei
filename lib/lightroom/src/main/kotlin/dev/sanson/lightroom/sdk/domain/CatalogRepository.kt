@@ -11,14 +11,15 @@ internal class CatalogRepository(
 ) {
     private var cachedCatalog: Catalog? = null
 
-    suspend fun getCatalog(): Catalog = withContext(Dispatchers.IO) {
-        cachedCatalog?.let { return@withContext it }
+    suspend fun getCatalog(): Catalog =
+        withContext(Dispatchers.IO) {
+            cachedCatalog?.let { return@withContext it }
 
-        val catalog = catalogService.getCatalog()
+            val catalog = catalogService.getCatalog()
 
-        return@withContext Catalog(
-            id = CatalogId(catalog.id),
-            name = catalog.payload?.name ?: "Lightroom",
-        ).also { cachedCatalog = it }
-    }
+            return@withContext Catalog(
+                id = CatalogId(catalog.id),
+                name = catalog.payload?.name ?: "Lightroom",
+            ).also { cachedCatalog = it }
+        }
 }

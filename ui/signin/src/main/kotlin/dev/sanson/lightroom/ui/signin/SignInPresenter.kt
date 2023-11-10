@@ -19,44 +19,45 @@ import dev.sanson.lightroom.screens.ChooseSourceScreen
 import dev.sanson.lightroom.screens.SignInScreen
 import dev.sanson.lightroom.sdk.Lightroom
 
-class SignInPresenter @AssistedInject constructor(
-    @Assisted private val navigator: Navigator,
-    private val lightroom: Lightroom,
-) : Presenter<SignInState> {
+class SignInPresenter
+    @AssistedInject
+    constructor(
+        @Assisted private val navigator: Navigator,
+        private val lightroom: Lightroom,
+    ) : Presenter<SignInState> {
+        @Composable
+        override fun present(): SignInState {
+            val isSignedIn by lightroom.isSignedIn.collectAsState(initial = null)
+            val context = LocalContext.current
 
-    @Composable
-    override fun present(): SignInState {
-        val isSignedIn by lightroom.isSignedIn.collectAsState(initial = null)
-        val context = LocalContext.current
+            // TODO: Handle errors and retry
+            var signInRequested by rememberSaveable { mutableStateOf(false) }
 
-        // TODO: Handle errors and retry
-        var signInRequested by rememberSaveable { mutableStateOf(false) }
+            LaunchedEffect(isSignedIn) {
+                if (isSignedIn == true) {
+                    navigator.resetRoot(ChooseSourceScreen)
+                }
+            }
 
-        LaunchedEffect(isSignedIn) {
-            if (isSignedIn == true) {
-                navigator.resetRoot(ChooseSourceScreen)
+            return if (signInRequested || isSignedIn != false) {
+                SignInState.Loading
+            } else {
+                SignInState.NotSignedIn(
+                    eventSink = { event ->
+                        when (event) {
+                            SignInEvent.SignInWithLightroom -> {
+                                signInRequested = true
+                                lightroom.signIn(context)
+                            }
+                        }
+                    },
+                )
             }
         }
 
-        return if (signInRequested || isSignedIn != false) {
-            SignInState.Loading
-        } else {
-            SignInState.NotSignedIn(
-                eventSink = { event ->
-                    when (event) {
-                        SignInEvent.SignInWithLightroom -> {
-                            signInRequested = true
-                            lightroom.signIn(context)
-                        }
-                    }
-                },
-            )
+        @CircuitInject(SignInScreen::class, SingletonComponent::class)
+        @AssistedFactory
+        interface Factory {
+            fun create(navigator: Navigator): SignInPresenter
         }
     }
-
-    @CircuitInject(SignInScreen::class, SingletonComponent::class)
-    @AssistedFactory
-    interface Factory {
-        fun create(navigator: Navigator): SignInPresenter
-    }
-}

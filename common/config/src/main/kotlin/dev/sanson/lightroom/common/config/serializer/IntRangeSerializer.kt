@@ -23,19 +23,24 @@ internal object IntRangeSerializer : KSerializer<IntRange> {
     @OptIn(ExperimentalSerializationApi::class)
     override fun deserialize(decoder: Decoder): IntRange =
         decoder.decodeStructure(descriptor) {
-            val start = decodeIntElement(
-                descriptor = descriptor,
-                index = descriptor.getElementIndex("start"),
-            )
-            val endInclusive = decodeIntElement(
-                descriptor = descriptor,
-                index = descriptor.getElementIndex("endInclusive"),
-            )
+            val start =
+                decodeIntElement(
+                    descriptor = descriptor,
+                    index = descriptor.getElementIndex("start"),
+                )
+            val endInclusive =
+                decodeIntElement(
+                    descriptor = descriptor,
+                    index = descriptor.getElementIndex("endInclusive"),
+                )
 
             IntRange(start, endInclusive)
         }
 
-    override fun serialize(encoder: Encoder, value: IntRange) {
+    override fun serialize(
+        encoder: Encoder,
+        value: IntRange,
+    ) {
         encoder.encodeStructure(descriptor) {
             encodeIntElement(descriptor, index = 0, value = value.first)
             encodeIntElement(descriptor, index = 1, value = value.last)

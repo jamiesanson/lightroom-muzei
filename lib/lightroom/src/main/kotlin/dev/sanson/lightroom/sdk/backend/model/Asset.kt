@@ -134,7 +134,6 @@ internal data class Fraction(
 
 @OptIn(ExperimentalSerializationApi::class)
 internal object FractionSerializer : KSerializer<Fraction> {
-
     override val descriptor: SerialDescriptor =
         listSerialDescriptor<Int>()
 
@@ -146,7 +145,10 @@ internal object FractionSerializer : KSerializer<Fraction> {
             )
         }
 
-    override fun serialize(encoder: Encoder, value: Fraction) {
+    override fun serialize(
+        encoder: Encoder,
+        value: Fraction,
+    ) {
         encoder.encodeCollection(descriptor, collectionSize = 2) {
             encodeIntElement(descriptor, index = 0, value.numerator)
             encodeIntElement(descriptor, index = 1, value.denominator)

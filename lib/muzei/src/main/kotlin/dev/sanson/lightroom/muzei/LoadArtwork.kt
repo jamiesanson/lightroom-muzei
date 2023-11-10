@@ -24,13 +24,14 @@ import java.util.Locale
  * @return List of artwork matching [config]
  */
 suspend fun Lightroom.loadAssets(config: Config): List<Asset> {
-    val assets = when (val source = config.source) {
-        is Config.Source.Album ->
-            getAlbumAssets(source.requireId())
+    val assets =
+        when (val source = config.source) {
+            is Config.Source.Album ->
+                getAlbumAssets(source.requireId())
 
-        is Config.Source.Catalog ->
-            getCatalogAssets()
-    }
+            is Config.Source.Catalog ->
+                getCatalogAssets()
+        }
 
     return assets.filter { config.permitsAsset(it) }
 }

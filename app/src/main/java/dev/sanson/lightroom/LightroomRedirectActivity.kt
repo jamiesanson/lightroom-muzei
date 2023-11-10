@@ -44,12 +44,13 @@ class LightroomRedirectActivity : ComponentActivity() {
         private const val PLAY_STORE_LINK = "https://play.google.com/store/apps/details?id=$MUZEI_PACKAGE_NAME"
     }
 
-    private val requestLauncher = registerForActivityResult(StartActivityForResult()) {
-        // It doesn't matter what the result is, the important part is that the
-        // user hit the back button to return to this activity. Since this activity
-        // has no UI of its own, we can simply finish the activity.
-        finish()
-    }
+    private val requestLauncher =
+        registerForActivityResult(StartActivityForResult()) {
+            // It doesn't matter what the result is, the important part is that the
+            // user hit the back button to return to this activity. Since this activity
+            // has no UI of its own, we can simply finish the activity.
+            finish()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,35 +65,37 @@ class LightroomRedirectActivity : ComponentActivity() {
         }
         // Build the list of Intents plus the Toast message that should be displayed
         // to users when we successfully launch one of the Intents
-        val intents = listOf(
-            MuzeiContract.Sources.createChooseProviderIntent(BuildConfig.LIGHTROOM_AUTHORITY)
-                to R.string.toast_enable_lightroom,
-            launchIntent
-                to R.string.toast_enable_lightroom_source,
-            Intent(Intent.ACTION_VIEW).setData(Uri.parse(PLAY_STORE_LINK))
-                to R.string.toast_muzei_missing_error,
-        )
+        val intents =
+            listOf(
+                MuzeiContract.Sources.createChooseProviderIntent(BuildConfig.LIGHTROOM_AUTHORITY)
+                    to R.string.toast_enable_lightroom,
+                launchIntent
+                    to R.string.toast_enable_lightroom_source,
+                Intent(Intent.ACTION_VIEW).setData(Uri.parse(PLAY_STORE_LINK))
+                    to R.string.toast_muzei_missing_error,
+            )
         // Go through each Intent/message pair, trying each in turn
-        val success = intents.fold(false) { success, (intent, toastMessage) ->
-            if (success) {
-                // If one launch has succeeded, we don't need to
-                // try any further Intents
-                return@fold true
+        val success =
+            intents.fold(false) { success, (intent, toastMessage) ->
+                if (success) {
+                    // If one launch has succeeded, we don't need to
+                    // try any further Intents
+                    return@fold true
+                }
+                if (intent == null) {
+                    // A null Intent means there's nothing to attempt to launch
+                    return@fold false
+                }
+                try {
+                    requestLauncher.launch(intent)
+                    // Only if the launch succeeds do we show the Toast and trigger success
+                    Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show()
+                    true
+                } catch (e: Exception) {
+                    Log.v(TAG, "Intent $intent failed", e)
+                    false
+                }
             }
-            if (intent == null) {
-                // A null Intent means there's nothing to attempt to launch
-                return@fold false
-            }
-            try {
-                requestLauncher.launch(intent)
-                // Only if the launch succeeds do we show the Toast and trigger success
-                Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show()
-                true
-            } catch (e: Exception) {
-                Log.v(TAG, "Intent $intent failed", e)
-                false
-            }
-        }
         if (!success) {
             // Only if all Intents failed do we show a 'everything failed' Toast
             Toast.makeText(this, R.string.toast_play_store_missing_error, Toast.LENGTH_LONG).show()

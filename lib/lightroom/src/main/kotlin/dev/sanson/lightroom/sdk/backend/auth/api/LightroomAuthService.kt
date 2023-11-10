@@ -13,7 +13,6 @@ import retrofit2.http.Query
  * For more information, see the [service documentation](https://developer.adobe.com/developer-console/docs/guides/authentication/UserAuthentication/IMS)
  */
 internal interface LightroomAuthService {
-
     @POST("/ims/token/v3")
     suspend fun fetchToken(
         @Body body: RequestBody,
