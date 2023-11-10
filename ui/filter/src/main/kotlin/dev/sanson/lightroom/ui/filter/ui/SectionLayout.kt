@@ -2,6 +2,7 @@ package dev.sanson.lightroom.ui.filter.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,12 +35,13 @@ internal fun SectionLayout(
             .clickable { onSelectedChange(!selected) }
             .padding(vertical = 8.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = selected,
                 onCheckedChange = onSelectedChange,
                 modifier = Modifier.padding(end = 8.dp),
             )
+
             Column {
                 Text(
                     text = title,
@@ -56,7 +58,14 @@ internal fun SectionLayout(
         }
 
         AnimatedVisibility(visible = selected) {
-            content()
+            Box(
+                modifier =
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 16.dp, bottom = 8.dp),
+            ) {
+                content()
+            }
         }
     }
 }

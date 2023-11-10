@@ -77,7 +77,7 @@ fun FilterAssets(
                 )
 
                 Divider(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     color = MaterialTheme.colorScheme.inverseOnSurface,
                 )
 
@@ -89,7 +89,7 @@ fun FilterAssets(
                 )
 
                 Divider(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     color = MaterialTheme.colorScheme.inverseOnSurface,
                 )
 

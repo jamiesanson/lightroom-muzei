@@ -63,10 +63,6 @@ internal fun KeywordSection(
             keywords = keywords,
             onAddKeyword = onAddKeyword,
             onRemoveKeyword = onRemoveKeyword,
-            modifier =
-                Modifier
-                    .padding(horizontal = 8.dp)
-                    .padding(top = 16.dp),
         )
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -12,6 +13,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,6 +27,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 
@@ -55,10 +58,11 @@ fun EqualityToggle(
     modifier: Modifier = Modifier,
 ) {
     val lineColor = MaterialTheme.colorScheme.onSurface
-    val widthPx = 36f
+
+    var equalityHeightPx by remember { mutableFloatStateOf(0f) }
 
     val equalityHeight =
-        remember { Animatable(initialValue = if (equality == Equality.EqualTo) 0f else 24f) }
+        remember { Animatable(initialValue = if (equality == Equality.EqualTo) 0f else equalityHeightPx) }
     val topPathRotation =
         remember { Animatable(initialValue = if (equality == Equality.LessThan) 180f else 0f) }
 
@@ -67,7 +71,7 @@ fun EqualityToggle(
             Equality.GreaterThan -> {
                 equalityHeight.animateTo(0f)
                 topPathRotation.snapTo(0f)
-                equalityHeight.animateTo(24f)
+                equalityHeight.animateTo(equalityHeightPx)
             }
 
             Equality.EqualTo -> {
@@ -77,26 +81,32 @@ fun EqualityToggle(
             Equality.LessThan -> {
                 equalityHeight.animateTo(0f)
                 topPathRotation.snapTo(180f)
-                equalityHeight.animateTo(24f)
+                equalityHeight.animateTo(equalityHeightPx)
             }
         }
     }
 
     Canvas(
         modifier
-            .size(36.dp)
+            .sizeIn(minWidth = 36.dp, minHeight = 36.dp)
             .clip(RoundedCornerShape(50))
             .background(
                 MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 shape = RoundedCornerShape(50),
             )
+            .onSizeChanged {
+                equalityHeightPx = it.height.toFloat() * 0.2f
+            }
             .clickable { onEqualityChange(equality.next()) },
     ) {
         // The following draws two canvas elements - the bottom line of the lteq, gteq and eq symbol,
         // and a path which draws the top element of the symbol, allowing animation from line to
         // less than or greater than symbol.
-        val totalHeight = equalityHeight.value + 16f
-        translate(left = (size.width - 36f) / 2f, top = (size.height - totalHeight) / 2f) {
+        val totalHeight = equalityHeight.value + (size.height * 0.16f)
+        val widthPx = size.width * 0.32f
+        val strokeWidth = size.height * 0.04f
+
+        translate(left = (size.width - widthPx) / 2f, top = (size.height - totalHeight) / 2f) {
             // Less than/greater than path
             rotate(topPathRotation.value, pivot = Offset(widthPx / 2f, equalityHeight.value / 2f)) {
                 drawPath(
@@ -110,7 +120,7 @@ fun EqualityToggle(
                     color = lineColor,
                     style =
                         Stroke(
-                            width = 5f,
+                            width = strokeWidth,
                             cap = StrokeCap.Round,
                             join = StrokeJoin.Round,
                         ),
@@ -120,10 +130,10 @@ fun EqualityToggle(
             // Bottom line
             drawLine(
                 brush = SolidColor(lineColor),
-                start = Offset(x = 0f, y = equalityHeight.value + 16f),
-                end = Offset(x = 36f, y = equalityHeight.value + 16f),
+                start = Offset(x = 0f, y = totalHeight),
+                end = Offset(x = widthPx, y = totalHeight),
                 cap = StrokeCap.Round,
-                strokeWidth = 5f,
+                strokeWidth = strokeWidth,
             )
         }
     }

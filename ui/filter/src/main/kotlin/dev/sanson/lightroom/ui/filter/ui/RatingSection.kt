@@ -80,6 +80,7 @@ private fun RatingRow(
             EqualityToggle(
                 equality = equality,
                 onEqualityChange = onEqualityChange,
+                modifier = Modifier.size(48.dp),
             )
         }
     }
