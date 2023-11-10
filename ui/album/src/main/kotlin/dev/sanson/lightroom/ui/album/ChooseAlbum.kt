@@ -9,6 +9,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,7 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -68,50 +70,45 @@ fun ChooseAlbum(
     state: ChooseAlbumState,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(
-        topBar = {
-            StepHeader(
-                stepNumber = 2,
-                stepName = stringResource(R.string.choose_an_album),
-                modifier =
-                    Modifier
-                        .padding(24.dp)
-                        .padding(top = 64.dp),
-            )
-        },
-        modifier =
-            modifier
-                .fillMaxSize(),
-    ) { paddingValues ->
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        ) {
-            when (state) {
-                is ChooseAlbumState.Loaded ->
-                    LazyColumn(
+    Surface(modifier.fillMaxSize()) {
+        Box(Modifier.systemBarsPadding()) {
+            Column {
+                StepHeader(
+                    stepNumber = 2,
+                    stepName = stringResource(R.string.choose_an_album),
+                    modifier =
                         Modifier
-                            .padding(horizontal = 16.dp),
-                    ) {
-                        collectionSet(
-                            children = state.albumTree,
-                            selectedAlbum = state.selectedAlbum,
-                            onAlbumClick = { state.eventSink(ChooseAlbumEvent.SelectAlbum(it)) },
-                        )
+                            .padding(24.dp)
+                            .padding(top = 64.dp),
+                )
 
-                        item {
-                            Spacer(Modifier.height(128.dp))
-                        }
-                    }
+                Box(Modifier.fillMaxSize()) {
+                    when (state) {
+                        is ChooseAlbumState.Loaded ->
+                            LazyColumn(
+                                Modifier
+                                    .padding(horizontal = 16.dp),
+                            ) {
+                                collectionSet(
+                                    children = state.albumTree,
+                                    selectedAlbum = state.selectedAlbum,
+                                    onAlbumClick = { state.eventSink(ChooseAlbumEvent.SelectAlbum(it)) },
+                                )
 
-                else ->
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
-                        CircularProgressIndicator()
+                                item {
+                                    Spacer(Modifier.height(128.dp))
+                                }
+                            }
+
+                        else ->
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize(),
+                            ) {
+                                CircularProgressIndicator()
+                            }
                     }
+                }
             }
 
             if (state is ChooseAlbumState.Loaded) {
@@ -132,7 +129,11 @@ fun ChooseAlbum(
                 ) {
                     Button(
                         onClick = { state.eventSink(ChooseAlbumEvent.Confirm) },
-                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 24.dp),
+                        contentPadding =
+                            PaddingValues(
+                                vertical = 12.dp,
+                                horizontal = 24.dp,
+                            ),
                     ) {
                         Spacer(Modifier.size(8.dp))
 

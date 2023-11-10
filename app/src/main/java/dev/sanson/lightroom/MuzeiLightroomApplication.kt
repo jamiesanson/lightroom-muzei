@@ -12,6 +12,8 @@ import javax.inject.Inject
  *   Build
  * ---------
  * * Screen transitions & UI polish
+ *      * Finish screen uplift
+ *      * Implement custom collapsing toolbar
  * * Form-factor support
  *
  * ---------------

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -16,7 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,60 +44,53 @@ fun FilterAssets(
     state: FilterAssetsState,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(
-        topBar = {
-            StepHeader(
-                stepNumber = state.stepNumber,
-                stepName = stringResource(R.string.filter_images),
-                modifier =
+    Surface(modifier.fillMaxSize()) {
+        Box(Modifier.systemBarsPadding()) {
+            Column {
+                StepHeader(
+                    stepNumber = state.stepNumber,
+                    stepName = stringResource(R.string.filter_images),
+                    modifier =
+                        Modifier
+                            .padding(24.dp)
+                            .padding(top = 64.dp),
+                )
+
+                Column(
                     Modifier
-                        .padding(24.dp)
-                        .padding(top = 64.dp),
-            )
-        },
-        modifier =
-            modifier
-                .fillMaxSize(),
-    ) { paddingValues ->
-        Box(
-            Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-        ) {
-            Column(
-                Modifier
-                    .padding(horizontal = 16.dp)
-                    .scrollable(rememberScrollState(), orientation = Orientation.Vertical),
-            ) {
-                Spacer(Modifier.size(8.dp))
+                        .padding(horizontal = 16.dp)
+                        .scrollable(rememberScrollState(), orientation = Orientation.Vertical),
+                ) {
+                    Spacer(Modifier.size(8.dp))
 
-                KeywordSection(
-                    keywords = state.keywords,
-                    onAddKeyword = { state.eventSink(FilterAssetsEvent.AddKeyword(it)) },
-                    onRemoveKeyword = { state.eventSink(FilterAssetsEvent.RemoveKeyword(it)) },
-                )
+                    KeywordSection(
+                        keywords = state.keywords,
+                        onAddKeyword = { state.eventSink(FilterAssetsEvent.AddKeyword(it)) },
+                        onRemoveKeyword = { state.eventSink(FilterAssetsEvent.RemoveKeyword(it)) },
+                    )
 
-                Divider(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    color = MaterialTheme.colorScheme.inverseOnSurface,
-                )
+                    Divider(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                    )
 
-                RatingSection(
-                    rating = state.rating,
-                    equality = state.equality,
-                    onRatingChange = { state.eventSink(FilterAssetsEvent.UpdateRating(it)) },
-                    onEqualityChange = { state.eventSink(FilterAssetsEvent.UpdateEquality(it)) },
-                )
+                    RatingSection(
+                        rating = state.rating,
+                        equality = state.equality,
+                        onRatingChange = { state.eventSink(FilterAssetsEvent.UpdateRating(it)) },
+                        onEqualityChange = { state.eventSink(FilterAssetsEvent.UpdateEquality(it)) },
+                    )
 
-                Divider(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    color = MaterialTheme.colorScheme.inverseOnSurface,
-                )
+                    Divider(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                    )
 
-                ReviewSection(
-                    flag = state.flag,
-                    onFlagChange = { state.eventSink(FilterAssetsEvent.UpdateFlag(it)) },
-                )
+                    ReviewSection(
+                        flag = state.flag,
+                        onFlagChange = { state.eventSink(FilterAssetsEvent.UpdateFlag(it)) },
+                    )
+                }
             }
 
             Button(
