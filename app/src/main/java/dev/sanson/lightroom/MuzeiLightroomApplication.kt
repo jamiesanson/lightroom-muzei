@@ -14,17 +14,8 @@ import javax.inject.Inject
  * * Screen transitions & UI polish
  *      * Finish screen uplift
  *      * Implement custom collapsing toolbar
+ *      * Loading improvements - shimmer & placeholders
  * * Form-factor support
- *
- * ---------------
- *   Open source
- * ---------------
- * * UI testing
- * * Snapshot testing
- * * Testing presenters
- * * CI - run suite on commits
- * * Move secrets out of source
- * * Documentation & licensing
  *
  * --------------------
  *   Production-ready
@@ -34,12 +25,22 @@ import javax.inject.Inject
  * * Deployment - Automated prod deployment
  * * App icon
  *
+ * ---------------
+ *   Open source
+ * ---------------
+ * * UI testing
+ * * Snapshot testing
+ * * Testing presenters
+ * * CI - run suite on commits
+ * * Documentation & licensing
+ *
  * --------------------
  *   Release prep
  * --------------------
  * * Adobe review
  * * Unsplash review
  * * Play Store account
+ * * Testing
  *
  * --------------------
  *   Extra-curricular
