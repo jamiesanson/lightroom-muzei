@@ -1,13 +1,17 @@
 package dev.sanson.lightroom.ui.filter
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -70,9 +74,10 @@ class FilterAssetsPresenter
                 mutableStateOf(config.ratingEquality)
             }
 
-            var keywords by rememberSaveable(config) {
-                mutableStateOf(config.keywords)
-            }
+            val keywords =
+                rememberSaveable(config, saver = keywordSaver()) {
+                    config.keywords.toMutableStateList()
+                }
 
             var flag by rememberSaveable(config) {
                 mutableStateOf(config.review)
@@ -92,10 +97,10 @@ class FilterAssetsPresenter
 
             return FilterAssetsState(
                 stepNumber = if (config.source is Config.Source.Album) 3 else 2,
-                keywords = config.keywords.toPersistentList(),
+                keywords = keywords.toPersistentList(),
                 rating = starRating,
                 equality = equality,
-                flag = config.review,
+                flag = flag,
                 filtersApplied = filtersApplied,
                 eventSink = { event ->
                     when (event) {
@@ -129,7 +134,7 @@ class FilterAssetsPresenter
                                 val newConfig =
                                     config.copy(
                                         keywords =
-                                            keywords.takeIf { filtersApplied.keywords }
+                                            keywords.toSet().takeIf { filtersApplied.keywords }
                                                 ?: emptySet(),
                                         review = flag.takeIf { filtersApplied.review },
                                         rating =
@@ -154,3 +159,15 @@ class FilterAssetsPresenter
             fun create(navigator: Navigator): FilterAssetsPresenter
         }
     }
+
+private fun keywordSaver(): Saver<SnapshotStateList<String>, Bundle> =
+    Saver(
+        save = { original ->
+            Bundle().apply {
+                putStringArray("state_list", original.toTypedArray())
+            }
+        },
+        restore = {
+            it.getStringArray("state_list")?.toList()?.toMutableStateList()
+        },
+    )
