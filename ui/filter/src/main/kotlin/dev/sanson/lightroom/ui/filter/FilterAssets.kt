@@ -1,6 +1,5 @@
 package dev.sanson.lightroom.ui.filter
 
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -16,18 +15,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -37,12 +31,12 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.common.ui.component.Equality
-import dev.sanson.lightroom.common.ui.component.EqualityToggle
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.common.ui.component.StepHeader
 import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.ui.filter.ui.KeywordSection
+import dev.sanson.lightroom.ui.filter.ui.RatingSection
 import kotlinx.collections.immutable.persistentListOf
 
 @CircuitInject(FilterAssetsScreen::class, SingletonComponent::class)
@@ -86,17 +80,11 @@ fun FilterAssets(
                 color = MaterialTheme.colorScheme.inverseOnSurface,
             )
 
-            Text(
-                text = "Rating",
-                style = MaterialTheme.typography.titleMedium,
-            )
-
-            RatingRow(
+            RatingSection(
                 rating = state.rating,
                 equality = state.equality,
                 onRatingChange = { state.eventSink(FilterAssetsEvent.UpdateRating(it)) },
                 onEqualityChange = { state.eventSink(FilterAssetsEvent.UpdateEquality(it)) },
-                modifier = Modifier.padding(top = 8.dp),
             )
 
             Divider(
@@ -113,41 +101,6 @@ fun FilterAssets(
                 flag = state.flag,
                 onFlagChange = { state.eventSink(FilterAssetsEvent.UpdateFlag(it)) },
                 modifier = Modifier.padding(top = 8.dp),
-            )
-        }
-    }
-}
-
-@Composable
-private fun RatingRow(
-    rating: Int,
-    equality: Equality,
-    onRatingChange: (Int) -> Unit,
-    onEqualityChange: (Equality) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(modifier = modifier.fillMaxWidth()) {
-        CompositionLocalProvider(LocalIndication provides rememberRipple(bounded = false)) {
-            Row(Modifier.align(Alignment.Center)) {
-                repeat(5) { index ->
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "",
-                        tint =
-                            MaterialTheme.colorScheme.onSurface
-                                .copy(alpha = if (index < rating) 1f else 0.32f),
-                        modifier =
-                            Modifier
-                                .padding(4.dp)
-                                .size(28.dp)
-                                .clickable { onRatingChange(index + 1) },
-                    )
-                }
-            }
-
-            EqualityToggle(
-                equality = equality,
-                onEqualityChange = onEqualityChange,
             )
         }
     }
