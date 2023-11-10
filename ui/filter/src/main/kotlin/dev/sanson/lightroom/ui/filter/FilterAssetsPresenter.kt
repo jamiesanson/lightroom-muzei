@@ -2,10 +2,11 @@ package dev.sanson.lightroom.ui.filter
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
@@ -61,8 +62,30 @@ class FilterAssetsPresenter
                 configRepository.config.filterNotNull().collect { value = it }
             }
 
-            var equality by remember {
+            var starRating by rememberSaveable(config) {
+                mutableIntStateOf(config.starRating)
+            }
+
+            var equality by rememberSaveable(config) {
                 mutableStateOf(config.ratingEquality)
+            }
+
+            var keywords by rememberSaveable(config) {
+                mutableStateOf(config.keywords)
+            }
+
+            var flag by rememberSaveable(config) {
+                mutableStateOf(config.review)
+            }
+
+            var filtersApplied by rememberSaveable(config) {
+                mutableStateOf(
+                    FilterAssetsState.FiltersApplied(
+                        keywords = config.keywords.isNotEmpty(),
+                        rating = config.rating != null,
+                        review = config.review != null,
+                    ),
+                )
             }
 
             val scope = rememberCoroutineScope()
@@ -70,67 +93,56 @@ class FilterAssetsPresenter
             return FilterAssetsState(
                 stepNumber = if (config.source is Config.Source.Album) 3 else 2,
                 keywords = config.keywords.toPersistentList(),
-                rating = config.starRating,
+                rating = starRating,
                 equality = equality,
                 flag = config.review,
+                filtersApplied = filtersApplied,
                 eventSink = { event ->
                     when (event) {
                         is FilterAssetsEvent.AddKeyword ->
-                            scope.launch {
-                                configRepository.addKeyword(event.keyword)
-                            }
+                            keywords += event.keyword
 
                         is FilterAssetsEvent.RemoveKeyword ->
-                            scope.launch {
-                                configRepository.removeKeyword(event.keyword)
-                            }
+                            keywords -= event.keyword
 
                         is FilterAssetsEvent.UpdateRating ->
-                            scope.launch {
-                                configRepository.setRatingRange(
-                                    start = event.rating,
-                                    end =
-                                        when (config.ratingEquality) {
-                                            Equality.GreaterThan -> 5
-                                            Equality.EqualTo -> event.rating
-                                            Equality.LessThan -> 0
-                                        },
-                                )
-                            }
+                            starRating = event.rating
 
                         is FilterAssetsEvent.UpdateEquality ->
-                            scope.launch {
-                                equality = event.equality
-
-                                configRepository.setRatingRange(
-                                    start =
-                                        when (config.ratingEquality) {
-                                            Equality.GreaterThan,
-                                            Equality.EqualTo,
-                                            -> config.starRating
-
-                                            Equality.LessThan -> 0
-                                        },
-                                    end =
-                                        when (config.ratingEquality) {
-                                            Equality.GreaterThan -> 5
-                                            Equality.EqualTo,
-                                            Equality.LessThan,
-                                            -> config.starRating
-                                        },
-                                )
-                            }
+                            equality = event.equality
 
                         is FilterAssetsEvent.UpdateFlag ->
-                            scope.launch {
-                                configRepository.updateFlag(event.flag)
-                            }
+                            flag = event.flag
 
-                        is FilterAssetsEvent.PopBackToAlbumSelection ->
-                            navigator.pop()
+                        is FilterAssetsEvent.ToggleKeywords ->
+                            filtersApplied =
+                                filtersApplied.copy(keywords = !filtersApplied.keywords)
+
+                        is FilterAssetsEvent.ToggleRating ->
+                            filtersApplied = filtersApplied.copy(rating = !filtersApplied.rating)
+
+                        is FilterAssetsEvent.ToggleReview ->
+                            filtersApplied = filtersApplied.copy(review = !filtersApplied.review)
 
                         is FilterAssetsEvent.Confirm ->
-                            navigator.goTo(ConfirmationScreen)
+                            scope.launch {
+                                val newConfig =
+                                    config.copy(
+                                        keywords =
+                                            keywords.takeIf { filtersApplied.keywords }
+                                                ?: emptySet(),
+                                        review = flag.takeIf { filtersApplied.review },
+                                        rating =
+                                            IntRange(
+                                                start = if (equality == Equality.LessThan) 0 else starRating,
+                                                endInclusive = if (equality == Equality.GreaterThan) 5 else starRating,
+                                            ).takeIf { starRating > 0 && filtersApplied.rating },
+                                    )
+
+                                configRepository.updateConfig(newConfig)
+
+                                navigator.goTo(ConfirmationScreen)
+                            }
                     }
                 },
             )

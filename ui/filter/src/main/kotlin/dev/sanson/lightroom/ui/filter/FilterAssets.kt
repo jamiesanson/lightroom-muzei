@@ -64,7 +64,9 @@ fun FilterAssets(
                     Spacer(Modifier.size(8.dp))
 
                     KeywordSection(
+                        active = state.filtersApplied.keywords,
                         keywords = state.keywords,
+                        onActiveStateChange = { state.eventSink(FilterAssetsEvent.ToggleKeywords) },
                         onAddKeyword = { state.eventSink(FilterAssetsEvent.AddKeyword(it)) },
                         onRemoveKeyword = { state.eventSink(FilterAssetsEvent.RemoveKeyword(it)) },
                     )
@@ -75,8 +77,10 @@ fun FilterAssets(
                     )
 
                     RatingSection(
+                        active = state.filtersApplied.rating,
                         rating = state.rating,
                         equality = state.equality,
+                        onActiveStateChange = { state.eventSink(FilterAssetsEvent.ToggleRating) },
                         onRatingChange = { state.eventSink(FilterAssetsEvent.UpdateRating(it)) },
                         onEqualityChange = { state.eventSink(FilterAssetsEvent.UpdateEquality(it)) },
                     )
@@ -87,7 +91,9 @@ fun FilterAssets(
                     )
 
                     ReviewSection(
+                        active = state.filtersApplied.review,
                         flag = state.flag,
+                        onActiveStateChange = { state.eventSink(FilterAssetsEvent.ToggleReview) },
                         onFlagChange = { state.eventSink(FilterAssetsEvent.UpdateFlag(it)) },
                     )
                 }
@@ -139,6 +145,7 @@ private fun FilterAssetsPreview() {
                     rating = 3,
                     equality = Equality.GreaterThan,
                     flag = Asset.Flag.Picked,
+                    filtersApplied = FilterAssetsState.FiltersApplied(),
                     eventSink = {},
                 ),
         )

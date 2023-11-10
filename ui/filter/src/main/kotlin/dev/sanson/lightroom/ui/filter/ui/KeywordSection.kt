@@ -31,7 +31,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,19 +43,18 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun KeywordSection(
+    active: Boolean,
+    onActiveStateChange: (Boolean) -> Unit,
     keywords: ImmutableList<String>,
     onAddKeyword: (String) -> Unit,
     onRemoveKeyword: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // TODO: This should probably be in the presenter
-    var selected by rememberSaveable { mutableStateOf(false) }
-
     SectionLayout(
         title = "Keywords",
         description = "Use images with a specific keyword",
-        selected = selected,
-        onSelectedChange = { selected = it },
+        selected = active,
+        onSelectedChange = onActiveStateChange,
         modifier = modifier,
     ) {
         KeywordChipGroup(

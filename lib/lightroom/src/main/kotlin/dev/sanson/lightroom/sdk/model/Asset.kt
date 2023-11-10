@@ -1,6 +1,8 @@
 package dev.sanson.lightroom.sdk.model
 
+import android.os.Parcelable
 import kotlinx.datetime.Instant
+import kotlinx.parcelize.Parcelize
 
 data class Asset(
     val id: AssetId,
@@ -16,7 +18,8 @@ data class Asset(
     val rating: Int? = null,
     val review: Flag? = null,
 ) {
-    enum class Flag {
+    @Parcelize
+    enum class Flag : Parcelable {
         Picked,
         Rejected,
     }

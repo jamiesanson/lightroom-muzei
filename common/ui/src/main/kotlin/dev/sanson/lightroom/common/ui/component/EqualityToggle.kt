@@ -1,10 +1,10 @@
 package dev.sanson.lightroom.common.ui.component
 
+import android.os.Parcelable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -30,8 +30,10 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
+import kotlinx.parcelize.Parcelize
 
-enum class Equality { GreaterThan, EqualTo, LessThan }
+@Parcelize
+enum class Equality : Parcelable { GreaterThan, EqualTo, LessThan }
 
 /**
  * Simple function for cycling through enum entries

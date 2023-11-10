@@ -15,8 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,17 +26,17 @@ import dev.sanson.lightroom.common.ui.component.EqualityToggle
 internal fun RatingSection(
     rating: Int,
     equality: Equality,
+    active: Boolean,
+    onActiveStateChange: (Boolean) -> Unit,
     onRatingChange: (Int) -> Unit,
     onEqualityChange: (Equality) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var selected by rememberSaveable { mutableStateOf(false) }
-
     SectionLayout(
         title = "Rating",
         description = "Use images above, below or equal to a star rating",
-        selected = selected,
-        onSelectedChange = { selected = it },
+        selected = active,
+        onSelectedChange = onActiveStateChange,
         modifier = modifier,
     ) {
         RatingRow(

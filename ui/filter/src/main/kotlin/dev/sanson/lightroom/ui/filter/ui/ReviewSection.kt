@@ -11,8 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,16 +21,16 @@ import dev.sanson.lightroom.sdk.model.Asset
 @Composable
 internal fun ReviewSection(
     flag: Asset.Flag?,
+    active: Boolean,
+    onActiveStateChange: (Boolean) -> Unit,
     onFlagChange: (Asset.Flag?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var selected by rememberSaveable { mutableStateOf(false) }
-
     SectionLayout(
         title = "Review",
         description = "Accepted or Rejected images",
-        selected = selected,
-        onSelectedChange = { selected = it },
+        selected = active,
+        onSelectedChange = onActiveStateChange,
         modifier = modifier,
     ) {
         FlagRow(flag = flag, onFlagChange = onFlagChange)
