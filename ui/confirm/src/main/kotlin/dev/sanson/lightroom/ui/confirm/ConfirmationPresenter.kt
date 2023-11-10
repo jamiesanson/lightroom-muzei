@@ -96,7 +96,7 @@ class ConfirmationPresenter
                                 eventSink = { event ->
                                     when (event) {
                                         ConfirmEvent.OnFinish ->
-                                            navigator.goTo(FinishActivityScreen(requestCode = Activity.RESULT_OK))
+                                            navigator.goTo(FinishActivityScreen(resultCode = Activity.RESULT_OK))
                                     }
                                 },
                             )

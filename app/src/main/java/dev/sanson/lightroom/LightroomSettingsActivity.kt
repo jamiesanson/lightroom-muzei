@@ -50,8 +50,10 @@ class LightroomSettingsActivity : ComponentActivity() {
                                     is IntentScreen ->
                                         screen.startWith(context = this)
 
-                                    is FinishActivityScreen ->
-                                        finishActivity(screen.requestCode)
+                                    is FinishActivityScreen -> {
+                                        setResult(screen.resultCode)
+                                        finish()
+                                    }
                                 }
                             }
                         },
