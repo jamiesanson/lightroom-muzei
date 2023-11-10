@@ -1,19 +1,28 @@
 package dev.sanson.lightroom.ui.album
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -33,6 +42,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -88,6 +99,10 @@ fun ChooseAlbum(
                             selectedAlbum = state.selectedAlbum,
                             onAlbumClick = { state.eventSink(ChooseAlbumEvent.SelectAlbum(it)) },
                         )
+
+                        item {
+                            Spacer(Modifier.height(128.dp))
+                        }
                     }
 
                 else ->
@@ -100,17 +115,37 @@ fun ChooseAlbum(
             }
 
             if (state is ChooseAlbumState.Loaded) {
-                Button(
-                    onClick = { state.eventSink(ChooseAlbumEvent.Confirm) },
-                    enabled = state.selectedAlbum != null,
+                AnimatedVisibility(
+                    visible = state.selectedAlbum != null,
+                    enter =
+                        slideInVertically(
+                            spring(
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessMedium,
+                                visibilityThreshold = IntOffset.VisibilityThreshold,
+                            ),
+                        ) { it * 2 },
                     modifier =
                         Modifier
-                            .padding(bottom = 24.dp)
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter),
+                            .align(Alignment.BottomCenter)
+                            .padding(24.dp),
                 ) {
-                    Text("Confirm")
+                    Button(
+                        onClick = { state.eventSink(ChooseAlbumEvent.Confirm) },
+                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 24.dp),
+                    ) {
+                        Spacer(Modifier.size(8.dp))
+
+                        Text(
+                            text = stringResource(R.string.filter_album),
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        )
+
+                        Spacer(Modifier.size(16.dp))
+
+                        Icon(Icons.Default.ArrowForward, contentDescription = "")
+                    }
                 }
             }
         }

@@ -33,7 +33,7 @@ class ChooseSourcePresenter
         override fun present(): ChooseSourceState {
             val scope = rememberCoroutineScope()
 
-            val persistedSource by produceState<Config.Source?>(initialValue = null) {
+            val persistedSource by produceState<Config.Source>(Config.Source.Album.Uninitialized) {
                 value = configRepository.config.map { it?.source }.first()
                     ?: Config.Source.Album.Uninitialized
             }
@@ -52,11 +52,10 @@ class ChooseSourcePresenter
 
                     ChooseSourceEvent.OnConfirm ->
                         scope.launch {
-                            val source = selectedSource ?: error("Selected source not set")
-                            configRepository.setImageSource(source)
+                            configRepository.setImageSource(selectedSource)
                             navigator.goTo(
                                 screen =
-                                    when (source) {
+                                    when (selectedSource) {
                                         is Config.Source.Album -> ChooseAlbumScreen
                                         is Config.Source.Catalog -> FilterAssetsScreen
                                     },

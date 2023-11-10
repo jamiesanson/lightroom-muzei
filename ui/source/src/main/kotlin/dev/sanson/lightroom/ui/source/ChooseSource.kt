@@ -1,6 +1,7 @@
 package dev.sanson.lightroom.ui.source
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -95,9 +96,15 @@ fun ChooseSource(
                 Spacer(Modifier.size(8.dp))
 
                 Text(
-                    text = stringResource(R.string.button_continue),
+                    text =
+                        if (state.selectedSource is Config.Source.Album) {
+                            stringResource(id = R.string.button_choose_album)
+                        } else {
+                            stringResource(id = R.string.button_filter_catalog)
+                        },
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.animateContentSize(),
                 )
 
                 Spacer(Modifier.size(16.dp))

@@ -1,9 +1,13 @@
 package dev.sanson.lightroom.ui.album
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -47,11 +51,12 @@ class ChooseAlbumPresenter
                             .map { if (it is CollectionSet) it.sortChildren() else it },
                 )
 
-            val albumState by produceState<List<AlbumTreeItem>?>(
-                initialValue = null,
-                lightroom,
-            ) {
-                value =
+            var albums by rememberSaveable {
+                mutableStateOf<List<AlbumTreeItem>?>(null)
+            }
+
+            LaunchedEffect(true) {
+                albums =
                     lightroom.getAlbums()
                         .sortedBy {
                             when (it) {
@@ -69,13 +74,13 @@ class ChooseAlbumPresenter
                     .collect { value = it }
             }
 
-            return when (val albums = albumState) {
+            return when (val albumTree = albums) {
                 null ->
                     ChooseAlbumState.Loading
 
                 else ->
                     ChooseAlbumState.Loaded(
-                        albumTree = albums,
+                        albumTree = albumTree,
                         selectedAlbum = albumId,
                         eventSink = { event ->
                             when (event) {

@@ -6,4 +6,6 @@
     <string name="catalog_source_description">Use every image in your Lightroom catalog</string>
     <string name="choose_a_source">Choose a source</string>
     <string name="button_continue">Continue</string>
+    <string name="button_choose_album">Choose an album</string>
+    <string name="button_filter_catalog">Filter catalog</string>
 </resources>

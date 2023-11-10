@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="choose_an_album">Choose an album</string>
+    <string name="filter_album">Filter album</string>
 </resources>

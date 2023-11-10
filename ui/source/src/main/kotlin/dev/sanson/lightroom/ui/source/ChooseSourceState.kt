@@ -5,7 +5,7 @@ import com.slack.circuit.runtime.CircuitUiState
 import dev.sanson.lightroom.common.config.Config
 
 data class ChooseSourceState(
-    val selectedSource: Config.Source?,
+    val selectedSource: Config.Source,
     val eventSink: (ChooseSourceEvent) -> Unit,
 ) : CircuitUiState
 
