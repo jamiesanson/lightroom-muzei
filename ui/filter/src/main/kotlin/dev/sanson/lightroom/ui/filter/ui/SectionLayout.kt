@@ -31,7 +31,7 @@ internal fun SectionLayout(
         modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .clickable(enabled = !selected) { onSelectedChange(!selected) }
+            .clickable { onSelectedChange(!selected) }
             .padding(vertical = 8.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
