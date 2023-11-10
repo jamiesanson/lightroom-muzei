@@ -102,7 +102,10 @@ fun FilterAssets(
             Button(
                 onClick = { state.eventSink(FilterAssetsEvent.Confirm) },
                 contentPadding = PaddingValues(vertical = 12.dp, horizontal = 24.dp),
-                modifier = Modifier.align(Alignment.BottomCenter),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(24.dp),
             ) {
                 Spacer(Modifier.size(8.dp))
 
