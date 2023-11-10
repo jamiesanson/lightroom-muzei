@@ -53,6 +53,7 @@ internal fun SectionLayout(
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.54f),
                 )
             }
         }
