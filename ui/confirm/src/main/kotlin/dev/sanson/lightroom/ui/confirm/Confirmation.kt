@@ -1,8 +1,6 @@
 package dev.sanson.lightroom.ui.confirm
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,9 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,7 @@ import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 import dev.sanson.lightroom.common.ui.component.LightroomCard
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
+import dev.sanson.lightroom.common.ui.component.StepHeader
 import dev.sanson.lightroom.screens.ConfirmationScreen
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
@@ -44,25 +46,30 @@ fun Confirmation(
     state: ConfirmState,
     modifier: Modifier = Modifier,
 ) {
-    val backgroundColor = if (isSystemInDarkTheme()) Color.Black else Color.DarkGray
+    Surface(modifier.fillMaxSize()) {
+        Box(Modifier.systemBarsPadding()) {
+            Column {
+                StepHeader(
+                    stepNumber = state.stepNumber,
+                    stepName = stringResource(R.string.confirm),
+                    modifier =
+                        Modifier
+                            .padding(24.dp)
+                            .padding(top = 64.dp),
+                )
+                if (state is ConfirmState.Loaded) {
+                    FirstImageBackground(asset = state.firstWallpaper)
+                }
 
-    Box(
-        modifier
-            .fillMaxSize()
-            .background(backgroundColor),
-    ) {
-        if (state is ConfirmState.Loaded) {
-            FirstImageBackground(asset = state.firstWallpaper)
+                ConfirmationDialog(
+                    state = state,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                )
+            }
         }
-
-        ConfirmationDialog(
-            state = state,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp)
-                    .align(Alignment.Center),
-        )
     }
 }
 
@@ -215,6 +222,7 @@ private fun ChooseSourcePreview() {
         Confirmation(
             state =
                 ConfirmState.Loaded(
+                    stepNumber = 4,
                     firstWallpaper = dummyAsset,
                     firstArtworkCaptureDate = Instant.DISTANT_PAST,
                     artwork = emptyList(),

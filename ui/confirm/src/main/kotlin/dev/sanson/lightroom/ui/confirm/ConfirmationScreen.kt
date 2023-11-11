@@ -6,13 +6,19 @@ import dev.sanson.lightroom.sdk.model.Asset
 import kotlinx.datetime.Instant
 
 sealed interface ConfirmState : CircuitUiState {
-    data object LoadingArtwork : ConfirmState
+    val stepNumber: Int
+
+    data class LoadingArtwork(
+        override val stepNumber: Int,
+    ) : ConfirmState
 
     data class LoadingFirstImage(
+        override val stepNumber: Int,
         val artwork: List<Asset>,
     ) : ConfirmState
 
     data class Loaded(
+        override val stepNumber: Int,
         val firstWallpaper: Asset,
         val firstArtworkCaptureDate: Instant,
         val artwork: List<Asset>,

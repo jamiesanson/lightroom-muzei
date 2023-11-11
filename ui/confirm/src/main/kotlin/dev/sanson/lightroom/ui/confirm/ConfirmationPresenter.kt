@@ -17,6 +17,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.muzei.LightroomAlbumProvider
 import dev.sanson.lightroom.muzei.loadAssets
@@ -26,6 +27,7 @@ import dev.sanson.lightroom.screens.FinishActivityScreen
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import nz.sanson.lightroom.coil.LocalLightroomImageLoader
 
@@ -56,6 +58,12 @@ class ConfirmationPresenter
                         }
             }
 
+            val stepNumber by produceState(initialValue = 3) {
+                value = configRepository.config.first()?.source?.let {
+                    if (it is Config.Source.Album) 4 else 3
+                } ?: 3
+            }
+
             var firstArtwork by remember { mutableStateOf<Asset?>(null) }
 
             LaunchedEffect(artwork) {
@@ -81,15 +89,16 @@ class ConfirmationPresenter
 
             return when (val art = artwork) {
                 null ->
-                    ConfirmState.LoadingArtwork
+                    ConfirmState.LoadingArtwork(stepNumber)
 
                 else ->
                     when (val firstImage = firstArtwork) {
                         null ->
-                            ConfirmState.LoadingFirstImage(art)
+                            ConfirmState.LoadingFirstImage(stepNumber, art)
 
                         else ->
                             ConfirmState.Loaded(
+                                stepNumber = stepNumber,
                                 artwork = art,
                                 firstWallpaper = firstImage,
                                 firstArtworkCaptureDate = requireNotNull(art.first().captureDate),

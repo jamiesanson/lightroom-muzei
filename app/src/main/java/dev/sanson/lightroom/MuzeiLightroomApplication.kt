@@ -13,7 +13,6 @@ import javax.inject.Inject
  * ---------
  * * Screen transitions & UI polish
  *      * Finish screen uplift
- *      * Implement custom collapsing toolbar
  *      * Loading improvements - shimmer & placeholders
  * * Form-factor support
  *
