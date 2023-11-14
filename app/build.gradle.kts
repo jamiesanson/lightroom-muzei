@@ -1,6 +1,5 @@
 import dev.sanson.buildlogic.BuildType
 
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     id("dev.sanson.android.application")
 }
@@ -54,6 +53,9 @@ dependencies {
 
     implementation(libs.material)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
+
     implementation(projects.lib.lightroom)
     implementation(projects.lib.lightroomCoil)
     implementation(projects.lib.muzei)
@@ -71,4 +73,9 @@ dependencies {
     implementation(projects.ui.source)
 
     testImplementation(libs.bundles.testing.unit)
+}
+
+if (file("google-services.json").exists()) {
+    apply(plugin = libs.plugins.google.services.get().pluginId)
+    apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
 }
