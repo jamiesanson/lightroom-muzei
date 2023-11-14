@@ -8,11 +8,6 @@ import javax.inject.Inject
 
 /**
  * TODO(s):
- * ---------
- *   Build
- * ---------
- * * Finish screen uplift
- *
  * --------------------
  *   Production-ready
  * --------------------
@@ -39,7 +34,8 @@ import javax.inject.Inject
  *   Extra-curricular/Fast-follow
  * --------------------
  * * Loading improvements - shimmer & placeholders
- * * Form-factor support
+ * * Form-factor & window size support
+ * * Toolbar improvement - collapsing?
  * * UI testing
  * * Snapshot testing
  * * Deployment - Automated beta/internal test
