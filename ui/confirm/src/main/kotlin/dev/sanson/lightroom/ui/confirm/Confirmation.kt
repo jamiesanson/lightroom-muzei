@@ -2,15 +2,20 @@ package dev.sanson.lightroom.ui.confirm
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CircularProgressIndicator
@@ -23,13 +28,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageResult
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
@@ -40,7 +46,7 @@ import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CatalogId
 import kotlinx.datetime.Instant
-import nz.sanson.lightroom.coil.rememberImageRequest
+import nz.sanson.lightroom.coil.rememberImageResult
 
 @CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
 @Composable
@@ -67,7 +73,10 @@ fun Confirmation(
                             modifier = Modifier.padding(16.dp),
                         )
                     } else {
-                        FirstImageBackground(asset = currentState.firstWallpaper)
+                        FirstImageLoaded(
+                            state = currentState,
+                            modifier = Modifier.padding(top = 16.dp),
+                        )
                     }
                 }
             }
@@ -144,28 +153,99 @@ private fun LoadingRow(
 }
 
 @Composable
-private fun FirstImageBackground(
+private fun FirstImageLoaded(
+    state: ConfirmState.Loaded,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier.fillMaxSize()) {
+        WallpaperPreview(asset = state.firstWallpaper, Modifier.fillMaxHeight(0.7f))
+    }
+}
+
+@Composable
+private fun WallpaperPreview(
     asset: Asset,
     modifier: Modifier = Modifier,
 ) {
-    val lightroomImageRequest = rememberImageRequest(asset = asset)
-    val context = LocalContext.current
+    val result =
+        rememberImageResult(
+            assetId = asset.id,
+            catalogId = asset.catalogId,
+        )
 
-    AsyncImage(
-        model =
-            remember(lightroomImageRequest) {
-                val request = lightroomImageRequest ?: return@remember null
+    Crossfade(targetState = result, modifier = modifier, label = "First wallpaper") { imageResult ->
+        if (imageResult != null) {
+            WallpaperCutout(imageResult = imageResult)
+        } else {
+            WallpaperLoading()
+        }
+    }
+}
 
-                request
-                    .newBuilder(context)
-                    .crossfade(300)
-                    .build()
-            },
-        placeholder = ColorPainter(Color.Transparent),
-        contentScale = ContentScale.Crop,
-        contentDescription = "First wallpaper image",
-        modifier = modifier.fillMaxSize(),
-    )
+@Composable
+private fun WallpaperLoading(modifier: Modifier = Modifier) {
+    val configuration = LocalConfiguration.current
+
+    val screenAspectRatio =
+        remember(configuration) {
+            configuration.screenWidthDp.toFloat() / configuration.screenHeightDp.toFloat()
+        }
+
+    val backgroundColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.05f)
+
+    Box(
+        modifier
+            .fillMaxSize()
+            .background(backgroundColor),
+    ) {
+        Box(
+            Modifier
+                .aspectRatio(screenAspectRatio, matchHeightConstraintsFirst = true)
+                .clip(RoundedCornerShape(12.dp))
+                .background(backgroundColor)
+                .border(2.dp, backgroundColor, RoundedCornerShape(12.dp))
+                .align(Alignment.Center),
+        )
+    }
+}
+
+@Composable
+private fun WallpaperCutout(
+    imageResult: ImageResult,
+    modifier: Modifier = Modifier,
+) {
+    val configuration = LocalConfiguration.current
+
+    val screenAspectRatio =
+        remember(configuration) {
+            configuration.screenWidthDp.toFloat() / configuration.screenHeightDp.toFloat()
+        }
+
+    Box(
+        modifier
+            .fillMaxSize(),
+    ) {
+        AsyncImage(
+            model = imageResult.request,
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .alpha(0.2f),
+        )
+
+        AsyncImage(
+            model = imageResult.request,
+            contentScale = ContentScale.Crop,
+            modifier =
+                Modifier
+                    .aspectRatio(screenAspectRatio, matchHeightConstraintsFirst = true)
+                    .clip(RoundedCornerShape(12.dp))
+                    .align(Alignment.Center),
+            contentDescription = "",
+        )
+    }
 }
 
 @PreviewLightDark
@@ -190,5 +270,22 @@ private fun ChooseSourcePreview() {
         Confirmation(
             state = loadedState,
         )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun ImageLoadingPreview() {
+    MuzeiLightroomTheme {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface),
+            contentAlignment = Alignment.Center,
+        ) {
+            WallpaperLoading(
+                modifier = Modifier.fillMaxHeight(0.5f),
+            )
+        }
     }
 }

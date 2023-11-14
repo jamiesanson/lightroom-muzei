@@ -49,14 +49,14 @@ interface ImageLoader {
      *
      * This function will poll the Lightroom API, and return the latest successful [ImageRequest]
      */
-    suspend fun ImageRequest.await(): ImageRequest
+    suspend fun ImageRequest.await(): ImageResult
 }
 
 internal class DefaultImageLoader(
     private val context: Context,
     private val lightroom: Lightroom,
 ) : ImageLoader {
-    override suspend fun ImageRequest.await(): ImageRequest {
+    override suspend fun ImageRequest.await(): ImageResult {
         var result: ImageResult? = null
         var request: ImageRequest = this
 
@@ -76,9 +76,7 @@ internal class DefaultImageLoader(
             result = context.imageLoader.execute(request)
         }
 
-        Log.v("ImageRequest", "Successful result: $result")
-
-        return result.request
+        return result
     }
 
     override suspend fun newRequest(

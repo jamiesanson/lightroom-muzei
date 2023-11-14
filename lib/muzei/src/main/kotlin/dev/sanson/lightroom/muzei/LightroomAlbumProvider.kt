@@ -91,7 +91,7 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
                     ).await()
                 }
 
-            val result = Coil.imageLoader(context).execute(request)
+            val result = Coil.imageLoader(context).execute(request.request)
 
             // Map downloaded bitmap into an inputstream
             val outputStream = ByteArrayOutputStream()

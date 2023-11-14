@@ -8,22 +8,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalView
 import coil.request.ImageRequest
-import dev.sanson.lightroom.sdk.model.Asset
+import coil.request.ImageResult
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CatalogId
 import dev.sanson.lightroom.sdk.model.Rendition
-
-@Composable
-fun rememberImageRequest(
-    asset: Asset,
-    rendition: Rendition = Rendition.SixForty,
-): ImageRequest? {
-    return rememberImageRequest(
-        assetId = asset.id,
-        catalogId = asset.catalogId,
-        rendition = rendition,
-    )
-}
 
 @Composable
 fun rememberImageRequest(
@@ -31,21 +19,34 @@ fun rememberImageRequest(
     catalogId: CatalogId,
     rendition: Rendition = Rendition.SixForty,
 ): ImageRequest? {
+    return rememberImageResult(
+        assetId = assetId,
+        catalogId = catalogId,
+        rendition = rendition,
+    )?.request
+}
+
+@Composable
+fun rememberImageResult(
+    assetId: AssetId,
+    catalogId: CatalogId,
+    rendition: Rendition = Rendition.SixForty,
+): ImageResult? {
     if (LocalView.current.isInEditMode) {
         return null
     }
 
     val imageLoader = LocalLightroomImageLoader.current
 
-    var request by remember { mutableStateOf<ImageRequest?>(null) }
+    var result by remember { mutableStateOf<ImageResult?>(null) }
 
     LaunchedEffect(assetId, catalogId, rendition) {
-        request = null
-        request =
+        result = null
+        result =
             with(imageLoader) {
                 newRequest(assetId, catalogId, rendition).await()
             }
     }
 
-    return request
+    return result
 }
