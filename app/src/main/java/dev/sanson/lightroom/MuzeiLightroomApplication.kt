@@ -11,27 +11,21 @@ import javax.inject.Inject
  * ---------
  *   Build
  * ---------
- * * Screen transitions & UI polish
- *      * Finish screen uplift
- *      * Loading improvements - shimmer & placeholders
- * * Form-factor support
+ * * Finish screen uplift
  *
  * --------------------
  *   Production-ready
  * --------------------
  * * Crash analytics; Leak detection
- * * Deployment - Automated beta/internal test
- * * Deployment - Automated prod deployment
- * * App icon
+ * * App icon & store assets
  *
  * ---------------
  *   Open source
  * ---------------
- * * UI testing
- * * Snapshot testing
  * * Testing presenters
  * * CI - run suite on commits
  * * Documentation & licensing
+ * * Move remaining list items to issues on project
  *
  * --------------------
  *   Release prep
@@ -42,8 +36,14 @@ import javax.inject.Inject
  * * Testing
  *
  * --------------------
- *   Extra-curricular
+ *   Extra-curricular/Fast-follow
  * --------------------
+ * * Loading improvements - shimmer & placeholders
+ * * Form-factor support
+ * * UI testing
+ * * Snapshot testing
+ * * Deployment - Automated beta/internal test
+ * * Deployment - Automated prod deployment
  * * Blog - Circuit without Anvil
  */
 @HiltAndroidApp

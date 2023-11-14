@@ -1,20 +1,25 @@
 package dev.sanson.lightroom.ui.confirm
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,14 +28,11 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
-import dev.sanson.lightroom.common.ui.component.LightroomCard
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.common.ui.component.StepHeader
 import dev.sanson.lightroom.screens.ConfirmationScreen
@@ -57,130 +59,87 @@ fun Confirmation(
                             .padding(24.dp)
                             .padding(top = 64.dp),
                 )
-                if (state is ConfirmState.Loaded) {
-                    FirstImageBackground(asset = state.firstWallpaper)
-                }
 
-                ConfirmationDialog(
-                    state = state,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                )
+                Crossfade(state, label = "Confirmation screen content crossfade") { currentState ->
+                    if (currentState !is ConfirmState.Loaded) {
+                        LoadingProgress(
+                            state = currentState,
+                            modifier = Modifier.padding(16.dp),
+                        )
+                    } else {
+                        FirstImageBackground(asset = currentState.firstWallpaper)
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun ConfirmationDialog(
+private fun LoadingProgress(
     state: ConfirmState,
     modifier: Modifier = Modifier,
 ) {
-    LightroomCard(modifier) {
-        AnimatedContent(
-            targetState = state,
-            label = "Loading state",
-        ) { currentState ->
-            when (currentState) {
-                is ConfirmState.Loaded ->
-                    ImagesLoaded(
-                        imageCount = remember(currentState) { currentState.artwork.size },
-                        firstAssetDate = currentState.firstArtworkCaptureDate,
-                        onComplete = { currentState.eventSink(ConfirmEvent.OnFinish) },
-                    )
+    Column(modifier) {
+        LoadingRow(
+            isLoading = state !is ConfirmState.LoadingFirstImage,
+            text = "Loading images",
+        )
 
-                is ConfirmState.LoadingArtwork ->
-                    LoadingArtwork()
+        Spacer(modifier = Modifier.size(24.dp))
 
-                is ConfirmState.LoadingFirstImage ->
-                    LoadingFirstImage(
-                        imageCount = remember(currentState) { currentState.artwork.size },
+        LoadingRow(
+            isLoading = state !is ConfirmState.Loaded,
+            text = "Fetching your first wallpaper",
+        )
+    }
+}
+
+@Composable
+private fun LoadingRow(
+    isLoading: Boolean,
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(48.dp)) {
+            Crossfade(
+                isLoading,
+                label = "Loading icon crossfade",
+                modifier = Modifier.align(Alignment.Center),
+            ) { loading ->
+                if (loading) {
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(24.dp),
                     )
+                } else {
+                    Icon(
+                        Icons.Default.Check,
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = null,
+                    )
+                }
             }
         }
-    }
-}
 
-@Composable
-private fun LoadingArtwork(modifier: Modifier = Modifier) {
-    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.onSurface,
+        Spacer(modifier = Modifier.size(8.dp))
+
+        val textColor by animateColorAsState(
+            targetValue =
+                if (isLoading) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(0.54f)
+                },
+            label = "Loading row text color",
         )
-
-        Spacer(Modifier.size(12.dp))
 
         Text(
-            text = "Fetching images from Lightroom",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center,
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            color = textColor,
         )
-    }
-}
-
-@Composable
-private fun LoadingFirstImage(
-    imageCount: Int,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-
-        Spacer(Modifier.size(12.dp))
-
-        Text(
-            text = "Loaded $imageCount images into Muzei, exporting your first wallpaper.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@Composable
-private fun ImagesLoaded(
-    imageCount: Int,
-    firstAssetDate: Instant,
-    onComplete: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier) {
-        Text(
-            text = "You're all set!",
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-
-        Spacer(Modifier.size(12.dp))
-
-        Text(
-            text = "We've loaded $imageCount images into Muzei. Let's start with this image, taken on $firstAssetDate.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-
-        Spacer(Modifier.size(24.dp))
-
-        OutlinedButton(
-            onClick = onComplete,
-            modifier =
-                Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth(),
-        ) {
-            Text(
-                text = "Complete setup",
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-        }
-
-        Spacer(Modifier.size(2.dp))
     }
 }
 
@@ -218,16 +177,18 @@ private fun ChooseSourcePreview() {
             "", 1, "", "", "", emptyList(),
         )
 
+    val loadedState =
+        ConfirmState.Loaded(
+            stepNumber = 4,
+            firstWallpaper = dummyAsset,
+            firstArtworkCaptureDate = Instant.DISTANT_PAST,
+            artwork = emptyList(),
+            eventSink = {},
+        )
+
     MuzeiLightroomTheme {
         Confirmation(
-            state =
-                ConfirmState.Loaded(
-                    stepNumber = 4,
-                    firstWallpaper = dummyAsset,
-                    firstArtworkCaptureDate = Instant.DISTANT_PAST,
-                    artwork = emptyList(),
-                    eventSink = {},
-                ),
+            state = loadedState,
         )
     }
 }
