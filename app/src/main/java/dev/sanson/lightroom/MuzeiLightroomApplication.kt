@@ -11,7 +11,7 @@ import javax.inject.Inject
  * --------------------
  *   Production-ready
  * --------------------
- * * Encrypted secrets in source
+ * * Add notes around "this may take some time", or some kind of progress indicator to confirmation
  * * App icon & store assets
  *
  * ---------------
@@ -39,6 +39,7 @@ import javax.inject.Inject
  * * UI testing
  * * Snapshot testing
  * * Baseline profiles
+ * * Benchmarks
  * * Leak analysis in debug/qa/prod
  * * Deployment - Automated beta/internal test
  * * Deployment - Automated prod deployment
