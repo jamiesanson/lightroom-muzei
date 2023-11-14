@@ -11,14 +11,17 @@ import javax.inject.Inject
  * --------------------
  *   Production-ready
  * --------------------
- * * Add notes around "this may take some time", or some kind of progress indicator to confirmation
+ * * Add notes around:
+ *      * "this may take some time", or some kind of progress indicator to confirmation
+ *      * Not having to re-apply settings when you make changes on the Lightroom end
+ *      * Renditions update every 24 hours
  * * App icon & store assets
  *
  * ---------------
  *   Open source
  * ---------------
  * * Testing presenters
- * * CI - run suite on commits
+ * * CI - run test suite on commits; Danger with KtLint
  * * Documentation & licensing
  * * Move remaining list items to issues on project
  *
