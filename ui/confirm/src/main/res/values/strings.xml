@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="confirm">Confirm</string>
+    <string name="images_loaded">%1$s images loaded</string>
+    <string name="start_time_ago">Let\'s start here, %1$s ago</string>
 </resources>

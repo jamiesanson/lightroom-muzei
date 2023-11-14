@@ -3,7 +3,6 @@ package dev.sanson.lightroom.ui.confirm
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import dev.sanson.lightroom.sdk.model.Asset
-import kotlinx.datetime.Instant
 
 sealed interface ConfirmState : CircuitUiState {
     val stepNumber: Int
@@ -20,7 +19,7 @@ sealed interface ConfirmState : CircuitUiState {
     data class Loaded(
         override val stepNumber: Int,
         val firstWallpaper: Asset,
-        val firstArtworkCaptureDate: Instant,
+        val firstWallpaperAge: String,
         val artwork: List<Asset>,
         val eventSink: (ConfirmEvent) -> Unit,
     ) : ConfirmState

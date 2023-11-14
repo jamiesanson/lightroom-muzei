@@ -29,6 +29,9 @@ import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.periodUntil
 import nz.sanson.lightroom.coil.LocalLightroomImageLoader
 
 class ConfirmationPresenter
@@ -101,7 +104,7 @@ class ConfirmationPresenter
                                 stepNumber = stepNumber,
                                 artwork = art,
                                 firstWallpaper = firstImage,
-                                firstArtworkCaptureDate = requireNotNull(art.first().captureDate),
+                                firstWallpaperAge = firstImage.computeAge(),
                                 eventSink = { event ->
                                     when (event) {
                                         ConfirmEvent.OnFinish ->
@@ -110,6 +113,28 @@ class ConfirmationPresenter
                                 },
                             )
                     }
+            }
+        }
+
+        private fun Asset.computeAge(): String {
+            val timePeriod =
+                captureDate.periodUntil(Clock.System.now(), TimeZone.currentSystemDefault())
+
+            return when {
+                // "5 years"
+                timePeriod.years > 1 -> "${timePeriod.years} years"
+
+                // "1 year, 3 months" OR "1 year"
+                timePeriod.years == 1 ->
+                    if (timePeriod.months > 0) {
+                        "${timePeriod.years} year, ${timePeriod.months} months"
+                    } else {
+                        "${timePeriod.years} year"
+                    }
+
+                timePeriod.months > 1 -> "${timePeriod.months} months"
+
+                else -> "${timePeriod.days} days"
             }
         }
 

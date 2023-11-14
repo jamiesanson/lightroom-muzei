@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageResult
@@ -74,8 +77,10 @@ fun Confirmation(
                         )
                     } else {
                         FirstImageLoaded(
-                            state = currentState,
-                            modifier = Modifier.padding(top = 16.dp),
+                            wallpaper = currentState.firstWallpaper,
+                            wallpaperAge = currentState.firstWallpaperAge,
+                            wallpaperCount = currentState.artwork.size,
+                            onConfirm = { currentState.eventSink(ConfirmEvent.OnFinish) },
                         )
                     }
                 }
@@ -154,11 +159,56 @@ private fun LoadingRow(
 
 @Composable
 private fun FirstImageLoaded(
-    state: ConfirmState.Loaded,
+    wallpaper: Asset,
+    wallpaperAge: String,
+    wallpaperCount: Int,
+    onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.fillMaxSize()) {
-        WallpaperPreview(asset = state.firstWallpaper, Modifier.fillMaxHeight(0.7f))
+        Spacer(Modifier.size(16.dp))
+
+        WallpaperPreview(
+            asset = wallpaper,
+            modifier = Modifier.fillMaxHeight(0.7f),
+        )
+
+        Spacer(Modifier.size(16.dp))
+
+        Text(
+            stringResource(R.string.images_loaded, wallpaperCount),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 24.dp),
+        )
+
+        Text(
+            stringResource(R.string.start_time_ago, wallpaperAge),
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(horizontal = 24.dp),
+        )
+
+        Spacer(Modifier.weight(1f))
+
+        Button(
+            onClick = onConfirm,
+            contentPadding = PaddingValues(vertical = 12.dp, horizontal = 24.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(24.dp),
+        ) {
+            Spacer(Modifier.size(8.dp))
+
+            Text(
+                text = "Confirm",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
+
+            Spacer(Modifier.size(16.dp))
+
+            Icon(Icons.Default.Check, contentDescription = "")
+        }
     }
 }
 
@@ -232,7 +282,7 @@ private fun WallpaperCutout(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .alpha(0.2f),
+                    .alpha(0.1f),
         )
 
         AsyncImage(
@@ -261,7 +311,7 @@ private fun ChooseSourcePreview() {
         ConfirmState.Loaded(
             stepNumber = 4,
             firstWallpaper = dummyAsset,
-            firstArtworkCaptureDate = Instant.DISTANT_PAST,
+            firstWallpaperAge = "3 months",
             artwork = emptyList(),
             eventSink = {},
         )
