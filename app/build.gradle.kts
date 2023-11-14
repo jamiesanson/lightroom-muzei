@@ -1,8 +1,28 @@
 import dev.sanson.buildlogic.BuildType
+import dev.sanson.buildlogic.Keystore
+import dev.sanson.buildlogic.asProperties
+import dev.sanson.buildlogic.requireString
 
 plugins {
     id("dev.sanson.android.application")
 }
+
+val releaseKeystoreFile = rootProject.file("release/release.keystore")
+val releaseProperties = rootProject.file("release/release.properties")
+
+val releaseKeystore =
+    if (releaseKeystoreFile.exists() && releaseProperties.exists()) {
+        val properties = releaseProperties.asProperties()
+
+        Keystore(
+            file = releaseKeystoreFile,
+            password = properties.requireString("KEYSTORE_PASSWORD"),
+            keyAlias = "release",
+            keyPassword = properties.requireString("KEYSTORE_KEY_PASSWORD"),
+        )
+    } else {
+        null
+    }
 
 android {
     namespace = "dev.sanson.lightroom"
@@ -23,6 +43,15 @@ android {
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
+        }
+
+        create("release") {
+            if (releaseKeystore != null) {
+                storeFile = releaseKeystore.file
+                storePassword = releaseKeystore.password
+                keyAlias = releaseKeystore.keyAlias
+                keyPassword = releaseKeystore.keyPassword
+            }
         }
     }
 
