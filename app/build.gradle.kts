@@ -17,6 +17,15 @@ android {
         buildConfigField("String", "LIGHTROOM_AUTHORITY", "\"$authority\"")
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = rootProject.file("release/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildFeatures {
         buildConfig = true
     }
@@ -24,6 +33,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = BuildType.Debug.applicationIdSuffix
+            signingConfig = signingConfigs["debug"]
         }
 
         release {

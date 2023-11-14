@@ -11,7 +11,7 @@ import javax.inject.Inject
  * --------------------
  *   Production-ready
  * --------------------
- * * Crash analytics; Leak detection
+ * * Encrypted secrets in source
  * * App icon & store assets
  *
  * ---------------
@@ -38,6 +38,8 @@ import javax.inject.Inject
  * * Toolbar improvement - collapsing?
  * * UI testing
  * * Snapshot testing
+ * * Baseline profiles
+ * * Leak analysis in debug/qa/prod
  * * Deployment - Automated beta/internal test
  * * Deployment - Automated prod deployment
  * * Blog - Circuit without Anvil
