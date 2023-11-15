@@ -27,79 +27,77 @@ import dev.sanson.lightroom.sdk.model.CollectionSet
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class ChooseAlbumPresenter
-    @AssistedInject
-    constructor(
-        @Assisted private val navigator: Navigator,
-        private val lightroom: Lightroom,
-        private val configRepository: ConfigRepository,
-    ) : Presenter<ChooseAlbumState> {
-        @Composable
-        override fun present(): ChooseAlbumState {
-            val scope = rememberCoroutineScope()
+class ChooseAlbumPresenter @AssistedInject constructor(
+    @Assisted private val navigator: Navigator,
+    private val lightroom: Lightroom,
+    private val configRepository: ConfigRepository,
+) : Presenter<ChooseAlbumState> {
+    @Composable
+    override fun present(): ChooseAlbumState {
+        val scope = rememberCoroutineScope()
 
-            fun CollectionSet.sortChildren(): CollectionSet =
-                copy(
-                    children =
-                        children
-                            .sortedBy {
-                                when (it) {
-                                    is Album -> 1
-                                    is CollectionSet -> 0
-                                }
-                            }
-                            .map { if (it is CollectionSet) it.sortChildren() else it },
-                )
-
-            var albums by rememberSaveable {
-                mutableStateOf<List<AlbumTreeItem>?>(null)
-            }
-
-            LaunchedEffect(true) {
-                albums =
-                    lightroom.getAlbums()
+        fun CollectionSet.sortChildren(): CollectionSet =
+            copy(
+                children =
+                    children
                         .sortedBy {
                             when (it) {
                                 is Album -> 1
                                 is CollectionSet -> 0
                             }
                         }
-                        .map { if (it is CollectionSet) it.sortChildren() else it }
-            }
+                        .map { if (it is CollectionSet) it.sortChildren() else it },
+            )
 
-            val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {
-                configRepository.config
-                    .map { it?.source as? Config.Source.Album }
-                    .map { it?.id }
-                    .collect { value = it }
-            }
-
-            return when (val albumTree = albums) {
-                null ->
-                    ChooseAlbumState.Loading
-
-                else ->
-                    ChooseAlbumState.Loaded(
-                        albumTree = albumTree,
-                        selectedAlbum = albumId,
-                        eventSink = { event ->
-                            when (event) {
-                                is ChooseAlbumEvent.SelectAlbum ->
-                                    scope.launch {
-                                        configRepository.setAlbum(event.albumId)
-                                    }
-
-                                is ChooseAlbumEvent.Confirm ->
-                                    navigator.goTo(FilterAssetsScreen)
-                            }
-                        },
-                    )
-            }
+        var albums by rememberSaveable {
+            mutableStateOf<List<AlbumTreeItem>?>(null)
         }
 
-        @CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
-        @AssistedFactory
-        interface Factory {
-            fun create(navigator: Navigator): ChooseAlbumPresenter
+        LaunchedEffect(true) {
+            albums =
+                lightroom.getAlbums()
+                    .sortedBy {
+                        when (it) {
+                            is Album -> 1
+                            is CollectionSet -> 0
+                        }
+                    }
+                    .map { if (it is CollectionSet) it.sortChildren() else it }
+        }
+
+        val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {
+            configRepository.config
+                .map { it?.source as? Config.Source.Album }
+                .map { it?.id }
+                .collect { value = it }
+        }
+
+        return when (val albumTree = albums) {
+            null ->
+                ChooseAlbumState.Loading
+
+            else ->
+                ChooseAlbumState.Loaded(
+                    albumTree = albumTree,
+                    selectedAlbum = albumId,
+                    eventSink = { event ->
+                        when (event) {
+                            is ChooseAlbumEvent.SelectAlbum ->
+                                scope.launch {
+                                    configRepository.setAlbum(event.albumId)
+                                }
+
+                            is ChooseAlbumEvent.Confirm ->
+                                navigator.goTo(FilterAssetsScreen)
+                        }
+                    },
+                )
         }
     }
+
+    @CircuitInject(ChooseAlbumScreen::class, SingletonComponent::class)
+    @AssistedFactory
+    interface Factory {
+        fun create(navigator: Navigator): ChooseAlbumPresenter
+    }
+}

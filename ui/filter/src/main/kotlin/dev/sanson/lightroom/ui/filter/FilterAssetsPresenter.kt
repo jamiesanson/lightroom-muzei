@@ -54,111 +54,109 @@ private val Config.ratingEquality: Equality
         }
     }
 
-class FilterAssetsPresenter
-    @AssistedInject
-    constructor(
-        @Assisted private val navigator: Navigator,
-        private val configRepository: ConfigRepository,
-    ) : Presenter<FilterAssetsState> {
-        @Composable
-        override fun present(): FilterAssetsState {
-            val config by produceState(Config(source = Config.Source.Album(id = AlbumId("")))) {
-                configRepository.config.filterNotNull().collect { value = it }
+class FilterAssetsPresenter @AssistedInject constructor(
+    @Assisted private val navigator: Navigator,
+    private val configRepository: ConfigRepository,
+) : Presenter<FilterAssetsState> {
+    @Composable
+    override fun present(): FilterAssetsState {
+        val config by produceState(Config(source = Config.Source.Album(id = AlbumId("")))) {
+            configRepository.config.filterNotNull().collect { value = it }
+        }
+
+        var starRating by rememberSaveable(config) {
+            mutableIntStateOf(config.starRating)
+        }
+
+        var equality by rememberSaveable(config) {
+            mutableStateOf(config.ratingEquality)
+        }
+
+        val keywords =
+            rememberSaveable(config, saver = keywordSaver()) {
+                config.keywords.toMutableStateList()
             }
 
-            var starRating by rememberSaveable(config) {
-                mutableIntStateOf(config.starRating)
-            }
+        var flag by rememberSaveable(config) {
+            mutableStateOf(config.review)
+        }
 
-            var equality by rememberSaveable(config) {
-                mutableStateOf(config.ratingEquality)
-            }
-
-            val keywords =
-                rememberSaveable(config, saver = keywordSaver()) {
-                    config.keywords.toMutableStateList()
-                }
-
-            var flag by rememberSaveable(config) {
-                mutableStateOf(config.review)
-            }
-
-            var filtersApplied by rememberSaveable(config) {
-                mutableStateOf(
-                    FilterAssetsState.FiltersApplied(
-                        keywords = config.keywords.isNotEmpty(),
-                        rating = config.rating != null,
-                        review = config.review != null,
-                    ),
-                )
-            }
-
-            val scope = rememberCoroutineScope()
-
-            return FilterAssetsState(
-                stepNumber = if (config.source is Config.Source.Album) 3 else 2,
-                keywords = keywords.toPersistentList(),
-                rating = starRating,
-                equality = equality,
-                flag = flag,
-                filtersApplied = filtersApplied,
-                eventSink = { event ->
-                    when (event) {
-                        is FilterAssetsEvent.AddKeyword ->
-                            keywords += event.keyword
-
-                        is FilterAssetsEvent.RemoveKeyword ->
-                            keywords -= event.keyword
-
-                        is FilterAssetsEvent.UpdateRating ->
-                            starRating = event.rating
-
-                        is FilterAssetsEvent.UpdateEquality ->
-                            equality = event.equality
-
-                        is FilterAssetsEvent.UpdateFlag ->
-                            flag = event.flag
-
-                        is FilterAssetsEvent.ToggleKeywords ->
-                            filtersApplied =
-                                filtersApplied.copy(keywords = !filtersApplied.keywords)
-
-                        is FilterAssetsEvent.ToggleRating ->
-                            filtersApplied = filtersApplied.copy(rating = !filtersApplied.rating)
-
-                        is FilterAssetsEvent.ToggleReview ->
-                            filtersApplied = filtersApplied.copy(review = !filtersApplied.review)
-
-                        is FilterAssetsEvent.Confirm ->
-                            scope.launch {
-                                val newConfig =
-                                    config.copy(
-                                        keywords =
-                                            keywords.toSet().takeIf { filtersApplied.keywords }
-                                                ?: emptySet(),
-                                        review = flag.takeIf { filtersApplied.review },
-                                        rating =
-                                            IntRange(
-                                                start = if (equality == Equality.LessThan) 0 else starRating,
-                                                endInclusive = if (equality == Equality.GreaterThan) 5 else starRating,
-                                            ).takeIf { starRating > 0 && filtersApplied.rating },
-                                    )
-
-                                configRepository.updateConfig(newConfig)
-
-                                navigator.goTo(ConfirmationScreen)
-                            }
-                    }
-                },
+        var filtersApplied by rememberSaveable(config) {
+            mutableStateOf(
+                FilterAssetsState.FiltersApplied(
+                    keywords = config.keywords.isNotEmpty(),
+                    rating = config.rating != null,
+                    review = config.review != null,
+                ),
             )
         }
 
-        @CircuitInject(FilterAssetsScreen::class, SingletonComponent::class)
-        @AssistedFactory
-        interface Factory {
-            fun create(navigator: Navigator): FilterAssetsPresenter
-        }
+        val scope = rememberCoroutineScope()
+
+        return FilterAssetsState(
+            stepNumber = if (config.source is Config.Source.Album) 3 else 2,
+            keywords = keywords.toPersistentList(),
+            rating = starRating,
+            equality = equality,
+            flag = flag,
+            filtersApplied = filtersApplied,
+            eventSink = { event ->
+                when (event) {
+                    is FilterAssetsEvent.AddKeyword ->
+                        keywords += event.keyword
+
+                    is FilterAssetsEvent.RemoveKeyword ->
+                        keywords -= event.keyword
+
+                    is FilterAssetsEvent.UpdateRating ->
+                        starRating = event.rating
+
+                    is FilterAssetsEvent.UpdateEquality ->
+                        equality = event.equality
+
+                    is FilterAssetsEvent.UpdateFlag ->
+                        flag = event.flag
+
+                    is FilterAssetsEvent.ToggleKeywords ->
+                        filtersApplied =
+                            filtersApplied.copy(keywords = !filtersApplied.keywords)
+
+                    is FilterAssetsEvent.ToggleRating ->
+                        filtersApplied = filtersApplied.copy(rating = !filtersApplied.rating)
+
+                    is FilterAssetsEvent.ToggleReview ->
+                        filtersApplied = filtersApplied.copy(review = !filtersApplied.review)
+
+                    is FilterAssetsEvent.Confirm ->
+                        scope.launch {
+                            val newConfig =
+                                config.copy(
+                                    keywords =
+                                        keywords.toSet().takeIf { filtersApplied.keywords }
+                                            ?: emptySet(),
+                                    review = flag.takeIf { filtersApplied.review },
+                                    rating =
+                                        IntRange(
+                                            start = if (equality == Equality.LessThan) 0 else starRating,
+                                            endInclusive = if (equality == Equality.GreaterThan) 5 else starRating,
+                                        ).takeIf { starRating > 0 && filtersApplied.rating },
+                                )
+
+                            configRepository.updateConfig(newConfig)
+
+                            navigator.goTo(ConfirmationScreen)
+                        }
+                }
+            },
+        )
     }
+
+    @CircuitInject(FilterAssetsScreen::class, SingletonComponent::class)
+    @AssistedFactory
+    interface Factory {
+        fun create(navigator: Navigator): FilterAssetsPresenter
+    }
+}
 
 private fun keywordSaver(): Saver<SnapshotStateList<String>, Bundle> =
     Saver(

@@ -23,51 +23,49 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class ChooseSourcePresenter
-    @AssistedInject
-    constructor(
-        @Assisted private val navigator: Navigator,
-        private val configRepository: ConfigRepository,
-    ) : Presenter<ChooseSourceState> {
-        @Composable
-        override fun present(): ChooseSourceState {
-            val scope = rememberCoroutineScope()
+class ChooseSourcePresenter @AssistedInject constructor(
+    @Assisted private val navigator: Navigator,
+    private val configRepository: ConfigRepository,
+) : Presenter<ChooseSourceState> {
+    @Composable
+    override fun present(): ChooseSourceState {
+        val scope = rememberCoroutineScope()
 
-            val persistedSource by produceState<Config.Source>(Config.Source.Album.Uninitialized) {
-                value = configRepository.config.map { it?.source }.first()
-                    ?: Config.Source.Album.Uninitialized
-            }
-
-            var selectedSource by remember(persistedSource) { mutableStateOf(persistedSource) }
-
-            return ChooseSourceState(
-                selectedSource = selectedSource,
-            ) { event ->
-                when (event) {
-                    ChooseSourceEvent.OnChooseAlbum ->
-                        selectedSource = Config.Source.Album.Uninitialized
-
-                    ChooseSourceEvent.OnChooseCatalog ->
-                        selectedSource = Config.Source.Catalog
-
-                    ChooseSourceEvent.OnConfirm ->
-                        scope.launch {
-                            configRepository.setImageSource(selectedSource)
-                            navigator.goTo(
-                                screen =
-                                    when (selectedSource) {
-                                        is Config.Source.Album -> ChooseAlbumScreen
-                                        is Config.Source.Catalog -> FilterAssetsScreen
-                                    },
-                            )
-                        }
-                }
-            }
+        val persistedSource by produceState<Config.Source>(Config.Source.Album.Uninitialized) {
+            value = configRepository.config.map { it?.source }.first()
+                ?: Config.Source.Album.Uninitialized
         }
 
-        @CircuitInject(ChooseSourceScreen::class, SingletonComponent::class)
-        @AssistedFactory
-        interface Factory {
-            fun create(navigator: Navigator): ChooseSourcePresenter
+        var selectedSource by remember(persistedSource) { mutableStateOf(persistedSource) }
+
+        return ChooseSourceState(
+            selectedSource = selectedSource,
+        ) { event ->
+            when (event) {
+                ChooseSourceEvent.OnChooseAlbum ->
+                    selectedSource = Config.Source.Album.Uninitialized
+
+                ChooseSourceEvent.OnChooseCatalog ->
+                    selectedSource = Config.Source.Catalog
+
+                ChooseSourceEvent.OnConfirm ->
+                    scope.launch {
+                        configRepository.setImageSource(selectedSource)
+                        navigator.goTo(
+                            screen =
+                                when (selectedSource) {
+                                    is Config.Source.Album -> ChooseAlbumScreen
+                                    is Config.Source.Catalog -> FilterAssetsScreen
+                                },
+                        )
+                    }
+            }
         }
     }
+
+    @CircuitInject(ChooseSourceScreen::class, SingletonComponent::class)
+    @AssistedFactory
+    interface Factory {
+        fun create(navigator: Navigator): ChooseSourcePresenter
+    }
+}

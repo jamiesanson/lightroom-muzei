@@ -3,6 +3,9 @@
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_allow_trailing_comma_on_call_site = true
 
-# KtLint suppressions
+# Disable the annotation rule, which forces constructor annotations to multiline
+ktlint_standard_annotation = disabled
+# Allow composable functions to follow non-standard naming
 ktlint_function_naming_ignore_when_annotated_with = Composable
-compose_allowed_composition_locals = LocalNewIntent, LocalLightroomImageLoader
+# User-defined composition locals
+compose_allowed_composition_locals = LocalLightroomImageLoader
