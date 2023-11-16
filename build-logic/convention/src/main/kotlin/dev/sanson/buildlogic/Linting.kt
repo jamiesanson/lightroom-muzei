@@ -15,7 +15,7 @@ internal fun Project.configureLinting(androidExtension: CommonExtension<*, *, *,
     }
 
     androidExtension.lint {
-        disable += "EmptyNavDeepLink"
+        warningsAsErrors = true
     }
 
     val libs = versionCatalog

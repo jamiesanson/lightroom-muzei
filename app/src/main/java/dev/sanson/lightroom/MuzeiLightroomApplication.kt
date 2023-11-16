@@ -8,11 +8,6 @@ import javax.inject.Inject
 
 /**
  * TODO(s):
- * --------------------
- *   Production-ready
- * --------------------
- * * App icon & store assets
- *
  * ---------------
  *   Open source
  * ---------------
