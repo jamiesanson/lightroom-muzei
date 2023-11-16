@@ -15,9 +15,9 @@ androidx-hilt-navigation-compose = "1.1.0"
 androidx-lifecycle = "2.6.2"
 androidx-work = "2.8.1"
 
-circuit = "0.16.0-SNAPSHOT"
+circuit = "0.17.0-SNAPSHOT"
 
-coil = "2.4.0"
+coil = "2.5.0"
 
 compose-bom = "2023.10.01"
 compose-compiler = "1.5.4"
