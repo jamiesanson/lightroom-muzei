@@ -47,7 +47,7 @@ jobs:
           cache-disabled: true
 
       - name: Decrypt secrets
-        run: ./release/decrypt-secrets.sh
+        run: ./release/decrypt-secrets
         env:
           ENCRYPT_KEY: ${{ secrets.ENCRYPT_KEY }}
 
@@ -58,7 +58,7 @@ jobs:
 
       - name: Remove secrets
         if: always()
-        run: ./release/cleanup-secrets.sh
+        run: ./release/cleanup-secrets
 
       - name: Upload build outputs
         if: always()
