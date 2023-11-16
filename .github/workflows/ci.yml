@@ -28,6 +28,7 @@ jobs:
       # Temporary job to handle the publishing of Circuit from included submodule
       - name: Publish circuit snapshot (temporary)
         run: ./circuit/gradlew publishToMavenLocal
+        working-directory: ./circuit
 
       - name: Lint
         run: ./gradlew lint
@@ -55,7 +56,8 @@ jobs:
 
       # Temporary job to handle the publishing of Circuit from included submodule
       - name: Publish circuit snapshot (temporary)
-        run: ./circuit/gradlew publishToMavenLocal
+        run: ./gradlew publishToMavenLocal
+        working-directory: ./circuit
 
       - name: Decrypt secrets
         run: ./release/decrypt-secrets.sh
