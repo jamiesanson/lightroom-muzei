@@ -27,7 +27,7 @@ import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
-class LightroomAlbumProvider : MuzeiArtProvider() {
+class LightroomArtProvider : MuzeiArtProvider() {
     @EntryPoint
     @InstallIn(SingletonComponent::class)
     interface EntryPointAccessor {
@@ -38,7 +38,7 @@ class LightroomAlbumProvider : MuzeiArtProvider() {
         val workManager = WorkManager.getInstance(requireNotNull(context))
 
         val request =
-            OneTimeWorkRequestBuilder<LoadAlbumWorker>()
+            OneTimeWorkRequestBuilder<LoadArtWorker>()
                 .setConstraints(
                     Constraints(
                         requiredNetworkType = NetworkType.CONNECTED,

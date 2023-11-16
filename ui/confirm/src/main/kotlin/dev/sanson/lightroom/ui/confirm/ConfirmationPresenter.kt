@@ -19,7 +19,7 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.common.config.ConfigRepository
-import dev.sanson.lightroom.muzei.LightroomAlbumProvider
+import dev.sanson.lightroom.muzei.LightroomArtProvider
 import dev.sanson.lightroom.muzei.loadAssets
 import dev.sanson.lightroom.muzei.toArtwork
 import dev.sanson.lightroom.screens.ConfirmationScreen
@@ -44,7 +44,7 @@ class ConfirmationPresenter @AssistedInject constructor(
         val imageLoader = LocalLightroomImageLoader.current
 
         val context = LocalContext.current
-        val providerClient = remember { getProviderClient<LightroomAlbumProvider>(context) }
+        val providerClient = remember { getProviderClient<LightroomArtProvider>(context) }
         val artwork by produceState<List<Asset>?>(initialValue = null) {
             val config =
                 requireNotNull(configRepository.config.firstOrNull()) {

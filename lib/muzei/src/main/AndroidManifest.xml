@@ -2,7 +2,7 @@
 
     <application>
         <provider
-            android:name="dev.sanson.lightroom.muzei.LightroomAlbumProvider"
+            android:name="dev.sanson.lightroom.muzei.LightroomArtProvider"
             android:authorities="${lightroomAuthority}"
             android:description="@string/description"
             android:exported="true"

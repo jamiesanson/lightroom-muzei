@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.first
  * the Muzei [ProviderClient].
  */
 @HiltWorker
-class LoadAlbumWorker
+class LoadArtWorker
     @AssistedInject
     constructor(
         @Assisted context: Context,
@@ -30,7 +30,8 @@ class LoadAlbumWorker
     ) : CoroutineWorker(context, params) {
         override suspend fun doWork(): Result {
             val config = configStore.data.first() ?: return Result.failure()
-            val albumProvider = getProviderClient<LightroomAlbumProvider>(context = applicationContext)
+            val albumProvider =
+                getProviderClient<LightroomArtProvider>(context = applicationContext)
 
             val previouslyAddedAssets =
                 albumProvider.getArtwork(
