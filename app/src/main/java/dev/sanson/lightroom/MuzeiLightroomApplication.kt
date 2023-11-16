@@ -11,10 +11,6 @@ import javax.inject.Inject
  * --------------------
  *   Production-ready
  * --------------------
- * * Add notes around:
- *      * Not having to re-apply settings when you make changes on the Lightroom end
- *      * Renditions update every 24 hours
- * * Proper icons for flags
  * * App icon & store assets
  *
  * ---------------
@@ -36,7 +32,12 @@ import javax.inject.Inject
  * --------------------
  *   Extra-curricular/Fast-follow
  * --------------------
+ * * Short onboarding explaining how it works
  * * Loading improvements - shimmer & placeholders
+ * * Add notes around:
+ *      * Not having to re-apply settings when you make changes on the Lightroom end
+ *      * Artwork invalidation, keeping your wallpapers up to date
+ * * Muzei artwork invalidation after 24 hours
  * * Form-factor & window size support
  * * Toolbar improvement - collapsing?
  * * UI testing
