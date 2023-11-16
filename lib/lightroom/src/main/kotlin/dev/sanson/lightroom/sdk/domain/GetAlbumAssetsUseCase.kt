@@ -63,7 +63,7 @@ internal fun BackendAsset.toAsset(catalogId: CatalogId): Asset {
     )
 }
 
-internal const val API_PAGE_SIZE = 50
+internal const val API_PAGE_SIZE = 500
 
 internal class GetAlbumAssetsUseCase
     @Inject

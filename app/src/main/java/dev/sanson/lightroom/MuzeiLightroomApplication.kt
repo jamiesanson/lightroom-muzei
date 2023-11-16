@@ -12,9 +12,9 @@ import javax.inject.Inject
  *   Production-ready
  * --------------------
  * * Add notes around:
- *      * "this may take some time", or some kind of progress indicator to confirmation
  *      * Not having to re-apply settings when you make changes on the Lightroom end
  *      * Renditions update every 24 hours
+ * * Proper icons for flags
  * * App icon & store assets
  *
  * ---------------

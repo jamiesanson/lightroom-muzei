@@ -3,13 +3,11 @@ package dev.sanson.lightroom.common.ui.component
 import android.os.Parcelable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,7 +31,7 @@ import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class Equality : Parcelable { GreaterThan, EqualTo, LessThan }
+enum class Equality : Parcelable { LessThan, EqualTo, GreaterThan }
 
 /**
  * Simple function for cycling through enum entries
@@ -92,10 +90,6 @@ fun EqualityToggle(
         modifier
             .sizeIn(minWidth = 36.dp, minHeight = 36.dp)
             .clip(RoundedCornerShape(50))
-            .background(
-                MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                shape = RoundedCornerShape(50),
-            )
             .onSizeChanged {
                 equalityHeightPx = it.height.toFloat() * 0.2f
             }

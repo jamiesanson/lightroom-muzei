@@ -1,5 +1,6 @@
 package dev.sanson.lightroom.ui.confirm
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -26,8 +27,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -48,8 +53,11 @@ import dev.sanson.lightroom.screens.ConfirmationScreen
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CatalogId
+import dev.sanson.lightroom.sdk.model.Rendition
+import kotlinx.coroutines.delay
 import kotlinx.datetime.Instant
 import nz.sanson.lightroom.coil.rememberImageResult
+import kotlin.time.Duration.Companion.seconds
 
 @CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
 @Composable
@@ -97,14 +105,15 @@ private fun LoadingProgress(
     Column(modifier) {
         LoadingRow(
             isLoading = state !is ConfirmState.LoadingFirstImage,
-            text = "Loading images",
+            text = stringResource(R.string.loading_images),
+            subtitle = stringResource(R.string.loading_images_subtitle),
         )
 
         Spacer(modifier = Modifier.size(24.dp))
 
         LoadingRow(
             isLoading = state !is ConfirmState.Loaded,
-            text = "Fetching your first wallpaper",
+            text = stringResource(R.string.fetching_wallpaper),
         )
     }
 }
@@ -114,6 +123,7 @@ private fun LoadingRow(
     isLoading: Boolean,
     text: String,
     modifier: Modifier = Modifier,
+    subtitle: String? = null,
 ) {
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Box(Modifier.size(48.dp)) {
@@ -149,11 +159,35 @@ private fun LoadingRow(
             label = "Loading row text color",
         )
 
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            color = textColor,
-        )
+        var showSubtitle by rememberSaveable {
+            mutableStateOf(false)
+        }
+
+        LaunchedEffect(subtitle) {
+            if (subtitle != null && !showSubtitle) {
+                delay(3.seconds)
+                showSubtitle = true
+            }
+        }
+
+        Column {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
+                color = textColor,
+            )
+
+            AnimatedVisibility(visible = showSubtitle) {
+                if (subtitle != null) {
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = textColor,
+                        modifier = Modifier.padding(top = 2.dp),
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -221,6 +255,7 @@ private fun WallpaperPreview(
         rememberImageResult(
             assetId = asset.id,
             catalogId = asset.catalogId,
+            rendition = Rendition.Full,
         )
 
     Crossfade(targetState = result, modifier = modifier, label = "First wallpaper") { imageResult ->
@@ -320,22 +355,5 @@ private fun ChooseSourcePreview() {
         Confirmation(
             state = loadedState,
         )
-    }
-}
-
-@PreviewLightDark
-@Composable
-private fun ImageLoadingPreview() {
-    MuzeiLightroomTheme {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface),
-            contentAlignment = Alignment.Center,
-        ) {
-            WallpaperLoading(
-                modifier = Modifier.fillMaxHeight(0.5f),
-            )
-        }
     }
 }
