@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: gradle
+
+      - uses: gradle/gradle-build-action@v2
+        with:
+          cache-disabled: true
+
+      - name: Lint
+        run: ./gradlew lint
+
+  build:
+    runs-on: macos-latest
+    needs: [ lint ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: gradle
+
+      - uses: gradle/gradle-build-action@v2
+        with:
+          cache-disabled: true
+
+      - name: Decrypt secrets
+        run: ./release/decrypt-secrets.sh
+        env:
+          ENCRYPT_KEY: ${{ secrets.ENCRYPT_KEY }}
+
+      - name: Build & test
+        run: ./gradlew testDebugUnitTest :app:bundle
+
+      - name: Clean secrets
+        if: always()
+        run: ./release/clean-secrets.sh
+
+      - name: Upload build outputs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-build-outputs
+          path: app/build/outputs
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-reports
+          path: |
+            **/build/reports/*
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-test-results
+          path: |
+            **/build/test-results/*
