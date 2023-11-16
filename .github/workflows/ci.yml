@@ -56,9 +56,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Clean secrets
+      - name: Remove secrets
         if: always()
-        run: ./release/clean-secrets.sh
+        run: ./release/cleanup-secrets.sh
 
       - name: Upload build outputs
         if: always()

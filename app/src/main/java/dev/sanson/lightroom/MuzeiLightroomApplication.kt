@@ -12,7 +12,6 @@ import javax.inject.Inject
  *   Open source
  * ---------------
  * * Testing presenters
- * * CI - run test suite on commits; Danger with KtLint
  * * Documentation & licensing
  * * Move remaining list items to issues on project
  *
