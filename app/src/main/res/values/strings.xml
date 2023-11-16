@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Muzei Lightroom</string>
     <string name="toast_enable_lightroom">Select Lightroom CC in Muzei</string>
     <string name="toast_enable_lightroom_source">Select Lightroom CC from the list of Sources in Muzei</string>
     <string name="toast_muzei_missing_error">You must install Muzei to use this Source</string>

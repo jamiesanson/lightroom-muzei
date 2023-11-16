@@ -63,14 +63,17 @@ android {
         debug {
             applicationIdSuffix = BuildType.Debug.applicationIdSuffix
             signingConfig = signingConfigs["debug"]
+            resValue(type = "string", name = "app_name", value = "Lightroom for Muzei - Debug")
         }
 
         release {
             isMinifyEnabled = true
+            signingConfig = signingConfigs["release"]
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            resValue(type = "string", name = "app_name", value = "Lightroom for Muzei")
         }
     }
 }
