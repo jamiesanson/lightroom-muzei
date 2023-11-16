@@ -22,6 +22,10 @@ jobs:
         with:
           cache-disabled: true
 
+      # Temporary job to handle the publishing of Circuit from included submodule
+      - name: Publish circuit snapshot (temporary)
+        run: ./circuit/gradlew publishToMavenLocal
+
       - name: Lint
         run: ./gradlew lint
 
@@ -41,6 +45,11 @@ jobs:
       - uses: gradle/gradle-build-action@v2
         with:
           cache-disabled: true
+
+
+      # Temporary job to handle the publishing of Circuit from included submodule
+      - name: Publish circuit snapshot (temporary)
+        run: ./circuit/gradlew publishToMavenLocal
 
       - name: Decrypt secrets
         run: ./release/decrypt-secrets.sh
