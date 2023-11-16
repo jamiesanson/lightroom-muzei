@@ -25,6 +25,8 @@ jobs:
 
       - name: Lint
         run: ./gradlew lint
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     runs-on: macos-latest
@@ -51,6 +53,8 @@ jobs:
 
       - name: Build & test
         run: ./gradlew testDebugUnitTest :app:bundle
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clean secrets
         if: always()
