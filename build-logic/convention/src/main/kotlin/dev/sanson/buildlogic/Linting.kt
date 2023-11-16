@@ -20,6 +20,8 @@ internal fun Project.configureLinting(androidExtension: CommonExtension<*, *, *,
 
     val libs = versionCatalog
 
+    tasks.getByName("lint").dependsOn("ktlintCheck")
+
     dependencies {
         "ktlintRuleset"(libs["ktlint-compose-rules"])
     }
