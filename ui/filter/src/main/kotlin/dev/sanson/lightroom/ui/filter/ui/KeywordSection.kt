@@ -127,8 +127,10 @@ private fun KeywordTextField(
             keyboardActions =
                 KeyboardActions(
                     onDone = {
-                        onAddKeyword(keywordText)
-                        keywordText = ""
+                        if (keywordText.isNotBlank()) {
+                            onAddKeyword(keywordText)
+                            keywordText = ""
+                        }
                     },
                 ),
             keyboardOptions =
