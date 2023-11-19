@@ -172,7 +172,7 @@ private fun LazyListScope.collectionSet(
         }
 
     if (name != null) {
-        item {
+        item(key = "${name}_$depth") {
             val lineColor = MaterialTheme.colorScheme.inverseOnSurface
             val insetMultiplier = (depth - 1).coerceAtLeast(0)
 
@@ -208,7 +208,7 @@ private fun LazyListScope.collectionSet(
     for (child in children) {
         when (child) {
             is Album -> {
-                item {
+                item(key = child.id.id) {
                     val lineColor = MaterialTheme.colorScheme.inverseOnSurface
 
                     val depthModifier =
