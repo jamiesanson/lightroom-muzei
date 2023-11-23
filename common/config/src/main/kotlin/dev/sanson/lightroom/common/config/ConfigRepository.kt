@@ -32,8 +32,18 @@ internal class DefaultConfigRepository(
     }
 
     override suspend fun setImageSource(imageSource: Config.Source) {
-        configStore.updateData {
-            it?.copy(source = imageSource) ?: Config(source = imageSource)
+        configStore.updateData { currentConfig ->
+            when {
+                currentConfig == null ->
+                    Config(source = imageSource)
+
+                currentConfig.source::class != imageSource::class -> {
+                    currentConfig.copy(source = imageSource)
+                }
+
+                else ->
+                    currentConfig
+            }
         }
     }
 }
