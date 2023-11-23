@@ -64,16 +64,16 @@ class FilterAssetsPresenter @AssistedInject constructor(
             configRepository.config.filterNotNull().collect { value = it }
         }
 
-        var starRating by rememberSaveable(config) {
+        var starRating by rememberSaveable(config.starRating) {
             mutableIntStateOf(config.starRating)
         }
 
-        var equality by rememberSaveable(config) {
+        var equality by rememberSaveable(config.ratingEquality) {
             mutableStateOf(config.ratingEquality)
         }
 
         val keywords =
-            rememberSaveable(config, saver = keywordSaver()) {
+            rememberSaveable(config.keywords, saver = keywordSaver()) {
                 config.keywords.toMutableStateList()
             }
 
