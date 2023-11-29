@@ -11,8 +11,7 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    // TODO(jamiesanson) - #3 - Revert once circuit hilt support lands
-    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
