@@ -56,5 +56,7 @@ internal fun Project.configureAndroidLinting(androidExtension: CommonExtension<*
 
     androidExtension.lint {
         warningsAsErrors = true
+        // The following are handled by Renovate via GitHub Actions
+        disable += setOf("GradleDependency", "AndroidGradlePluginVersion")
     }
 }
