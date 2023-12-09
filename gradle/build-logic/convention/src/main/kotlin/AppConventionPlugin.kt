@@ -1,4 +1,4 @@
-import dev.sanson.buildlogic.configureLinting
+import dev.sanson.buildlogic.configureAndroidLinting
 import dev.sanson.buildlogic.configureAndroidCompose
 import dev.sanson.buildlogic.configureAndroid
 import dev.sanson.buildlogic.configureKotlin
@@ -34,7 +34,7 @@ class AppConventionPlugin : Plugin<Project> {
                 configureAndroid(this)
                 configureAndroidCompose(this)
 
-                configureLinting(this)
+                configureAndroidLinting(this)
 
                 defaultConfig.targetSdk = BuildVersions.targetSdk
             }

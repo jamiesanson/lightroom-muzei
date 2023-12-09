@@ -3,7 +3,7 @@ import dev.sanson.buildlogic.KotlinFeature
 import dev.sanson.buildlogic.Plugins
 import dev.sanson.buildlogic.configureAndroid
 import dev.sanson.buildlogic.configureKotlin
-import dev.sanson.buildlogic.configureLinting
+import dev.sanson.buildlogic.configureAndroidLinting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -28,7 +28,7 @@ class CoreLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureAndroid(this)
-                configureLinting(this)
+                configureAndroidLinting(this)
             }
         }
     }

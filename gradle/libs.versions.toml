@@ -44,7 +44,6 @@ kotlinx-datetime = "0.4.0"
 
 ksp = "1.9.20-1.0.14"
 
-ktlint-plugin = "11.6.1"
 ktlint-compose-rules = "0.3.3"
 
 material = "1.10.0"
@@ -55,6 +54,8 @@ okhttp = "4.11.0"
 
 retrofit = "2.9.0"
 retrofit-kotlinx-serialization-converter = "1.0.0"
+
+spotless = "6.23.3"
 
 turbine = "1.0.0"
 
@@ -132,7 +133,7 @@ ktlint-compose-rules = { group = "io.nlopez.compose.rules", name = "ktlint", ver
 # Dependencies of the included build-logic
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-ktlint-gradle-plugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint-plugin" }
+spotless-gradle-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
 
 [plugins]
@@ -144,8 +145,8 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [bundles]
 testing-unit = [

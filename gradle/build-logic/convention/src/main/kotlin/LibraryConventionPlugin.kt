@@ -1,5 +1,5 @@
 import com.android.build.api.dsl.LibraryExtension
-import dev.sanson.buildlogic.configureLinting
+import dev.sanson.buildlogic.configureAndroidLinting
 import dev.sanson.buildlogic.configureAndroid
 import dev.sanson.buildlogic.configureKotlin
 import dev.sanson.buildlogic.KotlinFeature
@@ -29,7 +29,7 @@ class LibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureAndroid(this)
-                configureLinting(this)
+                configureAndroidLinting(this)
             }
         }
     }

@@ -1,3 +1,6 @@
+// Copyright (C) 2023, Jamie Sanson
+// SPDX-License-Identifier: Apache-2.0
+@file:Suppress("ktlint")
 import systems.danger.kotlin.*
 
 danger(args) {

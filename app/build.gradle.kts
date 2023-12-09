@@ -1,3 +1,5 @@
+// Copyright (C) 2023, Jamie Sanson
+// SPDX-License-Identifier: Apache-2.0
 import dev.sanson.buildlogic.BuildType
 import dev.sanson.buildlogic.Keystore
 import dev.sanson.buildlogic.asProperties

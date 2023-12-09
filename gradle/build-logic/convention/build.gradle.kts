@@ -12,7 +12,7 @@ java {
 dependencies {
     compileOnly(libs.android.gradle.plugin)
     compileOnly(libs.kotlin.gradle.plugin)
-    compileOnly(libs.ktlint.gradle.plugin)
+    compileOnly(libs.spotless.gradle.plugin)
     compileOnly(libs.ksp.gradle.plugin)
 }
 
@@ -57,6 +57,11 @@ gradlePlugin {
         register("androidHilt") {
             id = "dev.sanson.android.hilt"
             implementationClass = "HiltConventionPlugin"
+        }
+
+        register("spotless") {
+            id = "dev.sanson.spotless"
+            implementationClass = "SpotlessConventionPlugin"
         }
     }
 }

@@ -1,28 +1,60 @@
 package dev.sanson.buildlogic
 
 import com.android.build.api.dsl.CommonExtension
-import org.gradle.api.Project
+import com.diffplug.gradle.spotless.SpotlessExtension
+import com.diffplug.spotless.LineEnding
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
-import org.jlleitschuh.gradle.ktlint.KtlintExtension
+import org.gradle.api.Project
 
-internal fun Project.configureLinting(androidExtension: CommonExtension<*, *, *, *, *>) {
-    pluginManager.apply(Plugins.KtLint)
+internal fun Project.configureSpotless() {
+    pluginManager.apply(Plugins.Spotless)
 
-    extensions.configure<KtlintExtension> {
-        version.set("1.0.1")
-        outputToConsole.set(true)
+    extensions.configure<SpotlessExtension> {
+        val libs = project.versionCatalog
+
+        lineEndings = LineEnding.PLATFORM_NATIVE
+
+        format("misc") {
+            target("*.md", ".gitignore")
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+
+        kotlin {
+            target("src/**/*.kt")
+            ktlint()
+                .customRuleSets(
+                    listOf(
+                        libs["ktlint-compose-rules"].get().let {
+                            "${it.group}:${it.module.name}:${it.version}"
+                        },
+                    ),
+                )
+            trimTrailingWhitespace()
+            endWithNewline()
+            targetExclude("**/license.kt")
+            licenseHeaderFile(
+                rootProject.file("gradle/spotless/license.kt"),
+                "(package|@file:)",
+            )
+        }
+        kotlinGradle {
+            target("*.kts")
+            ktlint()
+            trimTrailingWhitespace()
+            endWithNewline()
+            licenseHeaderFile(
+                rootProject.file("gradle/spotless/license.kt"),
+                "(import|plugins|buildscript|dependencies|pluginManagement|dependencyResolutionManagement|@file:)",
+            )
+        }
     }
+}
+
+internal fun Project.configureAndroidLinting(androidExtension: CommonExtension<*, *, *, *, *>) {
+    configureSpotless()
 
     androidExtension.lint {
         warningsAsErrors = true
-    }
-
-    val libs = versionCatalog
-
-    tasks.getByName("lint").dependsOn("ktlintCheck")
-
-    dependencies {
-        "ktlintRuleset"(libs["ktlint-compose-rules"])
     }
 }
