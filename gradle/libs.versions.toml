@@ -13,7 +13,7 @@ androidx-datastore = "1.0.0"
 androidx-hilt = "1.1.0"
 androidx-hilt-navigation-compose = "1.1.0"
 androidx-lifecycle = "2.6.2"
-androidx-work = "2.8.1"
+androidx-work = "2.9.0"
 
 circuit = "0.17.0"
 
@@ -26,7 +26,7 @@ dagger = "2.48.1"
 
 desugared-jdk-libs = "2.0.4"
 
-firebase-bom = "32.6.0"
+firebase-bom = "32.7.0"
 firebase-crashlytics-plugin = "2.9.9"
 
 google-services = "4.4.0"
