@@ -2,7 +2,7 @@
 Adobe Lightroom source for [Muzei](https://github.com/muzei/muzei)
 
 ## 🚧 Under construction
-This project is currently still a work in progress, unreviewed for production by Adobe & Unsplash. 
+This project is currently still a work in progress, unreviewed for production by Adobe & Unsplash.
 This app is planned to be released on Google Play eventually, however until then use at your own risk.
 
 ### License
