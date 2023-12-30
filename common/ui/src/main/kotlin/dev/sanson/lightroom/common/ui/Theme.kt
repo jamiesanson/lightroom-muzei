@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import dev.sanson.lightroom.common.ui.theme.MuzeiTypography
 
 @Composable
-fun MuzeiLightroomTheme(
+fun LightroomForMuzeiTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {

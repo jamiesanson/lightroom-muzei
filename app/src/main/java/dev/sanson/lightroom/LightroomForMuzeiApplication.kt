@@ -10,7 +10,7 @@ import dev.sanson.lightroom.sdk.Lightroom
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MuzeiLightroomApplication : Application(), Configuration.Provider {
+class LightroomForMuzeiApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 

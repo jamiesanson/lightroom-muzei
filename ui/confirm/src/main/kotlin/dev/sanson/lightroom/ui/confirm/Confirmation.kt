@@ -48,7 +48,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageResult
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.common.ui.LightroomForMuzeiTheme
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.common.ui.component.StepHeader
 import dev.sanson.lightroom.screens.ConfirmationScreen
@@ -353,7 +353,7 @@ private fun ChooseSourcePreview() {
             eventSink = {},
         )
 
-    MuzeiLightroomTheme {
+    LightroomForMuzeiTheme {
         Confirmation(
             state = loadedState,
         )

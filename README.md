@@ -1,4 +1,4 @@
-# Muzei Lightroom
+# Lightroom for Muzei
 Adobe Lightroom source for [Muzei](https://github.com/muzei/muzei)
 
 ## 🚧 Under construction

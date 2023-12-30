@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MuzeiLightroom" parent="Theme.Material3.DynamicColors.DayNight">
+    <style name="Theme.LightroomForMuzei" parent="Theme.Material3.DynamicColors.DayNight">
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="windowActionBar">false</item>

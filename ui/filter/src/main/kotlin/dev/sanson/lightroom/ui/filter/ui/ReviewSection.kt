@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.common.ui.LightroomForMuzeiTheme
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.ui.filter.R
@@ -94,7 +94,7 @@ private fun FlagRow(
 @PreviewLightDark
 @Composable
 private fun ReviewSectionPreview() {
-    MuzeiLightroomTheme {
+    LightroomForMuzeiTheme {
         Surface {
             ReviewSection(
                 flag = Asset.Flag.Picked,

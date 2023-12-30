@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.common.ui.LightroomForMuzeiTheme
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.common.ui.component.StepHeader
 import dev.sanson.lightroom.screens.ChooseAlbumScreen
@@ -341,7 +341,7 @@ private fun AssetThumbnail(
 @PreviewLightDark
 @Composable
 private fun ChooseAlbumScreenPreview() {
-    MuzeiLightroomTheme {
+    LightroomForMuzeiTheme {
         ChooseAlbum(
             state =
                 ChooseAlbumState.Loaded(

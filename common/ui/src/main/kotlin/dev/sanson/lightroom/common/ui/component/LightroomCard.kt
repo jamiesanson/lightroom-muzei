@@ -20,7 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.common.ui.LightroomForMuzeiTheme
 
 @Composable
 fun LightroomCard(
@@ -42,7 +42,7 @@ fun LightroomCard(
 @PreviewLightDark
 @Composable
 private fun LightroomCardPreview() {
-    MuzeiLightroomTheme {
+    LightroomForMuzeiTheme {
         Surface {
             LightroomCard(Modifier.padding(24.dp)) {
                 Text(

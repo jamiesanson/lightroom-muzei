@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
-import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.common.ui.LightroomForMuzeiTheme
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -140,7 +140,7 @@ fun EqualityToggle(
 @PreviewLightDark
 @Composable
 private fun EqualityTogglePreview() {
-    MuzeiLightroomTheme {
+    LightroomForMuzeiTheme {
         var equality by remember { mutableStateOf(Equality.EqualTo) }
 
         Surface {

@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.sanson.lightroom.common.ui.MuzeiLightroomTheme
+import dev.sanson.lightroom.common.ui.LightroomForMuzeiTheme
 import dev.sanson.lightroom.common.ui.R
 
 @Composable
@@ -39,7 +39,7 @@ fun StepHeader(
 @PreviewLightDark
 @Composable
 private fun StepHeaderPreview() {
-    MuzeiLightroomTheme {
+    LightroomForMuzeiTheme {
         StepHeader(stepNumber = 1, stepName = "Choose a source")
     }
 }
