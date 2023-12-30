@@ -9,9 +9,11 @@ import dev.sanson.lightroom.sdk.backend.auth.AuthManager
 import dev.sanson.lightroom.sdk.di.DaggerLightroomComponent
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
+import dev.sanson.lightroom.sdk.domain.GetAccountUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import dev.sanson.lightroom.sdk.domain.GetCatalogAssetsUseCase
+import dev.sanson.lightroom.sdk.model.Account
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
 import dev.sanson.lightroom.sdk.model.Asset
@@ -74,6 +76,13 @@ interface Lightroom {
         asset: AssetId,
         rendition: Rendition,
     )
+
+    /**
+     * Retrieve the user account metadata
+     *
+     * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Accounts/operation/getAccount
+     */
+    suspend fun getAccount(): Account
 }
 
 /**
@@ -117,6 +126,7 @@ internal class DefaultLightroom(
     private val retrieveAlbumAssets: GetAlbumAssetsUseCase,
     private val retrieveCatalogAssets: GetCatalogAssetsUseCase,
     private val generateRenditions: GenerateRenditionUseCase,
+    private val retrieveAccount: GetAccountUseCase,
     private val catalogRepository: CatalogRepository,
 ) : Lightroom {
     override val isSignedIn = authManager.isSignedIn
@@ -144,4 +154,6 @@ internal class DefaultLightroom(
         asset: AssetId,
         rendition: Rendition,
     ) = generateRenditions(asset, rendition)
+
+    override suspend fun getAccount(): Account = retrieveAccount()
 }
