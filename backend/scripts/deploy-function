@@ -1,0 +1,11 @@
+#!/bin/sh
+
+FUNCTION_NAME=$1
+ENTRY_POINT=$2
+SOURCE_DIR=$3
+
+echo "Deploying $FUNCTION_NAME"
+
+gcloud functions deploy $FUNCTION_NAME \
+  --entry-point=$ENTRY_POINT \
+  --source=$SOURCE_DIR --runtime=java17 --trigger-http

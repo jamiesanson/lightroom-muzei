@@ -13,7 +13,7 @@ paths:
       summary: Search
       operationId: search
       x-google-backend:
-        address: https://us-central1-lightroom-for-muzei.cloudfunctions.net/lightroom-test-function
+        address: https://us-central1-lightroom-for-muzei.cloudfunctions.net/search-lightroom
       security:
         - api_key: [ ]
       responses:

@@ -53,10 +53,20 @@ tasks.named("build") {
     dependsOn("shadowJar")
 }
 
+val deployDir = layout.buildDirectory.file("deploy")
+
 task("buildFunction") {
     dependsOn("build")
     copy {
         from(layout.buildDirectory.file("libs/${project.name}-17-all.jar"))
-        into(layout.buildDirectory.file("deploy"))
+        into(deployDir)
     }
+}
+
+tasks.create<Exec>("deploy") {
+    dependsOn("buildFunction")
+
+    workingDir = rootProject.file("backend/scripts")
+
+    commandLine("./deploy-function", "search-lightroom", application.mainClass.get(), deployDir.get().asFile.path)
 }
