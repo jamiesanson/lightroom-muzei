@@ -21,7 +21,7 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "lightroom-muzei"
+rootProject.name = "lightroom-for-muzei"
 
 include(
     ":app",
