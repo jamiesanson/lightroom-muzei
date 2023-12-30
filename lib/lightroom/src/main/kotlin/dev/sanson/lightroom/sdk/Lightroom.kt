@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
+import dev.sanson.lightroom.sdk.backend.auth.TokenRefreshWorker
 import dev.sanson.lightroom.sdk.di.DaggerLightroomComponent
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
@@ -84,6 +85,19 @@ interface Lightroom {
      * https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Accounts/operation/getAccount
      */
     suspend fun getAccount(): Account
+
+    companion object {
+
+        /**
+         * Install a WorkManager worker to periodically update our tokens, ensuring we
+         * don't need to ask the user to sign in again
+         *
+         * @param context Application context
+         */
+        fun installTokenRefresher(context: Context) {
+            TokenRefreshWorker.enqueue(context)
+        }
+    }
 }
 
 /**
@@ -150,7 +164,8 @@ internal class DefaultLightroom(
 
     override suspend fun getCatalogAssets(): List<Asset> = retrieveCatalogAssets()
 
-    override suspend fun getAlbumAssets(albumId: AlbumId): List<Asset> = retrieveAlbumAssets(albumId = albumId)
+    override suspend fun getAlbumAssets(albumId: AlbumId): List<Asset> =
+        retrieveAlbumAssets(albumId = albumId)
 
     override suspend fun generateRendition(
         asset: AssetId,
