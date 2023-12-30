@@ -39,4 +39,5 @@ include(
     ":ui:filter",
     ":ui:signin",
     ":ui:source",
+    ":backend:search",
 )

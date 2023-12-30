@@ -30,6 +30,8 @@ firebase-bom = "32.7.0"
 firebase-crashlytics-plugin = "2.9.9"
 
 google-services = "4.4.0"
+google-cloud-functions-api = "1.1.0"
+google-cloud-functions-invoker = "1.3.0"
 
 junit = "4.13.2"
 
@@ -56,6 +58,8 @@ retrofit = "2.9.0"
 retrofit-kotlinx-serialization-converter = "1.0.0"
 
 spotless = "6.23.3"
+
+shadow = "8.1.1"
 
 turbine = "1.0.0"
 
@@ -130,6 +134,9 @@ circuit-test = { module = "com.slack.circuit:circuit-test", version.ref = "circu
 # Linting
 ktlint-compose-rules = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "ktlint-compose-rules" }
 
+google-cloud-functions-api = { module = "com.google.cloud.functions:functions-framework-api", version.ref = "google-cloud-functions-api" }
+google-cloud-functions-invoker = { module = "com.google.cloud.functions.invoker:java-function-invoker", version.ref = "google-cloud-functions-invoker" }
+
 # Dependencies of the included build-logic
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -147,6 +154,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
 
 [bundles]
 testing-unit = [
