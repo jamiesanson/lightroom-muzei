@@ -1,7 +1,9 @@
 #!/bin/sh
 
-GIT_HASH="$(git rev-parse --short HEAD)"
+# Copyright (C) 2023, Jamie Sanson
+# SPDX-License-Identifier: Apache-2.0
 
+GIT_HASH="$(git rev-parse --short HEAD)"
 CONFIG_NAME="lightroom-for-muzei-$GIT_HASH"
 
 echo "Creating API config ($CONFIG_NAME)"
