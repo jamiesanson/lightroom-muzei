@@ -2,17 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.sdk.backend.auth
 
+import androidx.annotation.RestrictTo
 import androidx.datastore.core.DataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class Credential(
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+data class Credential(
     val accessToken: String,
     val refreshToken: String,
 )
 
-internal interface CredentialStore {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+interface CredentialStore {
     val credential: Flow<Credential?>
 
     suspend fun updateTokens(

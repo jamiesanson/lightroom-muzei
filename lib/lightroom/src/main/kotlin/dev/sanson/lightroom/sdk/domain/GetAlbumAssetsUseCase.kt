@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.sdk.domain
 
-import android.net.Uri
 import dev.sanson.lightroom.sdk.backend.AlbumService
 import dev.sanson.lightroom.sdk.backend.model.Href
 import dev.sanson.lightroom.sdk.model.AlbumId
@@ -13,21 +12,12 @@ import javax.inject.Inject
 import dev.sanson.lightroom.sdk.backend.model.Asset as BackendAsset
 
 /**
- * Extension taken from androidx-core to avoid dependency on the entire library
- */
-private fun String.toUri(): Uri = Uri.parse(this)
-
-/**
  * Pull the "captured_after" parameter out of an [Href]
  *
  * @throws IllegalStateException throws in absence of captured_after parameter
  */
 internal val Href.capturedAfter: String
-    get() =
-        "http://example.com/$href"
-            .toUri()
-            .getQueryParameter("captured_after")
-            ?: throw IllegalStateException("No captured_after parameter on next href")
+    get() = href.split("captured_after=").last().takeWhile { it != '&' }
 
 internal fun BackendAsset.toAsset(catalogId: CatalogId): Asset {
     requireNotNull(payload) { "No asset metadata found: $this" }

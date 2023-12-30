@@ -10,5 +10,6 @@ android {
 
 dependencies {
     implementation(projects.lib.lightroom)
+    implementation(projects.lib.lightroomAndroid)
     implementation(projects.lib.unsplash)
 }

@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.sdk.backend.auth
 
-import android.net.Uri
-import android.util.Base64
+import androidx.annotation.RestrictTo
 import dev.sanson.lightroom.sdk.backend.LightroomClientId
 import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
 import kotlinx.coroutines.CoroutineScope
@@ -14,15 +13,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.net.URLEncoder
 import java.security.SecureRandom
 import javax.inject.Inject
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
-/**
- * Extension taken from androidx-core to avoid dependency on the entire library
- */
-private fun String.toUri(): Uri = Uri.parse(this)
-
-internal class AuthManager
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+class AuthManager
     @Inject
     constructor(
         private val applicationScope: CoroutineScope,
@@ -39,16 +37,14 @@ internal class AuthManager
 
         val latestAccessToken = credentialStore.credential.map { it?.accessToken }
 
-        fun buildAuthUri(): Uri {
+        @OptIn(ExperimentalEncodingApi::class)
+        fun buildAuthUri(): String {
             val challengeBytes = ByteArray(64)
 
             SecureRandom().nextBytes(challengeBytes)
 
             val challenge =
-                Base64.encodeToString(
-                    challengeBytes,
-                    Base64.NO_WRAP or Base64.NO_PADDING or Base64.URL_SAFE,
-                )
+                Base64.UrlSafe.encode(challengeBytes).dropLastWhile { it == '=' }
 
             previousChallenge = challenge
 
@@ -63,12 +59,21 @@ internal class AuthManager
                     "code_challenge" to challenge,
                 )
 
-            return params
-                .entries
-                .fold(authUrl.toUri().buildUpon()) { builder, (key, value) ->
-                    builder.appendQueryParameter(key, value)
+            fun String.urlEncode(): String = URLEncoder.encode(this, "UTF-8")
+
+            return buildString {
+                append(authUrl)
+                append("?")
+
+                for ((key, value) in params) {
+                    append(key.urlEncode())
+                    append("=")
+                    append(value.urlEncode())
+                    append("&")
                 }
-                .build()
+
+                removeSuffix("&")
+            }
         }
 
         fun onAuthorized(code: String) {

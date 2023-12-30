@@ -1,6 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
-import dev.sanson.buildlogic.KotlinFeature
+import dev.sanson.buildlogic.KotlinFeatures
 import dev.sanson.buildlogic.Plugins
 import dev.sanson.buildlogic.configureAndroidCompose
 import dev.sanson.buildlogic.configureKotlin
@@ -15,7 +15,7 @@ class ComposeConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
-            configureKotlin(KotlinFeature.ImmutableCollections)
+            configureKotlin(features = KotlinFeatures(immutableCollections = true))
 
             if (pluginManager.hasPlugin(Plugins.Application)) {
                 extensions.configure<ApplicationExtension> {

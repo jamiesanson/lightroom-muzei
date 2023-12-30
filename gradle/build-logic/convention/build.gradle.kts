@@ -39,6 +39,12 @@ gradlePlugin {
             implementationClass = "LibraryConventionPlugin"
         }
 
+        register("javaLibrary") {
+            id = "dev.sanson.kotlin.library"
+            implementationClass = "KotlinLibraryConventionPlugin"
+        }
+
+
         register("androidCoreLibrary") {
             id = "dev.sanson.android.library.core"
             implementationClass = "CoreLibraryConventionPlugin"

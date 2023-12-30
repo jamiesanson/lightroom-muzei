@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.sdk.backend.auth
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dev.sanson.lightroom.core.data.JsonSerializer
-import dev.sanson.lightroom.sdk.BuildConfig
 import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
+import dev.sanson.lightroom.sdk.di.FilesDir
+import dev.sanson.lightroom.sdk.di.VerboseLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -39,13 +39,13 @@ internal class AuthModule {
     @Singleton
     fun provideCredentialDataStore(
         scope: CoroutineScope,
-        context: Context,
+        @FilesDir filesDir: File,
     ): DataStore<Credential?> {
         return DataStoreFactory.create(
             serializer = JsonSerializer<Credential>(),
             scope = scope,
             produceFile = {
-                File("${context.filesDir.path}/credentials")
+                File("${filesDir.path}/credentials")
             },
         )
     }
@@ -57,13 +57,14 @@ internal class AuthModule {
     @Provides
     fun provideAuthService(
         @LoginHost loginHost: String,
+        @VerboseLogging verboseLogging: Boolean,
         json: Json,
     ): LightroomAuthService {
         return Retrofit.Builder().client(
             OkHttpClient.Builder().addInterceptor(
                 HttpLoggingInterceptor().apply {
                     level =
-                        if (BuildConfig.DEBUG) {
+                        if (verboseLogging) {
                             HttpLoggingInterceptor.Level.BODY
                         } else {
                             HttpLoggingInterceptor.Level.NONE

@@ -7,18 +7,26 @@ import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-internal enum class KotlinFeature {
-    Serialization, Parcelize, Coroutines, DateTime, ImmutableCollections
-}
+internal data class KotlinFeatures(
+    val serialization: Boolean = false,
+    val parcelize: Boolean = false,
+    val coroutines: Boolean = false,
+    val dateTime: Boolean = false,
+    val immutableCollections: Boolean = false,
+)
 
-internal fun Project.configureKotlin(vararg features: KotlinFeature) {
+internal fun Project.configureKotlin(android: Boolean = true, features: KotlinFeatures = KotlinFeatures()) {
     with(pluginManager) {
-        apply(Plugins.Kotlin.Android)
+        if (android) {
+            apply(Plugins.Kotlin.Android)
+        } else {
+            apply(Plugins.Kotlin.Jvm)
+        }
 
-        if (KotlinFeature.Serialization in features) {
+        if (features.serialization) {
             apply(Plugins.Kotlin.Serialization)
         }
-        if (KotlinFeature.Parcelize in features) {
+        if (features.parcelize) {
             apply(Plugins.Kotlin.Parcelize)
         }
     }
@@ -44,20 +52,22 @@ internal fun Project.configureKotlin(vararg features: KotlinFeature) {
     val libs = versionCatalog
 
     dependencies {
-        if (KotlinFeature.Coroutines in features) {
+        if (features.coroutines) {
             "implementation"(libs["kotlinx-coroutines-core"])
-            "implementation"(libs["kotlinx-coroutines-android"])
+            if (android) {
+                "implementation"(libs["kotlinx-coroutines-android"])
+            }
         }
 
-        if (KotlinFeature.DateTime in features) {
+        if (features.dateTime) {
             "implementation"(libs["kotlinx-datetime"])
         }
 
-        if (KotlinFeature.Serialization in features) {
+        if (features.serialization) {
             "implementation"(libs["kotlinx-serialization-json"])
         }
 
-        if (KotlinFeature.ImmutableCollections in features) {
+        if (features.immutableCollections) {
             "implementation"(libs["kotlinx-collections-immutable"])
         }
     }

@@ -6,7 +6,6 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
-import dev.sanson.lightroom.sdk.BuildConfig
 import dev.sanson.lightroom.sdk.DefaultLightroom
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
@@ -17,6 +16,7 @@ import dev.sanson.lightroom.sdk.backend.interceptor.ClientIdInterceptor
 import dev.sanson.lightroom.sdk.backend.interceptor.LightroomAuthenticator
 import dev.sanson.lightroom.sdk.backend.interceptor.RemoveBodyPrefixInterceptor
 import dev.sanson.lightroom.sdk.backend.serializer.LenientInstantSerializer
+import dev.sanson.lightroom.sdk.di.VerboseLogging
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
 import dev.sanson.lightroom.sdk.domain.GetAccountUseCase
@@ -71,10 +71,12 @@ internal class LightroomModule {
 
     @Provides
     @IntoSet
-    fun provideLoggingInterceptor(): Interceptor =
+    fun provideLoggingInterceptor(
+        @VerboseLogging enableVerboseLogging: Boolean,
+    ): Interceptor =
         HttpLoggingInterceptor().apply {
             level =
-                if (BuildConfig.DEBUG) {
+                if (enableVerboseLogging) {
                     HttpLoggingInterceptor.Level.BODY
                 } else {
                     HttpLoggingInterceptor.Level.NONE

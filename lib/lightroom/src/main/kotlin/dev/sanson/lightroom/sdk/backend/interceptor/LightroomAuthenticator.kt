@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.sdk.backend.interceptor
 
-import android.util.Log
+import dev.sanson.core.logging.Logger
+import dev.sanson.core.logging.logcat
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -24,7 +25,7 @@ internal class LightroomAuthenticator(
                     try {
                         authManager.refreshTokens()
                     } catch (e: Exception) {
-                        Log.w("LightroomAuthenticator", "Token refresh failed", e)
+                        logcat(Logger.Priority.Warn, "LightroomAuthenticator", e) { "Token refresh failed" }
                         null
                     }
                 }

@@ -2,21 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 plugins {
     alias(libs.plugins.ksp)
-    id("dev.sanson.android.library")
-}
-
-android {
-    namespace = "dev.sanson.lightroom.sdk"
-
-    buildFeatures {
-        buildConfig = true
-    }
+    alias(libs.plugins.kotlinx.serialization)
+    id("dev.sanson.kotlin.library")
 }
 
 dependencies {
-    implementation(libs.androidx.browser)
     implementation(libs.androidx.datastore)
-    implementation(libs.androidx.work)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization.converter)
@@ -25,7 +16,11 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
 
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.datetime)
+
     implementation(projects.core.data)
+    implementation(projects.core.logging)
 
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)

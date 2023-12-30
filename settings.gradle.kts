@@ -41,3 +41,5 @@ include(
     ":ui:source",
     ":backend:search",
 )
+include(":lib:lightroom-android")
+include(":core:logging")

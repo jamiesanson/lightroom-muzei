@@ -3,7 +3,7 @@ import dev.sanson.buildlogic.configureAndroidCompose
 import dev.sanson.buildlogic.configureAndroid
 import dev.sanson.buildlogic.configureKotlin
 import com.android.build.api.dsl.ApplicationExtension
-import dev.sanson.buildlogic.KotlinFeature
+import dev.sanson.buildlogic.KotlinFeatures
 import dev.sanson.buildlogic.Plugins
 import dev.sanson.buildlogic.configureCircuit
 import dev.sanson.buildlogic.configureHilt
@@ -20,11 +20,13 @@ class AppConventionPlugin : Plugin<Project> {
             }
 
             configureKotlin(
-                KotlinFeature.Serialization,
-                KotlinFeature.Parcelize,
-                KotlinFeature.Coroutines,
-                KotlinFeature.DateTime,
-                KotlinFeature.ImmutableCollections,
+                features = KotlinFeatures(
+                    serialization = true,
+                    parcelize = true,
+                    coroutines = true,
+                    dateTime = true,
+                    immutableCollections = true,
+                ),
             )
 
             configureHilt()

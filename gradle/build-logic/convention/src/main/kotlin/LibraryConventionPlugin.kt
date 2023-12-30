@@ -2,7 +2,7 @@ import com.android.build.api.dsl.LibraryExtension
 import dev.sanson.buildlogic.configureAndroidLinting
 import dev.sanson.buildlogic.configureAndroid
 import dev.sanson.buildlogic.configureKotlin
-import dev.sanson.buildlogic.KotlinFeature
+import dev.sanson.buildlogic.KotlinFeatures
 import dev.sanson.buildlogic.Plugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -21,10 +21,12 @@ class LibraryConventionPlugin : Plugin<Project> {
             }
 
             configureKotlin(
-                KotlinFeature.Serialization,
-                KotlinFeature.Parcelize,
-                KotlinFeature.Coroutines,
-                KotlinFeature.DateTime,
+                features = KotlinFeatures(
+                    serialization = true,
+                    parcelize = true,
+                    coroutines = true,
+                    dateTime = true,
+                ),
             )
 
             extensions.configure<LibraryExtension> {

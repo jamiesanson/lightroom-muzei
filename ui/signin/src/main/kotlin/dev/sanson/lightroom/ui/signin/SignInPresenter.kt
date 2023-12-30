@@ -17,6 +17,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
+import dev.sanson.lightroom.android.signIn
 import dev.sanson.lightroom.screens.ChooseSourceScreen
 import dev.sanson.lightroom.screens.SignInScreen
 import dev.sanson.lightroom.sdk.Lightroom

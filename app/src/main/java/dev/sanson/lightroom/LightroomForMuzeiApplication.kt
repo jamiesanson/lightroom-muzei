@@ -6,6 +6,9 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import dev.sanson.core.logging.Logging
+import dev.sanson.lightroom.android.installTokenRefresher
+import dev.sanson.lightroom.logging.LightroomForMuzeiLogger
 import dev.sanson.lightroom.sdk.Lightroom
 import javax.inject.Inject
 
@@ -23,5 +26,7 @@ class LightroomForMuzeiApplication : Application(), Configuration.Provider {
         super.onCreate()
 
         Lightroom.installTokenRefresher(context = applicationContext)
+
+        Logging.addLogger(LightroomForMuzeiLogger)
     }
 }

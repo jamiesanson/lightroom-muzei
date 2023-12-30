@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.sdk.backend.auth.api
 
+import androidx.annotation.RestrictTo
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Header
@@ -14,7 +15,8 @@ import retrofit2.http.Query
  *
  * For more information, see the [service documentation](https://developer.adobe.com/developer-console/docs/guides/authentication/UserAuthentication/IMS)
  */
-internal interface LightroomAuthService {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+interface LightroomAuthService {
     @POST("/ims/token/v3")
     suspend fun fetchToken(
         @Body body: RequestBody,

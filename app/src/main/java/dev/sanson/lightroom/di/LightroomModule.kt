@@ -21,5 +21,5 @@ class LightroomModule {
     fun provideLightroom(
         @ApplicationContext context: Context,
         @ApplicationScope scope: CoroutineScope,
-    ): Lightroom = Lightroom(context, scope)
+    ): Lightroom = Lightroom(context.filesDir, scope)
 }

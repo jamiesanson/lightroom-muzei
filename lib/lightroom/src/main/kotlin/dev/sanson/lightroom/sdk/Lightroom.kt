@@ -2,11 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.sdk
 
-import android.content.Context
-import android.content.Intent
-import androidx.browser.customtabs.CustomTabsIntent
+import androidx.annotation.RestrictTo
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
-import dev.sanson.lightroom.sdk.backend.auth.TokenRefreshWorker
 import dev.sanson.lightroom.sdk.di.DaggerLightroomComponent
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
@@ -25,21 +22,16 @@ import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import java.io.File
 
 interface Lightroom {
+    @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    val authManager: AuthManager
+
     /**
      * Flow describing whether or not a user is signed in
      */
     val isSignedIn: Flow<Boolean>
-
-    /**
-     * Launch the Lightroom sign in flow
-     *
-     * For more details, see the [Authorize request documentation](https://developer.adobe.com/developer-console/docs/guides/authentication/UserAuthentication/IMS/#authorize-request)
-     */
-    fun signIn(context: Context)
-
-    fun handleSignInResponse(intent: Intent)
 
     /**
      * Load the catalog for the logged in user
@@ -86,17 +78,7 @@ interface Lightroom {
      */
     suspend fun getAccount(): Account
 
-    companion object {
-        /**
-         * Install a WorkManager worker to periodically update our tokens, ensuring we
-         * don't need to ask the user to sign in again
-         *
-         * @param context Application context
-         */
-        fun installTokenRefresher(context: Context) {
-            TokenRefreshWorker.enqueue(context)
-        }
-    }
+    companion object
 }
 
 /**
@@ -107,12 +89,14 @@ interface Lightroom {
  * @param coroutineScope Coroutine scope to use for async operations
  */
 fun Lightroom(
-    context: Context,
+    filesDir: File,
     coroutineScope: CoroutineScope,
+    verbose: Boolean = false,
 ): Lightroom {
     return DaggerLightroomComponent.builder()
-        .context(context)
+        .filesDir(filesDir)
         .coroutineScope(coroutineScope)
+        .verboseLogging(verbose)
         .build()
         .lightroom()
 }
@@ -135,7 +119,7 @@ suspend fun Lightroom.getImageAuthHeaders(): Map<String, String> {
 
 internal class DefaultLightroom(
     getIsSignedIn: IsSignedInUseCase,
-    internal val authManager: AuthManager,
+    override val authManager: AuthManager,
     internal val clientId: String,
     private val retrieveAlbums: GetAlbumsUseCase,
     private val retrieveAlbumAssets: GetAlbumAssetsUseCase,
@@ -145,17 +129,6 @@ internal class DefaultLightroom(
     private val catalogRepository: CatalogRepository,
 ) : Lightroom {
     override val isSignedIn = getIsSignedIn()
-
-    override fun signIn(context: Context) {
-        val intent = CustomTabsIntent.Builder().build()
-
-        intent.launchUrl(context, authManager.buildAuthUri())
-    }
-
-    override fun handleSignInResponse(intent: Intent) {
-        val code = intent.data?.getQueryParameter("code") ?: error("\"code\" not found in redirect")
-        authManager.onAuthorized(code)
-    }
 
     override suspend fun getCatalog(): Catalog = catalogRepository.getCatalog()
 

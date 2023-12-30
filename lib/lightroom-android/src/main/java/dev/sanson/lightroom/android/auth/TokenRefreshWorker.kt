@@ -1,6 +1,6 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
-package dev.sanson.lightroom.sdk.backend.auth
+package dev.sanson.lightroom.android.auth
 
 import android.content.Context
 import androidx.work.BackoffPolicy
@@ -11,7 +11,6 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import dev.sanson.lightroom.sdk.DefaultLightroom
 import dev.sanson.lightroom.sdk.Lightroom
 import kotlinx.coroutines.coroutineScope
 import retrofit2.HttpException
@@ -23,8 +22,7 @@ internal class TokenRefreshWorker(
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result =
         coroutineScope {
-            val lightroom = Lightroom(context = applicationContext, coroutineScope = this)
-            lightroom as DefaultLightroom
+            val lightroom = Lightroom(filesDir = applicationContext.filesDir, coroutineScope = this)
 
             runCatching {
                 lightroom.authManager.refreshTokens()

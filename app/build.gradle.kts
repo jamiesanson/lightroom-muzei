@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.bundles.firebase)
 
     implementation(projects.lib.lightroom)
+    implementation(projects.lib.lightroomAndroid)
     implementation(projects.lib.lightroomCoil)
     implementation(projects.lib.muzei)
     implementation(projects.lib.unsplash)
@@ -107,6 +108,8 @@ dependencies {
     implementation(projects.common.di)
     implementation(projects.common.ui)
     implementation(projects.common.config)
+
+    implementation(projects.core.logging)
 
     implementation(projects.ui.album)
     implementation(projects.ui.confirm)
