@@ -19,9 +19,11 @@ import dev.sanson.lightroom.sdk.backend.interceptor.RemoveBodyPrefixInterceptor
 import dev.sanson.lightroom.sdk.backend.serializer.LenientInstantSerializer
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
+import dev.sanson.lightroom.sdk.domain.GetAccountUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import dev.sanson.lightroom.sdk.domain.GetCatalogAssetsUseCase
+import dev.sanson.lightroom.sdk.domain.IsSignedInUseCase
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
@@ -135,9 +137,12 @@ internal class LightroomModule {
         retrieveAlbumAssets: GetAlbumAssetsUseCase,
         retrieveCatalogAssets: GetCatalogAssetsUseCase,
         generateRendition: GenerateRenditionUseCase,
+        getAccount: GetAccountUseCase,
+        isSignedIn: IsSignedInUseCase,
         catalogRepository: CatalogRepository,
     ): Lightroom {
         return DefaultLightroom(
+            getIsSignedIn = isSignedIn,
             authManager = authManager,
             clientId = clientId,
             retrieveAlbums = retrieveAlbums,
@@ -145,6 +150,7 @@ internal class LightroomModule {
             retrieveCatalogAssets = retrieveCatalogAssets,
             catalogRepository = catalogRepository,
             generateRenditions = generateRendition,
+            retrieveAccount = getAccount,
         )
     }
 }

@@ -16,6 +16,7 @@ android {
 dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.androidx.datastore)
+    implementation(libs.androidx.work)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization.converter)

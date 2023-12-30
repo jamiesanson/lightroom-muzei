@@ -35,7 +35,7 @@ internal class AuthManager
     ) {
         private var previousChallenge: String? = null
 
-        val isSignedIn = credentialStore.credential.map { it != null }
+        val hasCredentials = credentialStore.credential.map { it != null }
 
         val latestAccessToken = credentialStore.credential.map { it?.accessToken }
 
