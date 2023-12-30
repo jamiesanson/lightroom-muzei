@@ -13,6 +13,7 @@ import dev.sanson.lightroom.sdk.domain.GetAccountUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumAssetsUseCase
 import dev.sanson.lightroom.sdk.domain.GetAlbumsUseCase
 import dev.sanson.lightroom.sdk.domain.GetCatalogAssetsUseCase
+import dev.sanson.lightroom.sdk.domain.IsSignedInUseCase
 import dev.sanson.lightroom.sdk.model.Account
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.AlbumTreeItem
@@ -120,6 +121,7 @@ suspend fun Lightroom.getImageAuthHeaders(): Map<String, String> {
 }
 
 internal class DefaultLightroom(
+    getIsSignedIn: IsSignedInUseCase,
     internal val authManager: AuthManager,
     internal val clientId: String,
     private val retrieveAlbums: GetAlbumsUseCase,
@@ -129,7 +131,7 @@ internal class DefaultLightroom(
     private val retrieveAccount: GetAccountUseCase,
     private val catalogRepository: CatalogRepository,
 ) : Lightroom {
-    override val isSignedIn = authManager.isSignedIn
+    override val isSignedIn = getIsSignedIn()
 
     override fun signIn(context: Context) {
         val intent = CustomTabsIntent.Builder().build()
