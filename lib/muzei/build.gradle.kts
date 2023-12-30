@@ -7,6 +7,10 @@ plugins {
 
 android {
     namespace = "dev.sanson.lightroom.muzei"
+    defaultConfig {
+        val authority = "dev.sanson.lightroom.authority"
+        manifestPlaceholders += "lightroomAuthority" to authority
+    }
 }
 
 dependencies {
