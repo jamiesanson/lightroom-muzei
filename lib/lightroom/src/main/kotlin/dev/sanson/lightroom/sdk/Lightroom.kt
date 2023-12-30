@@ -87,7 +87,6 @@ interface Lightroom {
     suspend fun getAccount(): Account
 
     companion object {
-
         /**
          * Install a WorkManager worker to periodically update our tokens, ensuring we
          * don't need to ask the user to sign in again
@@ -164,8 +163,7 @@ internal class DefaultLightroom(
 
     override suspend fun getCatalogAssets(): List<Asset> = retrieveCatalogAssets()
 
-    override suspend fun getAlbumAssets(albumId: AlbumId): List<Asset> =
-        retrieveAlbumAssets(albumId = albumId)
+    override suspend fun getAlbumAssets(albumId: AlbumId): List<Asset> = retrieveAlbumAssets(albumId = albumId)
 
     override suspend fun generateRendition(
         asset: AssetId,
