@@ -21,6 +21,8 @@ val invoker: Configuration by configurations.creating
 dependencies {
     compileOnly(libs.google.cloud.functions.api)
     invoker(libs.google.cloud.functions.invoker)
+
+    implementation(libs.kotlinx.coroutines.core)
 }
 
 task<JavaExec>("runFunction") {
