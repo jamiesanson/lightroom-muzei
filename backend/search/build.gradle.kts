@@ -10,6 +10,14 @@ plugins {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+
+    toolchain {
+        version = JavaLanguageVersion.of(17)
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 application {
@@ -42,13 +50,13 @@ task<JavaExec>("runFunction") {
 }
 
 tasks.named("build") {
-    dependsOn(":shadowJar")
+    dependsOn("shadowJar")
 }
 
 task("buildFunction") {
     dependsOn("build")
     copy {
-        from("build/libs/" + rootProject.name + "-all.jar")
-        into("build/deploy")
+        from(layout.buildDirectory.file("libs/${project.name}-17-all.jar"))
+        into(layout.buildDirectory.file("deploy"))
     }
 }
