@@ -1,2 +1,37 @@
 #!/bin/sh
-./gradlew spotlessApply
+
+CHANGED_FILES="$(git --no-pager diff --name-status --no-color --cached | awk '$1 != "D" && $NF ~ /\.kts?$/ { print $NF }')"
+
+if [ -z "$CHANGED_FILES" ]; then
+    echo "No Kotlin staged files."
+    exit 0
+fi;
+
+echo "Running Spotless"
+
+diff=.git/unstaged-ktlint-git-hook.diff
+git diff --color=never > $diff
+if [ -s $diff ]; then
+  git apply -R $diff
+fi
+
+./gradlew --quiet spotlessApply
+gradle_command_exit_code=$?
+
+echo "Completed Spotless run"
+
+echo "$CHANGED_FILES" | while read -r file; do
+    if [ -f $file ]; then
+        git add $file
+    fi
+done
+
+
+if [ -s $diff ]; then
+  git apply --ignore-whitespace $diff
+fi
+rm $diff
+unset diff
+
+echo "Completed Spotless hook."
+exit $gradle_command_exit_code
