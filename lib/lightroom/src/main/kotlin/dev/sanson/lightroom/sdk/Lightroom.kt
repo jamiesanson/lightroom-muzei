@@ -82,11 +82,12 @@ interface Lightroom {
 }
 
 /**
- * "Constructor" function for Lightroom instance. Should be called once and then cached to avoid
+ * Factory function for Lightroom instance. Should be called once and then cached to avoid
  * expensive initialisation.
  *
- * @param context Context instance to use within SDK
+ * @param filesDir Directory to store auth credentials
  * @param coroutineScope Coroutine scope to use for async operations
+ * @param verbose Whether to log information verbose-ly
  */
 fun Lightroom(
     filesDir: File,
