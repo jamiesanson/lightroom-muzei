@@ -16,7 +16,4 @@ dependencies {
     implementation(projects.lib.lightroom)
     api(projects.core.config)
     api(projects.core.data)
-
-    testImplementation(libs.kotlinx.datetime)
-    testImplementation(libs.bundles.testing.unit)
 }

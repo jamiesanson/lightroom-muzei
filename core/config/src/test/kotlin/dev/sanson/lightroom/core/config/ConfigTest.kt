@@ -1,6 +1,6 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
-package dev.sanson.lightroom.common.config
+package dev.sanson.lightroom.core.config
 
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId

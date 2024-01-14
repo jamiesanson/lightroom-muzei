@@ -10,4 +10,7 @@ dependencies {
 
     implementation(projects.core.data)
     implementation(projects.lib.lightroom)
+
+    testImplementation(libs.kotlinx.datetime)
+    testImplementation(libs.bundles.testing.unit)
 }
