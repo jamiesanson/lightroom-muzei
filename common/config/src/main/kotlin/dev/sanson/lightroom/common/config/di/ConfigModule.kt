@@ -13,8 +13,8 @@ import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.common.config.DefaultConfigRepository
 import dev.sanson.lightroom.common.di.ApplicationScope
-import dev.sanson.lightroom.core.config.Config
 import dev.sanson.lightroom.core.data.JsonSerializer
+import dev.sanson.lightroom.core.search.Config
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Singleton

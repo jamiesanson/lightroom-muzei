@@ -17,7 +17,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.ConfigRepository
-import dev.sanson.lightroom.core.config.Config
+import dev.sanson.lightroom.core.search.Config
 import dev.sanson.lightroom.screens.ChooseAlbumScreen
 import dev.sanson.lightroom.screens.ChooseSourceScreen
 import dev.sanson.lightroom.screens.FilterAssetsScreen

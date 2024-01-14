@@ -5,7 +5,7 @@ package dev.sanson.lightroom.search
 import com.google.cloud.functions.HttpFunction
 import com.google.cloud.functions.HttpRequest
 import com.google.cloud.functions.HttpResponse
-import dev.sanson.lightroom.core.config.loadAssets
+import dev.sanson.lightroom.core.search.loadAssets
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.search.model.SearchRequest
 import kotlinx.coroutines.CoroutineScope

@@ -4,7 +4,7 @@ package dev.sanson.lightroom.ui.source
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import dev.sanson.lightroom.core.config.Config
+import dev.sanson.lightroom.core.search.Config
 
 data class ChooseSourceState(
     val selectedSource: Config.Source,
