@@ -1,8 +1,8 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
-package dev.sanson.lightroom.common.config
+package dev.sanson.lightroom.core.config
 
-import dev.sanson.lightroom.common.config.serializer.IntRangeSerializer
+import dev.sanson.lightroom.core.config.serializer.IntRangeSerializer
 import dev.sanson.lightroom.sdk.model.AlbumId
 import dev.sanson.lightroom.sdk.model.Asset
 import kotlinx.serialization.Serializable

@@ -21,9 +21,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.common.ui.component.Equality
+import dev.sanson.lightroom.core.config.Config
 import dev.sanson.lightroom.screens.ConfirmationScreen
 import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.model.AlbumId

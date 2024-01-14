@@ -1,6 +1,6 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
-package dev.sanson.lightroom.common.config.serializer
+package dev.sanson.lightroom.core.config.serializer
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer

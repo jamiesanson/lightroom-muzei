@@ -30,6 +30,7 @@ rootProject.name = "lightroom-for-muzei"
 include(
     ":app",
     ":lib:lightroom",
+    ":lib:lightroom-android",
     ":lib:lightroom-coil",
     ":lib:unsplash",
     ":lib:muzei",
@@ -37,7 +38,9 @@ include(
     ":common:di",
     ":common:ui",
     ":common:config",
+    ":core:config",
     ":core:data",
+    ":core:logging",
     ":ui:album",
     ":ui:confirm",
     ":ui:filter",
@@ -45,5 +48,3 @@ include(
     ":ui:source",
     ":backend:search",
 )
-include(":lib:lightroom-android")
-include(":core:logging")

@@ -4,6 +4,7 @@ plugins {
     id("application")
     id("dev.sanson.spotless")
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.shadow)
 }
 
@@ -31,7 +32,9 @@ dependencies {
     invoker(libs.google.cloud.functions.invoker)
 
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.serialization.json)
     implementation(projects.lib.lightroom)
+    implementation(projects.core.config)
 }
 
 task<JavaExec>("runFunction") {

@@ -21,7 +21,6 @@ internal fun Project.configureHilt() {
     dependencies {
         "implementation"(libs["hilt.android"])
         "ksp"(libs["hilt.compiler"])
-        "kspAndroidTest"(libs["hilt.compiler"])
 
         "ksp"(libs["androidx.hilt.compiler"])
         "implementation"(libs["androidx.hilt.work"])

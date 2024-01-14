@@ -19,8 +19,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
-import dev.sanson.lightroom.common.config.Config
 import dev.sanson.lightroom.common.config.ConfigRepository
+import dev.sanson.lightroom.core.config.Config
 import dev.sanson.lightroom.muzei.LightroomArtProvider
 import dev.sanson.lightroom.muzei.loadAssets
 import dev.sanson.lightroom.muzei.toArtwork
