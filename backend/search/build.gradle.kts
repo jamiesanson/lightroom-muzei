@@ -33,8 +33,10 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
+
     implementation(projects.lib.lightroom)
     implementation(projects.core.search)
+    implementation(projects.backend.search.api)
 }
 
 task<JavaExec>("runFunction") {

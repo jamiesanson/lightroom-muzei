@@ -47,4 +47,5 @@ include(
     ":ui:signin",
     ":ui:source",
     ":backend:search",
+    ":backend:search:api",
 )
