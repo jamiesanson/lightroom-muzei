@@ -38,7 +38,7 @@ include(
     ":common:di",
     ":common:ui",
     ":common:config",
-    ":core:config",
+    ":core:search",
     ":core:data",
     ":core:logging",
     ":ui:album",

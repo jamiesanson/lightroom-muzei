@@ -34,7 +34,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(projects.lib.lightroom)
-    implementation(projects.core.config)
+    implementation(projects.core.search)
 }
 
 task<JavaExec>("runFunction") {
