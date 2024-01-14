@@ -14,6 +14,7 @@ import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderCl
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dev.sanson.lightroom.core.config.Config
+import dev.sanson.lightroom.core.config.loadAssets
 import dev.sanson.lightroom.sdk.Lightroom
 import kotlinx.coroutines.flow.first
 
