@@ -3,6 +3,7 @@
 package dev.sanson.lightroom.android.auth
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -11,19 +12,21 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import dev.sanson.lightroom.sdk.Lightroom
 import kotlinx.coroutines.coroutineScope
 import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 
-internal class TokenRefreshWorker(
-    context: Context,
-    params: WorkerParameters,
+@HiltWorker
+internal class TokenRefreshWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters,
+    private val lightroom: Lightroom,
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result =
         coroutineScope {
-            val lightroom = Lightroom(filesDir = applicationContext.filesDir, coroutineScope = this)
-
             runCatching {
                 lightroom.authManager.refreshTokens()
             }.fold(

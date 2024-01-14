@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.sdk
 
-import androidx.annotation.RestrictTo
 import dev.sanson.lightroom.sdk.backend.auth.AuthManager
+import dev.sanson.lightroom.sdk.backend.auth.CredentialStore
 import dev.sanson.lightroom.sdk.di.DaggerLightroomComponent
 import dev.sanson.lightroom.sdk.domain.CatalogRepository
 import dev.sanson.lightroom.sdk.domain.GenerateRenditionUseCase
@@ -22,10 +22,8 @@ import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.io.File
 
 interface Lightroom {
-    @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     val authManager: AuthManager
 
     /**
@@ -82,20 +80,18 @@ interface Lightroom {
 }
 
 /**
- * Factory function for Lightroom instance. Should be called once and then cached to avoid
- * expensive initialisation.
+ * Factory function for Lightroom instance.
  *
- * @param filesDir Directory to store auth credentials
- * @param coroutineScope Coroutine scope to use for async operations
+ * @param credentialStore Store to house API auth credentials
  * @param verbose Whether to log information verbose-ly
  */
 fun Lightroom(
-    filesDir: File,
+    credentialStore: CredentialStore,
     coroutineScope: CoroutineScope,
     verbose: Boolean = false,
 ): Lightroom {
     return DaggerLightroomComponent.builder()
-        .filesDir(filesDir)
+        .credentialStore(credentialStore)
         .coroutineScope(coroutineScope)
         .verboseLogging(verbose)
         .build()

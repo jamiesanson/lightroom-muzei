@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.sdk.backend.auth
 
-import androidx.annotation.RestrictTo
 import dev.sanson.lightroom.sdk.backend.LightroomClientId
 import dev.sanson.lightroom.sdk.backend.auth.api.LightroomAuthService
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +18,6 @@ import javax.inject.Inject
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class AuthManager
     @Inject
     constructor(

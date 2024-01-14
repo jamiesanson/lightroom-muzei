@@ -8,8 +8,8 @@ import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.backend.LightroomModule
 import dev.sanson.lightroom.sdk.backend.ServiceModule
 import dev.sanson.lightroom.sdk.backend.auth.AuthModule
+import dev.sanson.lightroom.sdk.backend.auth.CredentialStore
 import kotlinx.coroutines.CoroutineScope
-import java.io.File
 import javax.inject.Singleton
 
 @Singleton
@@ -25,12 +25,12 @@ internal interface LightroomComponent {
 
     @Component.Builder
     interface Builder {
-        fun filesDir(
-            @BindsInstance @FilesDir filesDir: File,
-        ): Builder
-
         fun coroutineScope(
             @BindsInstance scope: CoroutineScope,
+        ): Builder
+
+        fun credentialStore(
+            @BindsInstance credentialStore: CredentialStore,
         ): Builder
 
         fun verboseLogging(

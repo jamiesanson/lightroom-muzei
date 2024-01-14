@@ -3,6 +3,7 @@
 plugins {
     alias(libs.plugins.ksp)
     id("dev.sanson.android.library")
+    id("dev.sanson.android.hilt")
 }
 
 android {
@@ -17,6 +18,8 @@ dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.work)
+
+    implementation(libs.dagger)
 
     implementation(libs.retrofit)
 
