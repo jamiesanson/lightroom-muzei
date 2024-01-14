@@ -3,7 +3,9 @@
 package dev.sanson.lightroom.sdk.model
 
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Asset(
     val id: AssetId,
     val catalogId: CatalogId,
@@ -18,6 +20,7 @@ data class Asset(
     val rating: Int? = null,
     val review: Flag? = null,
 ) {
+    @Serializable
     enum class Flag {
         Picked,
         Rejected,

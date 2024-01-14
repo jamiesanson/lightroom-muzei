@@ -48,8 +48,6 @@ class SearchLightroom : HttpFunction {
 
         runBlocking {
             val assets = lightroom.loadAssets(searchConfig = searchRequest.searchConfig)
-
-            // TODO: Return a new type here which omits irrelevant information (Artwork proxy perhaps)
             response.writer.write(json.encodeToString(assets))
         }
     }
