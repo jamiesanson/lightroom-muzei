@@ -14,7 +14,7 @@ import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.common.config.DefaultConfigRepository
 import dev.sanson.lightroom.common.di.ApplicationScope
 import dev.sanson.lightroom.core.data.JsonSerializer
-import dev.sanson.lightroom.core.search.Config
+import dev.sanson.lightroom.core.search.SearchConfig
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Singleton
@@ -27,9 +27,9 @@ class ConfigModule {
     fun provideConfigStore(
         @ApplicationScope scope: CoroutineScope,
         @ApplicationContext context: Context,
-    ): DataStore<Config?> {
+    ): DataStore<SearchConfig?> {
         return DataStoreFactory.create(
-            serializer = JsonSerializer<Config>(),
+            serializer = JsonSerializer<SearchConfig>(),
             scope = scope,
             produceFile = {
                 File("${context.filesDir.path}/config")
@@ -39,5 +39,5 @@ class ConfigModule {
 
     @Provides
     @Singleton
-    fun provideConfigRepository(store: DataStore<Config?>): ConfigRepository = DefaultConfigRepository(store)
+    fun provideConfigRepository(store: DataStore<SearchConfig?>): ConfigRepository = DefaultConfigRepository(store)
 }

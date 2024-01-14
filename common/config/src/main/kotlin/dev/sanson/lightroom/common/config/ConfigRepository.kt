@@ -3,42 +3,42 @@
 package dev.sanson.lightroom.common.config
 
 import androidx.datastore.core.DataStore
-import dev.sanson.lightroom.core.search.Config
+import dev.sanson.lightroom.core.search.SearchConfig
 import dev.sanson.lightroom.sdk.model.AlbumId
 import kotlinx.coroutines.flow.Flow
 
 interface ConfigRepository {
-    val config: Flow<Config?>
+    val searchConfig: Flow<SearchConfig?>
 
-    suspend fun updateConfig(config: Config)
+    suspend fun updateConfig(searchConfig: SearchConfig)
 
     suspend fun setAlbum(albumId: AlbumId)
 
-    suspend fun setImageSource(imageSource: Config.Source)
+    suspend fun setImageSource(imageSource: SearchConfig.Source)
 }
 
 internal class DefaultConfigRepository(
-    private val configStore: DataStore<Config?>,
+    private val searchConfigStore: DataStore<SearchConfig?>,
 ) : ConfigRepository {
-    override val config: Flow<Config?> get() = configStore.data
+    override val searchConfig: Flow<SearchConfig?> get() = searchConfigStore.data
 
-    override suspend fun updateConfig(config: Config) {
-        configStore.updateData { config }
+    override suspend fun updateConfig(searchConfig: SearchConfig) {
+        searchConfigStore.updateData { searchConfig }
     }
 
     override suspend fun setAlbum(albumId: AlbumId) {
-        configStore.updateData {
-            val source = Config.Source.Album(id = albumId)
+        searchConfigStore.updateData {
+            val source = SearchConfig.Source.Album(id = albumId)
 
-            it?.copy(source = source) ?: Config(source = source)
+            it?.copy(source = source) ?: SearchConfig(source = source)
         }
     }
 
-    override suspend fun setImageSource(imageSource: Config.Source) {
-        configStore.updateData { currentConfig ->
+    override suspend fun setImageSource(imageSource: SearchConfig.Source) {
+        searchConfigStore.updateData { currentConfig ->
             when {
                 currentConfig == null ->
-                    Config(source = imageSource)
+                    SearchConfig(source = imageSource)
 
                 currentConfig.source::class != imageSource::class -> {
                     currentConfig.copy(source = imageSource)

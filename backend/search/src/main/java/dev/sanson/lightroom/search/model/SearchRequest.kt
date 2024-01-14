@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.search.model
 
-import dev.sanson.lightroom.core.search.Config
+import dev.sanson.lightroom.core.search.SearchConfig
 import dev.sanson.lightroom.sdk.backend.auth.Credential
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SearchRequest(
     val credential: Credential,
-    val config: Config,
+    val searchConfig: SearchConfig,
 )

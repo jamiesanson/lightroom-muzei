@@ -20,7 +20,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.ConfigRepository
-import dev.sanson.lightroom.core.search.Config
+import dev.sanson.lightroom.core.search.SearchConfig
 import dev.sanson.lightroom.core.search.loadAssets
 import dev.sanson.lightroom.muzei.LightroomArtProvider
 import dev.sanson.lightroom.muzei.toArtwork
@@ -49,7 +49,7 @@ class ConfirmationPresenter @AssistedInject constructor(
         val providerClient = remember { getProviderClient<LightroomArtProvider>(context) }
         val artwork by produceState<List<Asset>?>(initialValue = null) {
             val config =
-                requireNotNull(configRepository.config.firstOrNull()) {
+                requireNotNull(configRepository.searchConfig.firstOrNull()) {
                     "Config is required on confirmation"
                 }
 
@@ -62,8 +62,8 @@ class ConfirmationPresenter @AssistedInject constructor(
         }
 
         val stepNumber by produceState(initialValue = 3) {
-            value = configRepository.config.first()?.source?.let {
-                if (it is Config.Source.Album) 4 else 3
+            value = configRepository.searchConfig.first()?.source?.let {
+                if (it is SearchConfig.Source.Album) 4 else 3
             } ?: 3
         }
 

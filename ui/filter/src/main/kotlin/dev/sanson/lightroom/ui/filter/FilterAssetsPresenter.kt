@@ -23,7 +23,7 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.common.ui.component.Equality
-import dev.sanson.lightroom.core.search.Config
+import dev.sanson.lightroom.core.search.SearchConfig
 import dev.sanson.lightroom.screens.ConfirmationScreen
 import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.model.AlbumId
@@ -31,7 +31,7 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
-private val Config.starRating: Int
+private val SearchConfig.starRating: Int
     get() {
         val rating = rating
 
@@ -44,7 +44,7 @@ private val Config.starRating: Int
         }
     }
 
-private val Config.ratingEquality: Equality
+private val SearchConfig.ratingEquality: Equality
     get() {
         val rating = rating
 
@@ -62,33 +62,33 @@ class FilterAssetsPresenter @AssistedInject constructor(
 ) : Presenter<FilterAssetsState> {
     @Composable
     override fun present(): FilterAssetsState {
-        val config by produceState(Config(source = Config.Source.Album(id = AlbumId("")))) {
-            configRepository.config.filterNotNull().collect { value = it }
+        val searchConfig by produceState(SearchConfig(source = SearchConfig.Source.Album(id = AlbumId("")))) {
+            configRepository.searchConfig.filterNotNull().collect { value = it }
         }
 
-        var starRating by rememberSaveable(config.starRating) {
-            mutableIntStateOf(config.starRating)
+        var starRating by rememberSaveable(searchConfig.starRating) {
+            mutableIntStateOf(searchConfig.starRating)
         }
 
-        var equality by rememberSaveable(config.ratingEquality) {
-            mutableStateOf(config.ratingEquality)
+        var equality by rememberSaveable(searchConfig.ratingEquality) {
+            mutableStateOf(searchConfig.ratingEquality)
         }
 
         val keywords =
-            rememberSaveable(config.keywords, saver = keywordSaver()) {
-                config.keywords.toMutableStateList()
+            rememberSaveable(searchConfig.keywords, saver = keywordSaver()) {
+                searchConfig.keywords.toMutableStateList()
             }
 
-        var flag by rememberSaveable(config) {
-            mutableStateOf(config.review)
+        var flag by rememberSaveable(searchConfig) {
+            mutableStateOf(searchConfig.review)
         }
 
-        var filtersApplied by rememberSaveable(config) {
+        var filtersApplied by rememberSaveable(searchConfig) {
             mutableStateOf(
                 FilterAssetsState.FiltersApplied(
-                    keywords = config.keywords.isNotEmpty(),
-                    rating = config.rating != null,
-                    review = config.review != null,
+                    keywords = searchConfig.keywords.isNotEmpty(),
+                    rating = searchConfig.rating != null,
+                    review = searchConfig.review != null,
                 ),
             )
         }
@@ -96,7 +96,7 @@ class FilterAssetsPresenter @AssistedInject constructor(
         val scope = rememberCoroutineScope()
 
         return FilterAssetsState(
-            stepNumber = if (config.source is Config.Source.Album) 3 else 2,
+            stepNumber = if (searchConfig.source is SearchConfig.Source.Album) 3 else 2,
             keywords = keywords.toPersistentList(),
             rating = starRating,
             equality = equality,
@@ -132,7 +132,7 @@ class FilterAssetsPresenter @AssistedInject constructor(
                     is FilterAssetsEvent.Confirm ->
                         scope.launch {
                             val newConfig =
-                                config.copy(
+                                searchConfig.copy(
                                     keywords =
                                         keywords.toSet().takeIf { filtersApplied.keywords }
                                             ?: emptySet(),

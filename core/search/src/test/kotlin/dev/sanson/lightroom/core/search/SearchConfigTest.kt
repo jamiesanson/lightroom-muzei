@@ -15,7 +15,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import org.junit.Test
 
-class ConfigTest {
+class SearchConfigTest {
     /**
      * An asset with no user-defined tags, such as rating, keywords or flags
      */
@@ -39,18 +39,18 @@ class ConfigTest {
     @Test
     fun `Empty Config permits all assets`() =
         runTest {
-            val config = Config(source = Config.Source.Catalog)
+            val searchConfig = SearchConfig(source = SearchConfig.Source.Catalog)
 
             forAll(listOf(untaggedAsset, pickedAsset, rejectedAsset).exhaustive()) {
-                config.permitsAsset(it)
+                searchConfig.permitsAsset(it)
             }
         }
 
     @Test
     fun `Config with picked condition rejects all other asset`() {
-        val config = Config(source = Config.Source.Catalog, review = Asset.Flag.Picked)
+        val searchConfig = SearchConfig(source = SearchConfig.Source.Catalog, review = Asset.Flag.Picked)
 
-        with(config) {
+        with(searchConfig) {
             permitsAsset(rejectedAsset) shouldBe false
             permitsAsset(untaggedAsset) shouldBe false
         }
@@ -59,10 +59,10 @@ class ConfigTest {
     @Test
     fun `Config with rating specification rejects outlying assets`() =
         runTest {
-            val config = Config(source = Config.Source.Catalog, rating = 3..5)
+            val searchConfig = SearchConfig(source = SearchConfig.Source.Catalog, rating = 3..5)
 
             forAll(Arb.int(min = 0, max = 5)) { rating ->
-                val accepted = config.permitsAsset(untaggedAsset.copy(rating = rating))
+                val accepted = searchConfig.permitsAsset(untaggedAsset.copy(rating = rating))
 
                 accepted == (rating >= 3)
             }
@@ -71,10 +71,10 @@ class ConfigTest {
     @Test
     fun `Config with keywords rejects unmatching assets`() =
         runTest {
-            val config = Config(source = Config.Source.Catalog, keywords = setOf("wallpaper"))
+            val searchConfig = SearchConfig(source = SearchConfig.Source.Catalog, keywords = setOf("wallpaper"))
 
             forAll(Arb.string()) { keyword ->
-                val accepted = config.permitsAsset(untaggedAsset.copy(keywords = listOf(keyword)))
+                val accepted = searchConfig.permitsAsset(untaggedAsset.copy(keywords = listOf(keyword)))
 
                 accepted == (keyword == "wallpaper")
             }

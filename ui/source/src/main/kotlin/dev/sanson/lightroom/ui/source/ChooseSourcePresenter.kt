@@ -17,7 +17,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.ConfigRepository
-import dev.sanson.lightroom.core.search.Config
+import dev.sanson.lightroom.core.search.SearchConfig
 import dev.sanson.lightroom.screens.ChooseAlbumScreen
 import dev.sanson.lightroom.screens.ChooseSourceScreen
 import dev.sanson.lightroom.screens.FilterAssetsScreen
@@ -33,9 +33,9 @@ class ChooseSourcePresenter @AssistedInject constructor(
     override fun present(): ChooseSourceState {
         val scope = rememberCoroutineScope()
 
-        val persistedSource by produceState<Config.Source>(Config.Source.Album.Uninitialized) {
-            value = configRepository.config.map { it?.source }.first()
-                ?: Config.Source.Album.Uninitialized
+        val persistedSource by produceState<SearchConfig.Source>(SearchConfig.Source.Album.Uninitialized) {
+            value = configRepository.searchConfig.map { it?.source }.first()
+                ?: SearchConfig.Source.Album.Uninitialized
         }
 
         var selectedSource by remember(persistedSource) { mutableStateOf(persistedSource) }
@@ -45,10 +45,10 @@ class ChooseSourcePresenter @AssistedInject constructor(
         ) { event ->
             when (event) {
                 ChooseSourceEvent.OnChooseAlbum ->
-                    selectedSource = Config.Source.Album.Uninitialized
+                    selectedSource = SearchConfig.Source.Album.Uninitialized
 
                 ChooseSourceEvent.OnChooseCatalog ->
-                    selectedSource = Config.Source.Catalog
+                    selectedSource = SearchConfig.Source.Catalog
 
                 ChooseSourceEvent.OnConfirm ->
                     scope.launch {
@@ -56,8 +56,8 @@ class ChooseSourcePresenter @AssistedInject constructor(
                         navigator.goTo(
                             screen =
                                 when (selectedSource) {
-                                    is Config.Source.Album -> ChooseAlbumScreen
-                                    is Config.Source.Catalog -> FilterAssetsScreen
+                                    is SearchConfig.Source.Album -> ChooseAlbumScreen
+                                    is SearchConfig.Source.Catalog -> FilterAssetsScreen
                                 },
                         )
                     }

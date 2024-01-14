@@ -4,10 +4,10 @@ package dev.sanson.lightroom.ui.source
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import dev.sanson.lightroom.core.search.Config
+import dev.sanson.lightroom.core.search.SearchConfig
 
 data class ChooseSourceState(
-    val selectedSource: Config.Source,
+    val selectedSource: SearchConfig.Source,
     val eventSink: (ChooseSourceEvent) -> Unit,
 ) : CircuitUiState
 

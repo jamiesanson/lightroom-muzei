@@ -18,7 +18,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.ConfigRepository
-import dev.sanson.lightroom.core.search.Config
+import dev.sanson.lightroom.core.search.SearchConfig
 import dev.sanson.lightroom.screens.ChooseAlbumScreen
 import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.Lightroom
@@ -68,8 +68,8 @@ class ChooseAlbumPresenter @AssistedInject constructor(
         }
 
         val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {
-            configRepository.config
-                .map { it?.source as? Config.Source.Album }
+            configRepository.searchConfig
+                .map { it?.source as? SearchConfig.Source.Album }
                 .map { it?.id }
                 .collect { value = it }
         }

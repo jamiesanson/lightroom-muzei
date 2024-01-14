@@ -18,7 +18,7 @@ import kotlinx.serialization.Serializable
  * @param serialVersion Version used to ease future migrations
  */
 @Serializable
-data class Config(
+data class SearchConfig(
     val source: Source,
     val keywords: Set<String> = emptySet(),
     @Serializable(with = IntRangeSerializer::class)
@@ -41,7 +41,7 @@ data class Config(
     }
 }
 
-fun Config.permitsAsset(asset: Asset): Boolean {
+fun SearchConfig.permitsAsset(asset: Asset): Boolean {
     return when {
         // Has matching keyword
         keywords.isNotEmpty() && asset.keywords.none { it in keywords } -> false

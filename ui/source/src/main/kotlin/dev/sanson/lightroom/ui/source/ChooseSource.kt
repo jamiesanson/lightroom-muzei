@@ -43,7 +43,7 @@ import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.ui.LightroomForMuzeiTheme
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.common.ui.component.StepHeader
-import dev.sanson.lightroom.core.search.Config
+import dev.sanson.lightroom.core.search.SearchConfig
 import dev.sanson.lightroom.feature.source.R
 import dev.sanson.lightroom.screens.ChooseSourceScreen
 
@@ -73,7 +73,7 @@ fun ChooseSource(
                 SourceRow(
                     title = stringResource(R.string.catalog_source_title),
                     subtitle = stringResource(R.string.catalog_source_description),
-                    selected = state.selectedSource is Config.Source.Catalog,
+                    selected = state.selectedSource is SearchConfig.Source.Catalog,
                     onClick = { state.eventSink(ChooseSourceEvent.OnChooseCatalog) },
                 )
 
@@ -82,7 +82,7 @@ fun ChooseSource(
                 SourceRow(
                     title = stringResource(R.string.album_source_title),
                     subtitle = stringResource(R.string.album_source_description),
-                    selected = state.selectedSource is Config.Source.Album,
+                    selected = state.selectedSource is SearchConfig.Source.Album,
                     onClick = { state.eventSink(ChooseSourceEvent.OnChooseAlbum) },
                 )
             }
@@ -99,7 +99,7 @@ fun ChooseSource(
 
                 Text(
                     text =
-                        if (state.selectedSource is Config.Source.Album) {
+                        if (state.selectedSource is SearchConfig.Source.Album) {
                             stringResource(id = R.string.button_choose_album)
                         } else {
                             stringResource(id = R.string.button_filter_catalog)
@@ -191,6 +191,6 @@ private fun SourceRow(
 @Composable
 private fun ChooseSourcePreview() {
     LightroomForMuzeiTheme {
-        ChooseSource(state = ChooseSourceState(Config.Source.Catalog) {})
+        ChooseSource(state = ChooseSourceState(SearchConfig.Source.Catalog) {})
     }
 }
