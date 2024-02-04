@@ -9,6 +9,8 @@ import dev.sanson.lightroom.lib.search.searchUseCase
 import dev.sanson.lightroom.sdk.Lightroom
 import dev.sanson.lightroom.sdk.backend.auth.Credential
 import dev.sanson.lightroom.search.api.SearchRequest
+import dev.sanson.lightroom.search.api.SearchResponse
+import dev.sanson.lightroom.search.api.SearchService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -61,10 +63,13 @@ class SearchLightroom : HttpFunction {
                 coroutineScope = scope,
             )
 
+        // Use an implementation of the SearchService API to ensure we're returning the correctly
+        // typed response.
+        val service = LightroomSearchService(lightroom)
+
         runBlocking {
-            val search = lightroom.searchUseCase()
-            val assets = search(searchRequest.searchConfig)
-            response.writer.write(json.encodeToString(assets))
+            val searchResponse = service.search(searchRequest)
+            response.writer.write(json.encodeToString(searchResponse))
         }
     }
 
@@ -74,5 +79,14 @@ class SearchLightroom : HttpFunction {
 
     private fun HttpResponse.notAuthorized() {
         setStatusCode(HttpURLConnection.HTTP_UNAUTHORIZED, "Lightroom authorization failed")
+    }
+
+    private class LightroomSearchService(private val lightroom: Lightroom): SearchService {
+        override suspend fun search(request: SearchRequest): SearchResponse {
+            val search = lightroom.searchUseCase()
+            val assets = search(request.searchConfig).getOrThrow()
+
+            return SearchResponse(assets = assets)
+        }
     }
 }
