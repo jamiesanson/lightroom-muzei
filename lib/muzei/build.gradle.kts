@@ -21,6 +21,13 @@ dependencies {
     implementation(libs.muzei.api)
     implementation(libs.androidx.datastore)
 
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlinx.serialization.converter)
+
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+
     implementation(projects.common.config)
     implementation(projects.lib.lightroom)
     implementation(projects.lib.lightroomCoil)
