@@ -25,5 +25,7 @@ dependencies {
     implementation(projects.lib.lightroom)
     implementation(projects.lib.lightroomCoil)
 
+    implementation("dev.sanson.lightroom.backend:api")
+
     testImplementation(libs.bundles.testing.unit)
 }
