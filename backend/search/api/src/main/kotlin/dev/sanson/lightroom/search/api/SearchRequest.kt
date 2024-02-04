@@ -8,6 +8,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SearchRequest(
-    val credential: Credential,
     val searchConfig: SearchConfig,
 )

@@ -21,7 +21,7 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.lib.search.SearchConfig
-import dev.sanson.lightroom.lib.search.loadAssets
+import dev.sanson.lightroom.lib.search.searchUseCase
 import dev.sanson.lightroom.muzei.LightroomArtProvider
 import dev.sanson.lightroom.muzei.toArtwork
 import dev.sanson.lightroom.screens.ConfirmationScreen
@@ -54,8 +54,9 @@ class ConfirmationPresenter @AssistedInject constructor(
                 }
 
             value =
-                lightroom
-                    .loadAssets(config)
+                lightroom.searchUseCase()
+                    .invoke(config)
+                    .getOrElse { emptyList() }
                     .also { assets ->
                         providerClient.setArtwork(assets.map { it.toArtwork() })
                     }

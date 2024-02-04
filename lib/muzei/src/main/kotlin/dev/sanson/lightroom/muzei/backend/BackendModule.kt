@@ -17,4 +17,10 @@ class BackendModule {
     fun provideSearchService(): SearchService {
         TODO("Provide a search service")
     }
+
+    @Provides
+    @Singleton
+    internal fun provideBackendSearchUseCase(): BackendSearchUseCase {
+        TODO()
+    }
 }

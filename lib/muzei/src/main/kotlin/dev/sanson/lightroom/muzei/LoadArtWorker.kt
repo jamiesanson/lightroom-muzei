@@ -14,12 +14,7 @@ import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderCl
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dev.sanson.lightroom.lib.search.SearchConfig
-import dev.sanson.lightroom.lib.search.loadAssets
-import dev.sanson.lightroom.sdk.Lightroom
-import dev.sanson.lightroom.sdk.backend.auth.Credential
-import dev.sanson.lightroom.sdk.model.Asset
-import dev.sanson.lightroom.search.api.SearchRequest
-import dev.sanson.lightroom.search.api.SearchService
+import dev.sanson.lightroom.lib.search.SearchUseCase
 import kotlinx.coroutines.flow.first
 
 /**
@@ -30,8 +25,7 @@ import kotlinx.coroutines.flow.first
 class LoadArtWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
-    private val lightroom: Lightroom,
-    private val searchService: SearchService,
+    private val search: SearchUseCase,
     private val searchConfigStore: DataStore<SearchConfig?>,
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
@@ -46,6 +40,7 @@ class LoadArtWorker @AssistedInject constructor(
 
         val artworks =
             search(config)
+                .map { assets -> assets.map { it.toArtwork() } }
                 .getOrElse { return Result.failure() }
                 .filterNot { albumAsset ->
                     albumAsset.token in previouslyAddedAssets
@@ -54,22 +49,6 @@ class LoadArtWorker @AssistedInject constructor(
         albumProvider.addArtwork(artworks)
 
         return Result.success()
-    }
-
-    private suspend fun search(config: SearchConfig): kotlin.Result<List<Artwork>> {
-        // TODO: Remove the credentials from here, have an interceptor add a header
-        return runCatching { loadApiAssets(lightroom.authManager.refreshTokens(), config) }
-            .recoverCatching { lightroom.loadAssets(config) }
-            .map { assets ->
-                assets.map { it.toArtwork() }
-            }
-    }
-
-    private suspend fun loadApiAssets(
-        credential: Credential,
-        config: SearchConfig,
-    ): List<Asset> {
-        return searchService.search(SearchRequest(credential, config)).assets
     }
 }
 
