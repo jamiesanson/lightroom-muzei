@@ -9,6 +9,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(projects.lib.lightroom)
-    implementation(projects.lib.search)
+    implementation("dev.sanson.lightroom:lightroom")
+    implementation("dev.sanson.lightroom:search")
 }
