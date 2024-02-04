@@ -27,25 +27,23 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "lightroom-for-muzei"
 
-include(
-    ":app",
-    ":lib:lightroom",
-    ":lib:lightroom-android",
-    ":lib:lightroom-coil",
-    ":lib:unsplash",
-    ":lib:muzei",
-    ":lib:search",
-    ":common:screens",
-    ":common:di",
-    ":common:ui",
-    ":common:config",
-    ":core:data",
-    ":core:logging",
-    ":ui:album",
-    ":ui:confirm",
-    ":ui:filter",
-    ":ui:signin",
-    ":ui:source",
-    ":backend:search",
-    ":backend:search:api",
-)
+include(":app")
+include(":core:data")
+include(":core:logging")
+include(":common:screens")
+include(":common:di")
+include(":common:ui")
+include(":common:config")
+include(":ui:album")
+include(":ui:confirm")
+include(":ui:filter")
+include(":ui:signin")
+include(":ui:source")
+include(":lib:lightroom")
+include(":lib:lightroom-android")
+include(":lib:lightroom-coil")
+include(":lib:unsplash")
+include(":lib:muzei")
+include(":lib:search")
+include(":backend:search")
+include(":backend:search:api")
