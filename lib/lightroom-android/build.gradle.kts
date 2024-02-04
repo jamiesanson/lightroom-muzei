@@ -6,6 +6,8 @@ plugins {
     id("dev.sanson.android.hilt")
 }
 
+group = "dev.sanson.lightroom"
+
 android {
     namespace = "dev.sanson.lightroom.sdk.android"
 

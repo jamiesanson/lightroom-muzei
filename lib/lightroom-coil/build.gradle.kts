@@ -5,6 +5,8 @@ plugins {
     id("dev.sanson.android.compose")
 }
 
+group = "dev.sanson.lightroom"
+
 android {
     namespace = "dev.sanson.lightroom.coil"
 }

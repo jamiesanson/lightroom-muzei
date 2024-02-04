@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
 }
 
+group = "dev.sanson.lightroom"
+
 dependencies {
     implementation(libs.kotlinx.serialization.json)
 

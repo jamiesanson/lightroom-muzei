@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+group = "dev.sanson.lightroom"
+
 dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization.converter)
