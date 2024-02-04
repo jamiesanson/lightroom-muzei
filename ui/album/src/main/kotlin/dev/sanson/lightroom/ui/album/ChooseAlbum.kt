@@ -26,7 +26,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -147,7 +147,7 @@ fun ChooseAlbum(
 
                         Spacer(Modifier.size(16.dp))
 
-                        Icon(Icons.Default.ArrowForward, contentDescription = "")
+                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "")
                     }
                 }
             }
