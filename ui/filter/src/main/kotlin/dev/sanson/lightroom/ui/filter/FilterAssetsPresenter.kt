@@ -23,7 +23,7 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.common.ui.component.Equality
-import dev.sanson.lightroom.core.search.SearchConfig
+import dev.sanson.lightroom.lib.search.SearchConfig
 import dev.sanson.lightroom.screens.ConfirmationScreen
 import dev.sanson.lightroom.screens.FilterAssetsScreen
 import dev.sanson.lightroom.sdk.model.AlbumId

@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.lightroom.core.search
 
+import dev.sanson.lightroom.lib.search.SearchConfig
+import dev.sanson.lightroom.lib.search.permitsAsset
 import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CatalogId

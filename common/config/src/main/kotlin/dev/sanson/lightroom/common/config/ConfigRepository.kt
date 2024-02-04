@@ -3,7 +3,7 @@
 package dev.sanson.lightroom.common.config
 
 import androidx.datastore.core.DataStore
-import dev.sanson.lightroom.core.search.SearchConfig
+import dev.sanson.lightroom.lib.search.SearchConfig
 import dev.sanson.lightroom.sdk.model.AlbumId
 import kotlinx.coroutines.flow.Flow
 

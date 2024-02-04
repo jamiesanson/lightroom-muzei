@@ -10,5 +10,5 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(projects.lib.lightroom)
-    implementation(projects.core.search)
+    implementation(projects.lib.search)
 }

@@ -14,7 +14,7 @@ import dev.sanson.lightroom.common.config.ConfigRepository
 import dev.sanson.lightroom.common.config.DefaultConfigRepository
 import dev.sanson.lightroom.common.di.ApplicationScope
 import dev.sanson.lightroom.core.data.JsonSerializer
-import dev.sanson.lightroom.core.search.SearchConfig
+import dev.sanson.lightroom.lib.search.SearchConfig
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Singleton

@@ -13,8 +13,8 @@ import com.google.android.apps.muzei.api.provider.ProviderClient
 import com.google.android.apps.muzei.api.provider.ProviderContract.getProviderClient
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dev.sanson.lightroom.core.search.SearchConfig
-import dev.sanson.lightroom.core.search.loadAssets
+import dev.sanson.lightroom.lib.search.SearchConfig
+import dev.sanson.lightroom.lib.search.loadAssets
 import dev.sanson.lightroom.sdk.Lightroom
 import kotlinx.coroutines.flow.first
 

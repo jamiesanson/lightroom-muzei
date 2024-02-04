@@ -14,6 +14,6 @@ dependencies {
 
     implementation(projects.common.di)
     implementation(projects.lib.lightroom)
-    api(projects.core.search)
+    api(projects.lib.search)
     api(projects.core.data)
 }

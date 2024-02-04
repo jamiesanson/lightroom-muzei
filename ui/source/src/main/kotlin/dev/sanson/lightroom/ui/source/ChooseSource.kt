@@ -43,8 +43,8 @@ import dagger.hilt.components.SingletonComponent
 import dev.sanson.lightroom.common.ui.LightroomForMuzeiTheme
 import dev.sanson.lightroom.common.ui.component.PreviewLightDark
 import dev.sanson.lightroom.common.ui.component.StepHeader
-import dev.sanson.lightroom.core.search.SearchConfig
 import dev.sanson.lightroom.feature.source.R
+import dev.sanson.lightroom.lib.search.SearchConfig
 import dev.sanson.lightroom.screens.ChooseSourceScreen
 
 @CircuitInject(ChooseSourceScreen::class, SingletonComponent::class)

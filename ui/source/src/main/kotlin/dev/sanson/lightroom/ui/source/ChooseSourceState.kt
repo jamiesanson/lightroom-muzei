@@ -4,7 +4,7 @@ package dev.sanson.lightroom.ui.source
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import dev.sanson.lightroom.core.search.SearchConfig
+import dev.sanson.lightroom.lib.search.SearchConfig
 
 data class ChooseSourceState(
     val selectedSource: SearchConfig.Source,
