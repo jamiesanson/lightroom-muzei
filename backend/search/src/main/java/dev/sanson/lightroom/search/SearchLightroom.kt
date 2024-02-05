@@ -26,7 +26,8 @@ import kotlin.jvm.optionals.getOrElse
 @Suppress("unused")
 class SearchLightroom : HttpFunction {
     private val json = Json.Default
-    private val scope = CoroutineScope(Dispatchers.IO) + SupervisorJob()
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.IO) + job
 
     @OptIn(ExperimentalSerializationApi::class)
     override fun service(
@@ -71,6 +72,8 @@ class SearchLightroom : HttpFunction {
             val searchResponse = service.search(searchRequest)
             response.writer.write(json.encodeToString(searchResponse))
         }
+
+        job.complete()
     }
 
     private fun HttpResponse.badInput() {
