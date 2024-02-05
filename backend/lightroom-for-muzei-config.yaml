@@ -24,5 +24,5 @@ paths:
 securityDefinitions:
   api_key:
     type: "apiKey"
-    name: "key"
-    in: "query"
+    name: "X-Api-Key"
+    in: "header"
