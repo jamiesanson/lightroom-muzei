@@ -49,6 +49,12 @@ internal class BackendModule {
 
     @Provides
     @IntoSet
+    fun provideApiKeyInterceptor(): Interceptor {
+        return ApiKeyInterceptor()
+    }
+
+    @Provides
+    @IntoSet
     fun provideAndroidClientInterceptor(
         @ApplicationContext context: Context,
     ): Interceptor {
