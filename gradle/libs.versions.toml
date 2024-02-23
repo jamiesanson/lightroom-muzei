@@ -17,7 +17,7 @@ androidx-work = "2.9.0"
 
 circuit = "0.18.2"
 
-coil = "2.5.0"
+coil = "2.6.0"
 
 compose-bom = "2024.01.00"
 compose-compiler = "1.5.8"
