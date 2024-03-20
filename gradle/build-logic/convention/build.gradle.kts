@@ -4,11 +4,6 @@ plugins {
 
 group = "dev.sanson.buildlogic"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
 dependencies {
     compileOnly(libs.android.gradle.plugin)
     compileOnly(libs.kotlin.gradle.plugin)
@@ -16,14 +11,13 @@ dependencies {
     compileOnly(libs.ksp.gradle.plugin)
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + listOf(
+kotlin {
+    jvmToolchain(17)
+
+    compilerOptions {
+        freeCompilerArgs.addAll(
             "-opt-in=kotlin.RequiresOptIn",
         )
-
-        // Set JVM target to 11
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 

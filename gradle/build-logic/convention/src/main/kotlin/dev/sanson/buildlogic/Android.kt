@@ -2,7 +2,6 @@ package dev.sanson.buildlogic
 
 import BuildVersions
 import com.android.build.api.dsl.CommonExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
@@ -23,8 +22,6 @@ internal fun Project.configureAndroid(
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
             isCoreLibraryDesugaringEnabled = true
         }
 

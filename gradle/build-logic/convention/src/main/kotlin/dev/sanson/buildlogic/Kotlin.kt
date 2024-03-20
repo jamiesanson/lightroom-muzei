@@ -1,10 +1,10 @@
 package dev.sanson.buildlogic
 
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal enum class KotlinFeature {
@@ -23,6 +23,12 @@ internal fun Project.configureKotlin(vararg features: KotlinFeature) {
         }
     }
 
+    val libs = versionCatalog
+
+    kotlinExtension.jvmToolchain(
+        jdkVersion = libs.findVersion("java-toolchain").get().requiredVersion.toInt()
+    )
+
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             // Treat all Kotlin warnings as errors (enabled by default)
@@ -36,12 +42,9 @@ internal fun Project.configureKotlin(vararg features: KotlinFeature) {
                 "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                 "-opt-in=kotlinx.coroutines.FlowPreview",
             )
-
-            jvmTarget = JavaVersion.VERSION_17.toString()
         }
     }
 
-    val libs = versionCatalog
 
     dependencies {
         if (KotlinFeature.Coroutines in features) {
