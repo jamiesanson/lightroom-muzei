@@ -3,7 +3,7 @@
 app = "0.1"
 versioncode = "1"
 
-android-gradle-plugin = "8.2.2"
+android-gradle-plugin = "8.3.1"
 
 androidx-appcompat = "1.6.1"
 androidx-activity-compose = "1.8.2"
@@ -20,7 +20,7 @@ circuit = "0.18.2"
 coil = "2.6.0"
 
 compose-bom = "2024.01.00"
-compose-compiler = "1.5.8"
+compose-compiler = "1.5.11"
 
 dagger = "2.51"
 
@@ -35,7 +35,7 @@ junit = "4.13.2"
 
 kotest = "5.8.1"
 
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 
 kotlinx = "1.8.0"
 kotlinx-collections-immutable = "0.3.7"
