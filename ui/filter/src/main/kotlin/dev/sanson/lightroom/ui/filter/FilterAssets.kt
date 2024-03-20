@@ -16,7 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -73,7 +73,7 @@ fun FilterAssets(
                         onRemoveKeyword = { state.eventSink(FilterAssetsEvent.RemoveKeyword(it)) },
                     )
 
-                    Divider(
+                    HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                     )
@@ -87,7 +87,7 @@ fun FilterAssets(
                         onEqualityChange = { state.eventSink(FilterAssetsEvent.UpdateEquality(it)) },
                     )
 
-                    Divider(
+                    HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                     )
