@@ -41,7 +41,7 @@ class LightroomSettingsActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val backstack = rememberSaveableBackStack { push(SignInScreen) }
+            val backstack = rememberSaveableBackStack(SignInScreen)
             val navigator =
                 rememberAndroidScreenAwareNavigator(
                     delegate = rememberCircuitNavigator(backstack),
@@ -66,7 +66,7 @@ class LightroomSettingsActivity : ComponentActivity() {
                     CircuitCompositionLocals(circuit = circuit) {
                         NavigableCircuitContent(
                             navigator = navigator,
-                            backstack = backstack,
+                            backStack = backstack,
                         )
                     }
                 }
