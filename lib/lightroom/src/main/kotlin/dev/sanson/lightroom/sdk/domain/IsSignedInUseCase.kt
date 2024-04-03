@@ -25,6 +25,6 @@ internal class IsSignedInUseCase @Inject constructor(
                         onFailure = { error -> error !is HttpException },
                     )
             }
-            .shareIn(scope, SharingStarted.Eagerly)
+            .shareIn(scope, SharingStarted.Eagerly, replay = 1)
     }
 }
