@@ -34,6 +34,17 @@ class SearchLightroom : HttpFunction {
         request: HttpRequest,
         response: HttpResponse,
     ) {
+        val apiKey = request.getFirstHeader("X-Api-Key")
+            .getOrElse {
+                response.apiKeyInvalid()
+                return
+            }
+
+        if (apiKey != System.getenv("API_KEY")) {
+            response.apiKeyInvalid()
+            return
+        }
+
         val searchRequest =
             try {
                 json.decodeFromStream<SearchRequest>(request.inputStream)
@@ -78,6 +89,10 @@ class SearchLightroom : HttpFunction {
 
     private fun HttpResponse.badInput() {
         setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST, "Malformed search request")
+    }
+
+    private fun HttpResponse.apiKeyInvalid() {
+        setStatusCode(HttpURLConnection.HTTP_UNAUTHORIZED, "Invalid API Key")
     }
 
     private fun HttpResponse.notAuthorized() {
