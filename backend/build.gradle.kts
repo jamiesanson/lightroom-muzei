@@ -14,8 +14,3 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
 }
-
-tasks.create<Exec>("deployGateway") {
-    workingDir = project.file("scripts")
-    commandLine = listOf("./deploy-gateway")
-}
