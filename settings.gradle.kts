@@ -45,7 +45,5 @@ include(":lib:lightroom-coil")
 include(":lib:unsplash")
 include(":lib:muzei")
 include(":lib:search")
-// include(":backend:search")
-// include(":backend:search:api")
 
 includeBuild("backend")

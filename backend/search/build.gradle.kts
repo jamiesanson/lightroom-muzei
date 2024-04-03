@@ -71,7 +71,7 @@ task("buildFunction") {
 tasks.create<Exec>("deploy") {
     dependsOn("buildFunction")
 
-    workingDir = rootProject.file("backend/scripts")
+    workingDir = rootProject.file("scripts")
 
     commandLine("./deploy-function", "search-lightroom", application.mainClass.get(), deployDir.get().asFile.path)
 }

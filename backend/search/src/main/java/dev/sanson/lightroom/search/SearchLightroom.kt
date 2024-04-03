@@ -34,11 +34,12 @@ class SearchLightroom : HttpFunction {
         request: HttpRequest,
         response: HttpResponse,
     ) {
-        val apiKey = request.getFirstHeader("X-Api-Key")
-            .getOrElse {
-                response.apiKeyInvalid()
-                return
-            }
+        val apiKey =
+            request.getFirstHeader("X-Api-Key")
+                .getOrElse {
+                    response.apiKeyInvalid()
+                    return
+                }
 
         if (apiKey != System.getenv("API_KEY")) {
             response.apiKeyInvalid()
@@ -53,18 +54,20 @@ class SearchLightroom : HttpFunction {
                 return
             }
 
-        val accessToken = request.getFirstHeader("X-Lightroom-Access-Token")
-            .getOrElse {
-                response.notAuthorized()
-                return
-            }
+        val accessToken =
+            request.getFirstHeader("X-Lightroom-Access-Token")
+                .getOrElse {
+                    response.notAuthorized()
+                    return
+                }
 
-        val credential = Credential(
-            accessToken = accessToken,
-            // Use a blank refresh token. This will result in a token refresh failure if the
-            // incoming access token is invalid.
-            refreshToken = ""
-        )
+        val credential =
+            Credential(
+                accessToken = accessToken,
+                // Use a blank refresh token. This will result in a token refresh failure if the
+                // incoming access token is invalid.
+                refreshToken = "",
+            )
 
         val lightroom =
             Lightroom(
@@ -99,7 +102,7 @@ class SearchLightroom : HttpFunction {
         setStatusCode(HttpURLConnection.HTTP_UNAUTHORIZED, "Lightroom authorization failed")
     }
 
-    private class LightroomSearchService(private val lightroom: Lightroom): SearchService {
+    private class LightroomSearchService(private val lightroom: Lightroom) : SearchService {
         override suspend fun search(request: SearchRequest): SearchResponse {
             val search = lightroom.searchUseCase()
             val assets = search(request.searchConfig).getOrThrow()
