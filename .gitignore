@@ -34,6 +34,3 @@ release.properties
 
 # Android Profiling
 *.hprof
-
-# Secrets
-.unsplash_consumer_key
