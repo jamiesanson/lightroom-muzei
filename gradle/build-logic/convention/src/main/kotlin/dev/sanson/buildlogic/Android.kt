@@ -10,7 +10,7 @@ import org.gradle.kotlin.dsl.dependencies
  * Configure base Kotlin with Android options
  */
 internal fun Project.configureAndroid(
-    commonExtension: CommonExtension<*, *, *, *, *>,
+    commonExtension: CommonExtension<*, *, *, *, *, *>,
 ) {
     val libs = versionCatalog
 

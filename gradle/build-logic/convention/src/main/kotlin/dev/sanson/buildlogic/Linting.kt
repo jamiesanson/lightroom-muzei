@@ -51,7 +51,7 @@ internal fun Project.configureSpotless() {
     }
 }
 
-internal fun Project.configureAndroidLinting(androidExtension: CommonExtension<*, *, *, *, *>) {
+internal fun Project.configureAndroidLinting(androidExtension: CommonExtension<*, *, *, *, *, *>) {
     configureSpotless()
 
     androidExtension.lint {
