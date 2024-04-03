@@ -14,7 +14,7 @@ import java.io.OutputStream
  * specify serializer
  */
 @Suppress("ktlint:standard:function-naming")
-inline fun <reified T : Any> JsonSerializer(): JsonSerializer<T> {
+inline fun <reified T> JsonSerializer(): JsonSerializer<T> {
     return JsonSerializer(serializer = serializer<T>())
 }
 
@@ -23,7 +23,7 @@ inline fun <reified T : Any> JsonSerializer(): JsonSerializer<T> {
  *
  * @param serializer [KSerializer] to use when saving and restoring Json text
  */
-class JsonSerializer<T : Any>(
+class JsonSerializer<T>(
     private val serializer: KSerializer<T>,
 ) : Serializer<T?> {
     override val defaultValue: T? = null
