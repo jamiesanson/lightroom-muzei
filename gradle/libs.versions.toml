@@ -35,7 +35,7 @@ google-services = "4.4.1"
 
 junit = "4.13.2"
 
-kotest = "5.8.1"
+kotest = "5.9.0"
 
 kotlin = "1.9.23"
 
