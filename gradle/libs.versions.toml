@@ -7,7 +7,7 @@ java-toolchain = "17"
 
 android-gradle-plugin = "8.4.1"
 
-androidx-appcompat = "1.6.1"
+androidx-appcompat = "1.7.0"
 androidx-activity-compose = "1.8.2"
 androidx-browser = "1.8.0"
 androidx-core = "1.13.1"
