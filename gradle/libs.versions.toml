@@ -28,7 +28,7 @@ dagger = "2.51.1"
 
 desugared-jdk-libs = "2.0.4"
 
-firebase-bom = "33.1.0"
+firebase-bom = "33.1.1"
 firebase-crashlytics-plugin = "2.9.9"
 
 google-services = "4.4.2"
