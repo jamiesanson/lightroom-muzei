@@ -26,7 +26,7 @@ compose-compiler = "1.5.11"
 
 dagger = "2.52"
 
-desugared-jdk-libs = "2.0.4"
+desugared-jdk-libs = "2.1.0"
 
 firebase-bom = "33.2.0"
 firebase-crashlytics-plugin = "3.0.2"
