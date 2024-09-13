@@ -39,7 +39,7 @@ kotest = "5.9.1"
 
 kotlin = "1.9.23"
 
-kotlinx = "1.8.1"
+kotlinx = "1.9.0"
 kotlinx-collections-immutable = "0.3.8"
 kotlinx-serialization-json = "1.6.3"
 kotlinx-datetime = "0.6.1"
