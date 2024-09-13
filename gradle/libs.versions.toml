@@ -44,7 +44,7 @@ kotlinx-collections-immutable = "0.3.8"
 kotlinx-serialization-json = "1.6.3"
 kotlinx-datetime = "0.6.1"
 
-ksp = "1.9.23-1.0.20"
+ksp = "2.0.20-1.0.25"
 
 ktlint-compose-rules = "0.4.12"
 
