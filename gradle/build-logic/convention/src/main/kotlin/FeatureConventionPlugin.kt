@@ -24,6 +24,7 @@ class FeatureConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply(Plugins.Library)
+                apply(Plugins.Compose)
             }
 
             configureKotlin(

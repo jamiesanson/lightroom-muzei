@@ -17,6 +17,7 @@ class AppConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply(Plugins.Application)
+                apply(Plugins.Compose)
             }
 
             configureKotlin(

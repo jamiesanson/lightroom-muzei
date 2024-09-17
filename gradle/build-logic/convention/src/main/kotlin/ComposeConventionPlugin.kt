@@ -17,6 +17,8 @@ class ComposeConventionPlugin : Plugin<Project> {
         with(target) {
             configureKotlin(KotlinFeature.ImmutableCollections)
 
+            pluginManager.apply(Plugins.Compose)
+
             if (pluginManager.hasPlugin(Plugins.Application)) {
                 extensions.configure<ApplicationExtension> {
                     configureAndroidCompose(this)
