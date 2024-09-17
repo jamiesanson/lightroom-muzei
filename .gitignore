@@ -37,3 +37,6 @@ release.properties
 
 # Secrets
 .unsplash_consumer_key
+
+# Kotlin
+.kotlin/

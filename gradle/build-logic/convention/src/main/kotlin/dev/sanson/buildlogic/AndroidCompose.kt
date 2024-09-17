@@ -19,8 +19,11 @@ internal fun Project.configureAndroidCompose(
             compose = true
         }
 
-        composeOptions {
-            kotlinCompilerExtensionVersion = libs.findVersion("compose-compiler").get().toString()
+        lint {
+            disable += setOf(
+                // Produces false-positives with assignments in collect blocks
+                "ProduceStateDoesNotAssignValue",
+            )
         }
 
         dependencies {
