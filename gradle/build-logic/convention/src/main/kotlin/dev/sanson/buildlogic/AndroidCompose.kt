@@ -19,6 +19,13 @@ internal fun Project.configureAndroidCompose(
             compose = true
         }
 
+        lint {
+            disable += setOf(
+                // Produces false-positives with assignments in collect blocks
+                "ProduceStateDoesNotAssignValue",
+            )
+        }
+
         dependencies {
             val bom = libs["androidx-compose-bom"]
 
