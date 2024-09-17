@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 package dev.sanson.unsplash.ui
 
-import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -47,9 +47,8 @@ fun HyperlinkText(
                     start = startIndex,
                     end = endIndex,
                 )
-                addStringAnnotation(
-                    tag = "URL",
-                    annotation = value,
+                addLink(
+                    url = LinkAnnotation.Url(value),
                     start = startIndex,
                     end = endIndex,
                 )
@@ -64,20 +63,9 @@ fun HyperlinkText(
             )
         }
 
-    val uriHandler = LocalUriHandler.current
-
-    ClickableText(
+    Text(
         modifier = modifier,
         text = annotatedString,
         style = textStyle,
-        onClick = {
-            annotatedString
-                .getStringAnnotations("URL", it, it)
-                .firstOrNull()?.let { stringAnnotation ->
-                    runCatching {
-                        uriHandler.openUri(stringAnnotation.item)
-                    }
-                }
-        },
     )
 }
