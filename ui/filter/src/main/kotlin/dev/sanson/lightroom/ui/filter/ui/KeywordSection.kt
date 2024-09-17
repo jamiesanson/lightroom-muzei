@@ -24,7 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.sanson.lightroom.ui.filter.R
 import kotlinx.collections.immutable.ImmutableList
@@ -161,8 +162,8 @@ private fun KeywordChip(
     // vertical padding DOES equal minimum touch target size. The vertical arrangement
     // originally leads to far bigger vertical spacing than necessary.
     //
-    // https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary#LocalMinimumInteractiveComponentEnforcement()
-    CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+    // https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary#LocalMinimumInteractiveComponentSize()
+    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
         InputChip(
             selected = false,
             onClick = {},
