@@ -49,13 +49,18 @@ class LightroomSettingsActivity : ComponentActivity() {
                         remember {
                             AndroidScreenStarter { screen ->
                                 when (screen) {
-                                    is IntentScreen ->
+                                    is IntentScreen -> {
                                         screen.startWith(context = this)
+                                        true
+                                    }
 
                                     is FinishActivityScreen -> {
                                         setResult(screen.resultCode)
                                         finish()
+                                        true
                                     }
+
+                                    else -> false
                                 }
                             }
                         },
@@ -74,8 +79,8 @@ class LightroomSettingsActivity : ComponentActivity() {
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent?.let(lightroom::handleSignInResponse)
+        intent.let(lightroom::handleSignInResponse)
     }
 }
