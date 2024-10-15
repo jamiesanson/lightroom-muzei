@@ -5,7 +5,7 @@ versioncode = "1"
 
 java-toolchain = "17"
 
-android-gradle-plugin = "8.7.0"
+android-gradle-plugin = "8.7.1"
 
 androidx-appcompat = "1.7.0"
 androidx-activity-compose = "1.9.2"
