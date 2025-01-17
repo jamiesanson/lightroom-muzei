@@ -21,7 +21,7 @@ circuit = "0.25.0"
 
 coil = "2.7.0"
 
-compose-bom = "2024.12.01"
+compose-bom = "2025.01.00"
 
 dagger = "2.55"
 
