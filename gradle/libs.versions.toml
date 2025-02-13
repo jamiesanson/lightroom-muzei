@@ -17,7 +17,7 @@ androidx-hilt-navigation-compose = "1.2.0"
 androidx-lifecycle = "2.8.7"
 androidx-work = "2.10.0"
 
-circuit = "0.26.0"
+circuit = "0.26.1"
 
 coil = "2.7.0"
 
