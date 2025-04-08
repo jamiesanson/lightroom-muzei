@@ -56,7 +56,7 @@ okhttp = "4.12.0"
 retrofit = "2.11.0"
 retrofit-kotlinx-serialization-converter = "1.0.0"
 
-spotless = "7.0.2"
+spotless = "7.0.3"
 
 turbine = "1.2.0"
 
