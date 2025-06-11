@@ -58,7 +58,7 @@ retrofit-kotlinx-serialization-converter = "1.0.0"
 
 spotless = "7.0.4"
 
-turbine = "1.2.0"
+turbine = "1.2.1"
 
 
 [libraries]
