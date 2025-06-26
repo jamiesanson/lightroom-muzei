@@ -30,7 +30,7 @@ desugared-jdk-libs = "2.1.5"
 firebase-bom = "33.16.0"
 firebase-crashlytics-plugin = "3.0.4"
 
-google-services = "4.4.2"
+google-services = "4.4.3"
 
 junit = "4.13.2"
 
