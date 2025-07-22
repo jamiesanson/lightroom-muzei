@@ -40,3 +40,6 @@ release.properties
 
 # Kotlin
 .kotlin/
+
+# MacOS
+.DS_Store
