@@ -22,15 +22,14 @@ internal class RemoveBodyPrefixInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
 
-        if (response.body == null) return response
-
         val newBody =
             response.body
-                ?.string()
-                ?.removePrefix(MITIGATION_PREFIX)
-                ?.toResponseBody()
+                .string()
+                .removePrefix(MITIGATION_PREFIX)
+                .toResponseBody()
 
-        return response.newBuilder()
+        return response
+            .newBuilder()
             .body(newBody)
             .build()
     }
