@@ -28,9 +28,9 @@ internal class AuthManager
         private val applicationScope: CoroutineScope,
         private val credentialStore: CredentialStore,
         private val lightroomAuthService: LightroomAuthService,
-        @LoginHost
+        @param:LoginHost
         private val loginHost: String,
-        @LightroomClientId
+        @param:LightroomClientId
         private val clientId: String,
     ) {
         private var previousChallenge: String? = null
@@ -67,8 +67,7 @@ internal class AuthManager
                 .entries
                 .fold(authUrl.toUri().buildUpon()) { builder, (key, value) ->
                     builder.appendQueryParameter(key, value)
-                }
-                .build()
+                }.build()
         }
 
         fun onAuthorized(code: String) {
