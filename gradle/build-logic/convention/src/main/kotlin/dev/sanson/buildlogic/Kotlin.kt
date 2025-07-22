@@ -28,17 +28,17 @@ internal fun Project.configureKotlin(vararg features: KotlinFeature) {
     val libs = versionCatalog
 
     kotlinExtension.jvmToolchain(
-        jdkVersion = libs.findVersion("java-toolchain").get().requiredVersion.toInt()
+        jdkVersion = libs.findVersion("java-toolchain").get().requiredVersion.toInt(),
     )
 
     tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
+        compilerOptions {
             // Treat all Kotlin warnings as errors (enabled by default)
             // Override by setting warningsAsErrors=true in your ~/.gradle/gradle.properties
             val warningsAsErrors: String? by project
-            allWarningsAsErrors = warningsAsErrors?.toBooleanStrictOrNull() ?: true
+            allWarningsAsErrors.set(warningsAsErrors?.toBooleanStrictOrNull() ?: true)
 
-            freeCompilerArgs = freeCompilerArgs + listOf(
+            freeCompilerArgs.addAll(
                 "-opt-in=kotlin.RequiresOptIn",
                 // Enable experimental coroutines APIs, including Flow
                 "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
