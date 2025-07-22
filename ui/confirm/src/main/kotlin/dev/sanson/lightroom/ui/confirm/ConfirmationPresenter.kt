@@ -1,5 +1,7 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
+@file:OptIn(ExperimentalTime::class)
+
 package dev.sanson.lightroom.ui.confirm
 
 import android.app.Activity
@@ -31,10 +33,11 @@ import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.periodUntil
 import nz.sanson.lightroom.coil.LocalLightroomImageLoader
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class ConfirmationPresenter @AssistedInject constructor(
     @Assisted private val navigator: Navigator,

@@ -34,6 +34,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Qualifier
+import kotlin.time.ExperimentalTime
 
 @Qualifier
 internal annotation class LightroomClientId
@@ -46,6 +47,7 @@ internal class LightroomModule {
     @LightroomClientId
     fun provideLightroomClientId() = LIGHTROOM_CLIENT_ID
 
+    @OptIn(ExperimentalTime::class)
     @Provides
     fun provideJson(): Json =
         Json {
@@ -57,17 +59,13 @@ internal class LightroomModule {
         }
 
     @Provides
-    fun provideLightroomAuthenticator(authManager: AuthManager): Authenticator {
-        return LightroomAuthenticator(authManager)
-    }
+    fun provideLightroomAuthenticator(authManager: AuthManager): Authenticator = LightroomAuthenticator(authManager)
 
     @Provides
     @IntoSet
     fun provideClientIdInterceptor(
         @LightroomClientId clientId: String,
-    ): Interceptor {
-        return ClientIdInterceptor(clientId)
-    }
+    ): Interceptor = ClientIdInterceptor(clientId)
 
     @Provides
     @IntoSet
@@ -83,9 +81,7 @@ internal class LightroomModule {
 
     @Provides
     @IntoSet
-    fun provideAuthInterceptor(credentialStore: CredentialStore): Interceptor {
-        return AuthInterceptor(credentialStore)
-    }
+    fun provideAuthInterceptor(credentialStore: CredentialStore): Interceptor = AuthInterceptor(credentialStore)
 
     @Provides
     @IntoSet
@@ -115,18 +111,16 @@ internal class LightroomModule {
     fun provideLightroomRetrofit(
         okHttpClient: OkHttpClient,
         json: Json,
-    ): Retrofit {
-        return Retrofit.Builder()
+    ): Retrofit =
+        Retrofit
+            .Builder()
             .baseUrl("https://lr.adobe.io")
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
-    }
 
     @Provides
-    fun provideCatalogRepository(catalogService: CatalogService): CatalogRepository {
-        return CatalogRepository(catalogService)
-    }
+    fun provideCatalogRepository(catalogService: CatalogService): CatalogRepository = CatalogRepository(catalogService)
 
     @Provides
     fun provideLightroom(
@@ -140,8 +134,8 @@ internal class LightroomModule {
         getAccount: GetAccountUseCase,
         isSignedIn: IsSignedInUseCase,
         catalogRepository: CatalogRepository,
-    ): Lightroom {
-        return DefaultLightroom(
+    ): Lightroom =
+        DefaultLightroom(
             getIsSignedIn = isSignedIn,
             authManager = authManager,
             clientId = clientId,
@@ -152,5 +146,4 @@ internal class LightroomModule {
             generateRenditions = generateRendition,
             retrieveAccount = getAccount,
         )
-    }
 }
