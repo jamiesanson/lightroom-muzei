@@ -1,8 +1,9 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
+@file:OptIn(ExperimentalTime::class)
+
 package dev.sanson.lightroom.sdk.backend.serializer
 
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
@@ -12,6 +13,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * The Lightroom API doesn't include a timezone offset when said offset is in the "home" timezone,

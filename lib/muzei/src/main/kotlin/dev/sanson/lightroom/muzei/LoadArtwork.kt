@@ -1,5 +1,7 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
+@file:OptIn(ExperimentalTime::class)
+
 package dev.sanson.lightroom.muzei
 
 import androidx.core.net.toUri
@@ -12,9 +14,11 @@ import dev.sanson.lightroom.sdk.model.Rendition
 import dev.sanson.lightroom.sdk.model.asUrl
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaMonth
 import kotlinx.datetime.toLocalDateTime
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlin.time.ExperimentalTime
 
 /**
  * Extension function for loading all relevant Muzei [Artwork] from Lightroom
@@ -52,13 +56,7 @@ suspend fun Lightroom.loadAssets(config: Config): List<Asset> {
  * metadata = <catalog_id>
  */
 fun Asset.toArtwork(): Artwork {
-    fun LocalDateTime.format(): String =
-        "$dayOfMonth ${
-            month.getDisplayName(
-                TextStyle.SHORT,
-                Locale.getDefault(),
-            )
-        } $year"
+    fun LocalDateTime.format(): String = "$day ${month.toJavaMonth().getDisplayName(TextStyle.SHORT, Locale.getDefault())} $year"
 
     return Artwork(
         title = captureDate.toLocalDateTime(TimeZone.currentSystemDefault()).format(),

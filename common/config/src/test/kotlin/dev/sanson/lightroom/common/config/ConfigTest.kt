@@ -1,5 +1,7 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
+@file:OptIn(ExperimentalTime::class)
+
 package dev.sanson.lightroom.common.config
 
 import dev.sanson.lightroom.sdk.model.Asset
@@ -12,8 +14,9 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.exhaustive.exhaustive
 import io.kotest.property.forAll
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
 import org.junit.Test
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class ConfigTest {
     /**

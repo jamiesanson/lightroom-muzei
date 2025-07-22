@@ -1,5 +1,7 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
+@file:OptIn(ExperimentalTime::class)
+
 package dev.sanson.lightroom.ui.confirm
 
 import androidx.compose.animation.AnimatedVisibility
@@ -57,9 +59,10 @@ import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CatalogId
 import dev.sanson.lightroom.sdk.model.Rendition
 import kotlinx.coroutines.delay
-import kotlinx.datetime.Instant
 import nz.sanson.lightroom.coil.rememberImageResult
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @CircuitInject(ConfirmationScreen::class, SingletonComponent::class)
 @Composable

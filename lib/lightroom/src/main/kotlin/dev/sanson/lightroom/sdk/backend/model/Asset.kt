@@ -1,8 +1,9 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
+@file:OptIn(ExperimentalTime::class)
+
 package dev.sanson.lightroom.sdk.backend.model
 
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -17,6 +18,8 @@ import kotlinx.serialization.encoding.encodeCollection
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Serializable
 internal data class Asset(
@@ -59,7 +62,10 @@ internal data class Payload(
             ratings ?: return null
 
             // The following is the UUID-named object
-            val ratingObject = ratings.jsonObject.entries.first().value.jsonObject
+            val ratingObject =
+                ratings.jsonObject.entries
+                    .first()
+                    .value.jsonObject
 
             return ratingObject["rating"]?.jsonPrimitive?.content?.toInt()
         }
@@ -69,7 +75,10 @@ internal data class Payload(
             reviews ?: return null
 
             // The following is the UUID-named object
-            val ratingObject = reviews.jsonObject.entries.first().value.jsonObject
+            val ratingObject =
+                reviews.jsonObject.entries
+                    .first()
+                    .value.jsonObject
 
             return ratingObject["flag"]?.jsonPrimitive?.content?.let {
                 when (it) {
