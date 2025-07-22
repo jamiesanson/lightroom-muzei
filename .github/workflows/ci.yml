@@ -19,6 +19,8 @@ jobs:
           java-version: 17
 
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYTION_KEY }}
 
       - name: Lint
         run: ./gradlew lint
@@ -38,6 +40,8 @@ jobs:
           java-version: 17
 
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYTION_KEY }}
 
       - name: Decrypt secrets
         run: ./release/decrypt-secrets
