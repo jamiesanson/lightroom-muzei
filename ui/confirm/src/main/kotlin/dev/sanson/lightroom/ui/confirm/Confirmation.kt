@@ -40,7 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -271,11 +271,11 @@ private fun WallpaperPreview(
 
 @Composable
 private fun WallpaperLoading(modifier: Modifier = Modifier) {
-    val configuration = LocalConfiguration.current
+    val windowInfo = LocalWindowInfo.current
 
     val screenAspectRatio =
-        remember(configuration) {
-            configuration.screenWidthDp.toFloat() / configuration.screenHeightDp.toFloat()
+        remember(windowInfo) {
+            windowInfo.containerSize.width.toFloat() / windowInfo.containerSize.height.toFloat()
         }
 
     val backgroundColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.05f)
@@ -301,11 +301,11 @@ private fun WallpaperCutout(
     imageResult: ImageResult,
     modifier: Modifier = Modifier,
 ) {
-    val configuration = LocalConfiguration.current
+    val windowInfo = LocalWindowInfo.current
 
     val screenAspectRatio =
-        remember(configuration) {
-            configuration.screenWidthDp.toFloat() / configuration.screenHeightDp.toFloat()
+        remember(windowInfo) {
+            windowInfo.containerSize.width.toFloat() / windowInfo.containerSize.height.toFloat()
         }
 
     Box(
@@ -340,8 +340,16 @@ private fun WallpaperCutout(
 private fun ChooseSourcePreview() {
     val dummyAsset =
         Asset(
-            AssetId(""), CatalogId(""), Instant.DISTANT_PAST, "",
-            "", 1, "", "", "", emptyList(),
+            AssetId(""),
+            CatalogId(""),
+            Instant.DISTANT_PAST,
+            "",
+            "",
+            1,
+            "",
+            "",
+            "",
+            emptyList(),
         )
 
     val loadedState =
