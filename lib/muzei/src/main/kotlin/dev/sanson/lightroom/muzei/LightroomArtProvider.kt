@@ -46,16 +46,13 @@ class LightroomArtProvider : MuzeiArtProvider() {
                         requiredNetworkType = NetworkType.CONNECTED,
                         requiresStorageNotLow = true,
                     ),
-                )
-                .setBackoffCriteria(
+                ).setBackoffCriteria(
                     backoffPolicy = BackoffPolicy.LINEAR,
                     backoffDelay = 10L,
                     timeUnit = TimeUnit.MINUTES,
-                )
-                .setExpedited(
+                ).setExpedited(
                     policy = OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST,
-                )
-                .build()
+                ).build()
 
         workManager
             .enqueueUniqueWork("load_album", ExistingWorkPolicy.REPLACE, request)

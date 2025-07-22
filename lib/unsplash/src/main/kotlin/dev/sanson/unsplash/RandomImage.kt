@@ -46,7 +46,9 @@ data class RandomImage(
     ) : Parcelable
 }
 
-internal class RandomImageViewModel : ViewModel(), Unsplash {
+internal class RandomImageViewModel :
+    ViewModel(),
+    Unsplash {
     private val unsplashService by lazy { UnsplashService() }
 
     private var cachedPhoto: RandomImage? = null
@@ -64,8 +66,7 @@ internal class RandomImageViewModel : ViewModel(), Unsplash {
                                     username = it.user.username,
                                 ),
                         )
-                    }
-                    .getOrNull()
+                    }.getOrNull()
         }
 
         return cachedPhoto
@@ -73,8 +74,8 @@ internal class RandomImageViewModel : ViewModel(), Unsplash {
 }
 
 @Composable
-private fun rememberUnsplash(): Unsplash {
-    return if (LocalView.current.isInEditMode) {
+private fun rememberUnsplash(): Unsplash =
+    if (LocalView.current.isInEditMode) {
         // Avoid ViewModel fetching in previews
         object : Unsplash {
             override suspend fun getRandomImage(): RandomImage? = null
@@ -82,4 +83,3 @@ private fun rememberUnsplash(): Unsplash {
     } else {
         viewModel<RandomImageViewModel>(LocalContext.current as ViewModelStoreOwner)
     }
-}

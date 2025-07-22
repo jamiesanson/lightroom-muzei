@@ -47,8 +47,7 @@ class ChooseAlbumPresenter @AssistedInject constructor(
                                 is Album -> 1
                                 is CollectionSet -> 0
                             }
-                        }
-                        .map { if (it is CollectionSet) it.sortChildren() else it },
+                        }.map { if (it is CollectionSet) it.sortChildren() else it },
             )
 
         var albums by rememberSaveable {
@@ -57,14 +56,14 @@ class ChooseAlbumPresenter @AssistedInject constructor(
 
         LaunchedEffect(true) {
             albums =
-                lightroom.getAlbums()
+                lightroom
+                    .getAlbums()
                     .sortedBy {
                         when (it) {
                             is Album -> 1
                             is CollectionSet -> 0
                         }
-                    }
-                    .map { if (it is CollectionSet) it.sortChildren() else it }
+                    }.map { if (it is CollectionSet) it.sortChildren() else it }
         }
 
         val albumId by produceState<AlbumId?>(initialValue = null, configRepository) {

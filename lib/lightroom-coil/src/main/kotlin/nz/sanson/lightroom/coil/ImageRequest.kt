@@ -20,13 +20,12 @@ fun rememberImageRequest(
     assetId: AssetId,
     catalogId: CatalogId,
     rendition: Rendition = Rendition.SixForty,
-): ImageRequest? {
-    return rememberImageResult(
+): ImageRequest? =
+    rememberImageResult(
         assetId = assetId,
         catalogId = catalogId,
         rendition = rendition,
     )?.request
-}
 
 @Composable
 fun rememberImageResult(

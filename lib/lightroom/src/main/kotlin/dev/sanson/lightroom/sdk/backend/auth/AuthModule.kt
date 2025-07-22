@@ -31,24 +31,21 @@ private const val ADOBE_LOGIN_HOST = "https://ims-na1.adobelogin.com"
 internal class AuthModule {
     @Provides
     @Singleton
-    fun provideCredentialStore(dataStore: DataStore<Credential?>): CredentialStore {
-        return DefaultCredentialStore(dataStore)
-    }
+    fun provideCredentialStore(dataStore: DataStore<Credential?>): CredentialStore = DefaultCredentialStore(dataStore)
 
     @Provides
     @Singleton
     fun provideCredentialDataStore(
         scope: CoroutineScope,
         context: Context,
-    ): DataStore<Credential?> {
-        return DataStoreFactory.create(
+    ): DataStore<Credential?> =
+        DataStoreFactory.create(
             serializer = JsonSerializer<Credential>(),
             scope = scope,
             produceFile = {
                 File("${context.filesDir.path}/credentials")
             },
         )
-    }
 
     @Provides
     @LoginHost
@@ -58,20 +55,24 @@ internal class AuthModule {
     fun provideAuthService(
         @LoginHost loginHost: String,
         json: Json,
-    ): LightroomAuthService {
-        return Retrofit.Builder().client(
-            OkHttpClient.Builder().addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    level =
-                        if (BuildConfig.DEBUG) {
-                            HttpLoggingInterceptor.Level.BODY
-                        } else {
-                            HttpLoggingInterceptor.Level.NONE
-                        }
-                },
-            ).build(),
-        ).baseUrl(loginHost)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType())).build()
+    ): LightroomAuthService =
+        Retrofit
+            .Builder()
+            .client(
+                OkHttpClient
+                    .Builder()
+                    .addInterceptor(
+                        HttpLoggingInterceptor().apply {
+                            level =
+                                if (BuildConfig.DEBUG) {
+                                    HttpLoggingInterceptor.Level.BODY
+                                } else {
+                                    HttpLoggingInterceptor.Level.NONE
+                                }
+                        },
+                    ).build(),
+            ).baseUrl(loginHost)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
             .create<LightroomAuthService>()
-    }
 }

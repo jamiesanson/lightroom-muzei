@@ -32,7 +32,8 @@ internal class GetAlbumsUseCase
             withContext(Dispatchers.IO) {
                 val catalog = catalogRepository.getCatalog()
 
-                return@withContext albumService.getAlbums(catalogId = catalog.id.id)
+                return@withContext albumService
+                    .getAlbums(catalogId = catalog.id.id)
                     .resources
                     // Clear out these oddballs
                     .filter { it.payload != null }
@@ -47,12 +48,11 @@ internal class GetAlbumsUseCase
         private suspend fun loadAlbumAssets(
             catalogId: CatalogId,
             albumId: AlbumId,
-        ): List<AssetId> {
-            return albumService
+        ): List<AssetId> =
+            albumService
                 .getAlbumAssets(catalogId = catalogId.id, albumId = albumId.id)
                 .resources
                 .map { AssetId(it.asset.id) }
-        }
 
         /**
          * Recurse to populate a tree of [AlbumTreeItem]s
@@ -60,8 +60,8 @@ internal class GetAlbumsUseCase
         private fun List<Resource<BackendAlbum>>.findChildren(
             catalogId: CatalogId,
             parentId: String?,
-        ): List<AlbumTreeItem> {
-            return buildList {
+        ): List<AlbumTreeItem> =
+            buildList {
                 val children = this@findChildren.filter { it.payload?.parent?.id == parentId }
 
                 addAll(
@@ -93,7 +93,6 @@ internal class GetAlbumsUseCase
                     },
                 )
             }
-        }
 
         /**
          * Depth-first traversal to grab assets for all albums in the tree

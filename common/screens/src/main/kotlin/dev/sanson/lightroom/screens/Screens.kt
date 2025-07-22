@@ -25,4 +25,6 @@ data object SignInScreen : Screen
  * An [AndroidScreen] which finishes the current activity with a given [resultCode] set as result
  */
 @Parcelize
-data class FinishActivityScreen(val resultCode: Int) : AndroidScreen
+data class FinishActivityScreen(
+    val resultCode: Int,
+) : AndroidScreen

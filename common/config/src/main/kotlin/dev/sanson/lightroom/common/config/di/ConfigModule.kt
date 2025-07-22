@@ -27,15 +27,14 @@ class ConfigModule {
     fun provideConfigStore(
         @ApplicationScope scope: CoroutineScope,
         @ApplicationContext context: Context,
-    ): DataStore<Config?> {
-        return DataStoreFactory.create(
+    ): DataStore<Config?> =
+        DataStoreFactory.create(
             serializer = JsonSerializer<Config>(),
             scope = scope,
             produceFile = {
                 File("${context.filesDir.path}/config")
             },
         )
-    }
 
     @Provides
     @Singleton

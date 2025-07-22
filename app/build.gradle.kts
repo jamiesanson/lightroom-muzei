@@ -31,7 +31,10 @@ android {
 
     defaultConfig {
         applicationId = "dev.sanson.lightroom"
-        versionCode = libs.versions.versioncode.get().toInt()
+        versionCode =
+            libs.versions.versioncode
+                .get()
+                .toInt()
         versionName = libs.versions.app.get()
 
         val authority = "dev.sanson.lightroom.authority"
@@ -118,6 +121,16 @@ dependencies {
 }
 
 if (file("google-services.json").exists()) {
-    apply(plugin = libs.plugins.google.services.get().pluginId)
-    apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
+    apply(
+        plugin =
+            libs.plugins.google.services
+                .get()
+                .pluginId,
+    )
+    apply(
+        plugin =
+            libs.plugins.firebase.crashlytics
+                .get()
+                .pluginId,
+    )
 }

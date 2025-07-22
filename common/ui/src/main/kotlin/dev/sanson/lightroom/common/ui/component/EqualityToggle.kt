@@ -38,13 +38,12 @@ enum class Equality : Parcelable { LessThan, EqualTo, GreaterThan }
 /**
  * Simple function for cycling through enum entries
  */
-private fun Equality.next(): Equality {
-    return if (this == Equality.entries.last()) {
+private fun Equality.next(): Equality =
+    if (this == Equality.entries.last()) {
         Equality.entries.first()
     } else {
         Equality.entries[ordinal + 1]
     }
-}
 
 /**
  * An Equality toggle is a control allowing choice between three equality states, as defined
@@ -94,8 +93,7 @@ fun EqualityToggle(
             .clip(RoundedCornerShape(50))
             .onSizeChanged {
                 equalityHeightPx = it.height.toFloat() * 0.2f
-            }
-            .clickable { onEqualityChange(equality.next()) },
+            }.clickable { onEqualityChange(equality.next()) },
     ) {
         // The following draws two canvas elements - the bottom line of the lteq, gteq and eq symbol,
         // and a path which draws the top element of the symbol, allowing animation from line to

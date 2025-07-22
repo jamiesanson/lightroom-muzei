@@ -147,8 +147,7 @@ private fun SourceRow(
                     width = borderWidth,
                     color = MaterialTheme.colorScheme.primary.copy(alpha = borderAlpha),
                     shape = RoundedCornerShape(12.dp),
-                )
-                .clickable(onClick = onClick),
+                ).clickable(onClick = onClick),
     ) {
         Row(
             modifier =

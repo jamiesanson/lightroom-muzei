@@ -17,10 +17,10 @@ class CircuitModule {
     fun provideCircuit(
         presenterFactories: @JvmSuppressWildcards Set<Presenter.Factory>,
         uiFactories: @JvmSuppressWildcards Set<Ui.Factory>,
-    ): Circuit {
-        return Circuit.Builder()
+    ): Circuit =
+        Circuit
+            .Builder()
             .addPresenterFactories(presenterFactories)
             .addUiFactories(uiFactories)
             .build()
-    }
 }

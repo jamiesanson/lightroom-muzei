@@ -191,8 +191,7 @@ private fun LazyListScope.collectionSet(
                             } else {
                                 it
                             }
-                        }
-                        .padding(top = 16.dp, bottom = 8.dp)
+                        }.padding(top = 16.dp, bottom = 8.dp)
                         .padding(start = (4 + (insetMultiplier * 8)).dp),
             ) {
                 Icon(
@@ -279,8 +278,7 @@ private fun AlbumRow(
                 .background(
                     color = backgroundColor,
                     shape = RoundedCornerShape(12.dp),
-                )
-                .clip(RoundedCornerShape(12.dp))
+                ).clip(RoundedCornerShape(12.dp))
                 .clickable(onClick = onClick),
     ) {
         Row(

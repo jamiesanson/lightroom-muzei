@@ -28,9 +28,7 @@ val LocalLightroomImageLoader =
  * @param context Context to use with Image requests
  * @return new [ImageLoader]
  */
-fun Lightroom.createImageLoader(context: Context): ImageLoader {
-    return DefaultImageLoader(context = context, lightroom = this)
-}
+fun Lightroom.createImageLoader(context: Context): ImageLoader = DefaultImageLoader(context = context, lightroom = this)
 
 interface ImageLoader {
     /**
@@ -89,7 +87,8 @@ internal class DefaultImageLoader(
         val imageUrl = assetId.asUrl(catalogId, rendition)
         val headers = lightroom.getImageAuthHeaders().toHeaders()
 
-        return ImageRequest.Builder(context)
+        return ImageRequest
+            .Builder(context)
             .data(imageUrl)
             .headers(headers)
             .build()

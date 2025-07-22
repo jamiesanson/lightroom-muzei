@@ -29,11 +29,13 @@ internal interface UnsplashService {
                 }
 
             val okHttpClient =
-                OkHttpClient.Builder()
+                OkHttpClient
+                    .Builder()
                     .addInterceptor(HttpLoggingInterceptor())
                     .addInterceptor { chain ->
                         val request =
-                            chain.request()
+                            chain
+                                .request()
                                 .newBuilder()
                                 .addHeader("Authorization", "Client-ID $CONSUMER_KEY")
                                 .build()
@@ -42,7 +44,8 @@ internal interface UnsplashService {
                     }.build()
 
             val retrofit =
-                Retrofit.Builder()
+                Retrofit
+                    .Builder()
                     .baseUrl("https://api.unsplash.com/")
                     .client(okHttpClient)
                     .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))

@@ -16,15 +16,13 @@ internal class IsSignedInUseCase @Inject constructor(
     private val authManager: AuthManager,
     private val retrieveAccount: GetAccountUseCase,
 ) {
-    operator fun invoke(): SharedFlow<Boolean> {
-        return authManager.hasCredentials
+    operator fun invoke(): SharedFlow<Boolean> =
+        authManager.hasCredentials
             .map { hasCredential ->
                 hasCredential &&
                     runCatching { retrieveAccount() }.fold(
                         onSuccess = { true },
                         onFailure = { error -> error !is HttpException },
                     )
-            }
-            .shareIn(scope, SharingStarted.Eagerly, replay = 1)
-    }
+            }.shareIn(scope, SharingStarted.Eagerly, replay = 1)
 }

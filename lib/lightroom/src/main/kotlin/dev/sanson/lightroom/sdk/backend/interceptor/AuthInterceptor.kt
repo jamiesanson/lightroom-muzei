@@ -18,7 +18,9 @@ internal class AuthInterceptor(
             if (credential == null) {
                 chain.request()
             } else {
-                chain.request().newBuilder()
+                chain
+                    .request()
+                    .newBuilder()
                     .addHeader("Authorization", "Bearer ${credential.accessToken}")
                     .build()
             }

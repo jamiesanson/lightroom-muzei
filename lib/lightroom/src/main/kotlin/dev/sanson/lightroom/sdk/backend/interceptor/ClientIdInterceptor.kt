@@ -10,7 +10,9 @@ internal class ClientIdInterceptor(
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request =
-            chain.request().newBuilder()
+            chain
+                .request()
+                .newBuilder()
                 .addHeader("X-API-Key", clientId)
                 .build()
 

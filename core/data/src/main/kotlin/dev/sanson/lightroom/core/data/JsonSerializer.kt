@@ -14,9 +14,7 @@ import java.io.OutputStream
  * specify serializer
  */
 @Suppress("ktlint:standard:function-naming")
-inline fun <reified T> JsonSerializer(): JsonSerializer<T> {
-    return JsonSerializer(serializer = serializer<T>())
-}
+inline fun <reified T> JsonSerializer(): JsonSerializer<T> = JsonSerializer(serializer = serializer<T>())
 
 /**
  * DataStore Serializer allowing for serialization of any serializable class [T]
@@ -28,13 +26,12 @@ class JsonSerializer<T>(
 ) : Serializer<T?> {
     override val defaultValue: T? = null
 
-    override suspend fun readFrom(input: InputStream): T? {
-        return runCatching {
+    override suspend fun readFrom(input: InputStream): T? =
+        runCatching {
             val serialText = input.bufferedReader().use { it.readText() }
 
             Json.decodeFromString(serializer, serialText)
         }.getOrNull()
-    }
 
     override suspend fun writeTo(
         t: T?,

@@ -31,7 +31,8 @@ internal class LightroomAuthenticator(
 
             credentials ?: return null
 
-            response.request.newBuilder()
+            response.request
+                .newBuilder()
                 .removeHeader("Authorization")
                 .addHeader("Authorization", "Bearer ${credentials.accessToken}")
                 .build()

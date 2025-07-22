@@ -10,12 +10,15 @@ import dev.sanson.lightroom.sdk.Lightroom
 import javax.inject.Inject
 
 @HiltAndroidApp
-class LightroomForMuzeiApplication : Application(), Configuration.Provider {
+class LightroomForMuzeiApplication :
+    Application(),
+    Configuration.Provider {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
     override val workManagerConfiguration: Configuration get() =
-        Configuration.Builder()
+        Configuration
+            .Builder()
             .setWorkerFactory(workerFactory)
             .build()
 

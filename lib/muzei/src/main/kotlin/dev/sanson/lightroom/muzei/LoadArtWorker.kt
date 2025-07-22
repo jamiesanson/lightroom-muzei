@@ -36,12 +36,14 @@ class LoadArtWorker
                 getProviderClient<LightroomArtProvider>(context = applicationContext)
 
             val previouslyAddedAssets =
-                albumProvider.getArtwork(
-                    contentResolver = applicationContext.contentResolver,
-                ).mapNotNull { it.token }
+                albumProvider
+                    .getArtwork(
+                        contentResolver = applicationContext.contentResolver,
+                    ).mapNotNull { it.token }
 
             val artworks =
-                lightroom.loadAssets(config)
+                lightroom
+                    .loadAssets(config)
                     .map { it.toArtwork() }
                     .filterNot { albumAsset ->
                         albumAsset.token in previouslyAddedAssets
@@ -56,8 +58,9 @@ class LoadArtWorker
 /**
  * Query [ProviderClient] using [contentResolver] for all existing artwork
  */
-private fun ProviderClient.getArtwork(contentResolver: ContentResolver): List<Artwork> {
-    return contentResolver.query(contentUri, null, null, null, null)
+private fun ProviderClient.getArtwork(contentResolver: ContentResolver): List<Artwork> =
+    contentResolver
+        .query(contentUri, null, null, null, null)
         ?.use { cursor ->
             cursor.moveToFirst()
 
@@ -69,4 +72,3 @@ private fun ProviderClient.getArtwork(contentResolver: ContentResolver): List<Ar
                 }
             }
         } ?: emptyList()
-}

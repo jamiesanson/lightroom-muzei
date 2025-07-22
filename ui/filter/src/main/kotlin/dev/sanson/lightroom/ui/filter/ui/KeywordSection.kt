@@ -85,8 +85,7 @@ private fun KeywordChipGroup(
                     width = 1.dp,
                     shape = RoundedCornerShape(12.dp),
                     color = MaterialTheme.colorScheme.inverseOnSurface,
-                )
-                .padding(8.dp)
+                ).padding(8.dp)
                 .requiredHeightIn(min = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),

@@ -9,7 +9,5 @@ import javax.inject.Inject
 internal class GetAccountUseCase @Inject constructor(
     private val accountService: AccountService,
 ) {
-    suspend operator fun invoke(): Account {
-        return Account(accountService.getAccount().firstName)
-    }
+    suspend operator fun invoke(): Account = Account(accountService.getAccount().firstName)
 }

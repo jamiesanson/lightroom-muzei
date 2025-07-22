@@ -9,4 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 @JvmInline
-value class AlbumId(override val id: String) : Parcelable, AlbumTreeItemId
+value class AlbumId(
+    override val id: String,
+) : Parcelable,
+    AlbumTreeItemId

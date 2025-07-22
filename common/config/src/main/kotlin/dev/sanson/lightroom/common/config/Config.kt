@@ -28,7 +28,9 @@ data class Config(
 ) {
     sealed interface Source {
         @Serializable
-        data class Album(val id: AlbumId?) : Source {
+        data class Album(
+            val id: AlbumId?,
+        ) : Source {
             fun requireId(): AlbumId = requireNotNull(id)
 
             companion object {
@@ -41,8 +43,8 @@ data class Config(
     }
 }
 
-fun Config.permitsAsset(asset: Asset): Boolean {
-    return when {
+fun Config.permitsAsset(asset: Asset): Boolean =
+    when {
         // Has matching keyword
         keywords.isNotEmpty() && asset.keywords.none { it in keywords } -> false
 
@@ -54,4 +56,3 @@ fun Config.permitsAsset(asset: Asset): Boolean {
 
         else -> true
     }
-}

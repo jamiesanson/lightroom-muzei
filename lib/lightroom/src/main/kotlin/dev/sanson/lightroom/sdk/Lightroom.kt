@@ -109,13 +109,13 @@ interface Lightroom {
 fun Lightroom(
     context: Context,
     coroutineScope: CoroutineScope,
-): Lightroom {
-    return DaggerLightroomComponent.builder()
+): Lightroom =
+    DaggerLightroomComponent
+        .builder()
         .context(context)
         .coroutineScope(coroutineScope)
         .build()
         .lightroom()
-}
 
 /**
  * Retrieve auth headers for making image requests in form of a map

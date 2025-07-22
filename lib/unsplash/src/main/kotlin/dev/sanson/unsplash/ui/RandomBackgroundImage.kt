@@ -37,7 +37,8 @@ fun RandomBackgroundImage(
             var showAttribution by rememberSaveable { mutableStateOf(false) }
             AsyncImage(
                 model =
-                    ImageRequest.Builder(LocalContext.current)
+                    ImageRequest
+                        .Builder(LocalContext.current)
                         .data(backgroundImage.url)
                         .crossfade(300)
                         .build(),

@@ -17,7 +17,9 @@ import okhttp3.Response
 internal class AcceptEncodingInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request =
-            chain.request().newBuilder()
+            chain
+                .request()
+                .newBuilder()
                 .addHeader("Accept-Encoding", "identity")
                 .build()
 
