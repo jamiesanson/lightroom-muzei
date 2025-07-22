@@ -19,12 +19,12 @@ package dev.sanson.lightroom
  */
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.core.net.toUri
 import com.google.android.apps.muzei.api.MuzeiContract
 
 /**
@@ -69,7 +69,7 @@ class LightroomRedirectActivity : ComponentActivity() {
                     to R.string.toast_enable_lightroom,
                 launchIntent
                     to R.string.toast_enable_lightroom_source,
-                Intent(Intent.ACTION_VIEW).setData(Uri.parse(PLAY_STORE_LINK))
+                Intent(Intent.ACTION_VIEW).setData(PLAY_STORE_LINK.toUri())
                     to R.string.toast_muzei_missing_error,
             )
         // Go through each Intent/message pair, trying each in turn
