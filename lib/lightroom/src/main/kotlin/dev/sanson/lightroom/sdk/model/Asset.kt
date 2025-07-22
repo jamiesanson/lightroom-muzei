@@ -1,10 +1,13 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
+@file:OptIn(ExperimentalTime::class)
+
 package dev.sanson.lightroom.sdk.model
 
 import android.os.Parcelable
-import kotlinx.datetime.Instant
 import kotlinx.parcelize.Parcelize
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 data class Asset(
     val id: AssetId,

@@ -1,5 +1,7 @@
 // Copyright (C) 2023, Jamie Sanson
 // SPDX-License-Identifier: Apache-2.0
+@file:OptIn(ExperimentalTime::class)
+
 package dev.sanson.lightroom.sdk.domain
 
 import android.net.Uri
@@ -10,6 +12,7 @@ import dev.sanson.lightroom.sdk.model.Asset
 import dev.sanson.lightroom.sdk.model.AssetId
 import dev.sanson.lightroom.sdk.model.CatalogId
 import javax.inject.Inject
+import kotlin.time.ExperimentalTime
 import dev.sanson.lightroom.sdk.backend.model.Asset as BackendAsset
 
 /**
