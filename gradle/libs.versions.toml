@@ -45,7 +45,7 @@ kotlinx-datetime = "0.7.1"
 
 ksp = "2.2.0-2.0.2"
 
-ktlint-compose-rules = "0.4.26"
+ktlint-compose-rules = "0.4.27"
 
 material = "1.12.0"
 
