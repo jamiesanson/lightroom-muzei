@@ -15,6 +15,7 @@ androidx-datastore = "1.1.7"
 androidx-hilt = "1.3.0"
 androidx-hilt-navigation-compose = "1.3.0"
 androidx-lifecycle = "2.9.4"
+androidx-material-icons = "1.7.8"
 androidx-work = "2.10.5"
 
 circuit = "0.30.0"
@@ -70,6 +71,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-compose-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
+androidx-compose-material-icons = { module = "androidx.compose.material:material-icons-core", version.ref = "androidx-material-icons" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
