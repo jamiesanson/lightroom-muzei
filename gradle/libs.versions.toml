@@ -24,7 +24,7 @@ coil = "2.7.0"
 
 compose-bom = "2025.12.01"
 
-dagger = "2.58"
+dagger = "2.59.2"
 
 desugared-jdk-libs = "2.1.5"
 
