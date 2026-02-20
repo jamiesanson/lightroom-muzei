@@ -76,20 +76,20 @@ jobs:
         run: ./release/cleanup-secrets
 
       - name: Upload build outputs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: android-build-outputs
           path: app/build/outputs
 
       - name: Upload reports
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: android-reports
           path: |
             **/build/reports/*
 
       - name: Upload test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: android-test-results
           path: |
