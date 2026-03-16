@@ -37,7 +37,7 @@ junit = "4.13.2"
 
 kotest = "6.1.7"
 
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 
 kotlinx = "1.10.2"
 kotlinx-collections-immutable = "0.4.0"
